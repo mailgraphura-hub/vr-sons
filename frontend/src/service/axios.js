@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const Api_Url = "http://localhost:3000/api/v1";
+const Api_Url = "/api/v1";
 
 export const postService = async(path, data) => {
     try{
