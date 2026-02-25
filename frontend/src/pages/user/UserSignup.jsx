@@ -115,6 +115,9 @@ export default function Signup() {
     }
 
     setEmailOtp(apiResponse.data.data)
+    setTimeout(() => {
+      setEmailOtp(null)
+    }, 5*60*1000)
 
     setOtpSent(true);
     toast.success(" OTP sent to email");

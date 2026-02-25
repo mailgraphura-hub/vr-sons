@@ -39,6 +39,9 @@ export default function ForgotPassword() {
 
     toast.success("OTP Sent Successfully");
     setSendOtp(apiResponse.data.data)
+    setTimeout(() => {
+      setSendOtp(null)
+    }, 5 * 60 * 1000)
     setStep(2);
   };
 

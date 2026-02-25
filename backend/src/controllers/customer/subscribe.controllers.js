@@ -73,7 +73,7 @@ const addSubscribe = async (req, res) => {
 
       <!-- CTA Button -->
       <div style="text-align:center; margin:30px 0;">
-        <a href="${"http://localhost:5173/"}"
+        <a href="${"https://vr-sons.vercel.app/"}"
            style="
              display:inline-block;
              background: linear-gradient(90deg, #1e3a8a, #4f46e5);
