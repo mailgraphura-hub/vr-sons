@@ -1,0 +1,15 @@
+node_modules
+.env
+dist
+ARCHITECTURE_DIAGRAMS.md
+CLEANUP_GUIDE.md
+IMPLEMENTATION_SUMMARY.md
+OTP_CODE_EXAMPLES.md
+OTP_QUICK_REFERENCE.md
+OTP_PASSWORD_RESET_GUIDE.md
+complete-rebase.ps1
+Forgot Password - Implementation Summary.md
+ Forgot Password Flow - Complete Implementation Guide.md
+  Forgot Password - Quick API Reference
+  Forgot Password - Pre-Launch Verification Checklist.md
+Rebase conflict resolution (frontend/src/pages/admin/ResetPasswordOTP.jsx)
