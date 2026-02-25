@@ -30,12 +30,20 @@ dotenv.config({
 const app = express();
 
 // CORS Configuration - Allow multiple frontend ports
-app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "vr-sons.vercel.app",
+      "vr-sons-git-main-mukundkumarjha728-4840s-projects.vercel.app",
+      "vr-sons-g54a1kbwg-mukundkumarjha728-4840s-projects.vercel.app",
+    ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 
 
