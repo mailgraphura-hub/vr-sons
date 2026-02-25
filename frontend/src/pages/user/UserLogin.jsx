@@ -41,6 +41,7 @@ export default function Login() {
             }
 
             toast.success("Login Successful");
+            localStorage.setItem("access", "grant")
 
             setTimeout(() => {
                 navigate("/");

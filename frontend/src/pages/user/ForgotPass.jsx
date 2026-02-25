@@ -83,6 +83,7 @@ export default function ForgotPassword() {
     toast.success("Password Reset Successful");
 
     setTimeout(() => {
+      localStorage.setItem("access", "Successful");
       navigate("/login");
     }, 1500);
   };

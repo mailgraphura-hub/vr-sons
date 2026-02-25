@@ -12,11 +12,12 @@ export default function Profile() {
   const { user } = userProfile();
 
   useEffect(() => {
-    const userName = localStorage.getItem("username")
-    if (!userName) {
-      navigate("/");
-    }
-  }, [navigate]);
+      const userName = localStorage.getItem("username")
+      const access = localStorage.getItem("access")
+      if (!userName && !access) {
+        navigate("/");
+      }
+    }, [navigate]);
 
   if (!user) {
     return <div className="p-10">Loading...</div>;

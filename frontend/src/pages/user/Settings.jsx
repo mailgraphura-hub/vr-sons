@@ -21,7 +21,8 @@ export default function Profile() {
 
   useEffect(() => {
       const userName = localStorage.getItem("username")
-      if (!userName) {
+      const access = localStorage.getItem("access")
+      if (!userName && !access) {
         navigate("/");
       }
     }, [navigate]);

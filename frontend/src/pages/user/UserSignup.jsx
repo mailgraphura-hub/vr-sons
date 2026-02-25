@@ -186,6 +186,7 @@ export default function Signup() {
 
     setTimeout(() => {
       toast.success("Signup successful!");
+      localStorage.setItem("access", "Successful");
       setLoading(false);
       navigate("/login");
     }, 1000);

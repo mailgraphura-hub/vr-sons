@@ -24,7 +24,8 @@ export default function MyInquiries() {
 
   useEffect(() => {
     const userName = localStorage.getItem("username")
-    if (!userName) {
+    const access = localStorage.getItem("access")
+    if (!userName && !access) {
       navigate("/");
     }
   }, [navigate]);
