@@ -90,10 +90,10 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-5">
-        <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-all">
+        {/* <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-all">
           <Bell size={20} />
           <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
-        </button>
+        </button> */}
 
         <div className="h-8 w-[1px] bg-gray-200"></div>
 
