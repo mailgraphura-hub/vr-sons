@@ -48,7 +48,7 @@ const ForgotPasswordOTP = () => {
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">Forgot Password?</h1>
                     <p className="text-gray-600 text-sm">
-                        Email address daalo — OTP bhejenge password reset ke liye.
+                        Enter You Email to get OTP.
                     </p>
                 </div>
 

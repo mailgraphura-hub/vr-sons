@@ -253,6 +253,7 @@ import { brevo } from '../../config/brevo.config.js';
 
 const Signup = async (req, res) => {
     try {
+      // console.log(req.body);
         const { name, email, password, securityKey } = req.body;
 
         
@@ -320,11 +321,12 @@ const Signup = async (req, res) => {
 
 const Login = async (req, res) => {
     try {
+      // console.log("login me: ",req.body);
         const { password } = req.body;
 
        
         const adminDetail = req.user;
-
+        // console.log("after login req.user ",req.user);
         if (!password) {
             return res.status(400).json(new ApiError(400, "Password is required"));
         }
@@ -483,26 +485,98 @@ const forgetPassword = async (req, res) => {
 
 
 
+// const updateProfile = async (req, res) => {
+//   try {
+//     const { _id } = req.user;
+//     console.log("re.user in updatProfie",req.user);
+//     const { name, email, contact, gender, dob, country, state } = req.body;
+
+//     const userDetail = await adminAuth_Model.findById(_id);
+//     if (!userDetail) {
+//       return res.status(404).json(new ApiResponse(404, null, "Admin not found"));
+//     }
+
+    
+//     let profileImage = userDetail.profileImage; 
+
+//     if (req.file) {
+      
+//       if (userDetail.profileImage) {
+//         await deleteFromCloudinary(userDetail.profileImage);
+//       }
+
+//       profileImage = await new Promise((resolve, reject) => {
+//         const stream = cloudinary.uploader.upload_stream(
+//           { folder: "admin_profiles" },
+//           (err, result) => {
+//             if (err) reject(err);
+//             else resolve(result.secure_url);
+//           }
+//         );
+//         stream.end(req.file.buffer);
+//       });
+//     }
+
+    
+//     const updatedadminDetail = await adminAuth_Model.findByIdAndUpdate(
+//       _id,
+//       {
+//         $set: {
+//           name,
+//           email, 
+//           contact,
+//           gender,
+//           dob,
+//           country,
+//           state,
+//           profileImage 
+//         }
+//       },
+//       { new: true } 
+//     ).select("-password"); 
+
+//     return res.status(200).json(new ApiResponse(200, updatedadminDetail, "Profile Updated Successfully."));
+
+//   } catch (err) {
+//     console.error("Update Error:", err);
+//     return res.status(500).json(new ApiError(500, "Internal Server Error", [{ message: err.message }]));
+//   }
+// };
+
+
+
 const updateProfile = async (req, res) => {
   try {
-    const { _id } = req.user;
+    // 1. Check req.user safe handling
+    if (!req.user) {
+      return res.status(401).json(new ApiResponse(401, null, "Unauthorized access"));
+    }
     
+    // Check karein ki middleware _id bhej raha hai ya id
+    const adminId = req.user._id || req.user.id; 
+    console.log("Admin ID to update:", adminId);
+
     const { name, email, contact, gender, dob, country, state } = req.body;
 
-    const userDetail = await adminAuth_Model.findById(_id);
+    const userDetail = await adminAuth_Model.findById(adminId);
     if (!userDetail) {
       return res.status(404).json(new ApiResponse(404, null, "Admin not found"));
     }
 
-    
     let profileImage = userDetail.profileImage; 
 
+    // 2. Image Upload Logic
     if (req.file) {
-      
+      // Purani image delete karein agar exist karti hai
       if (userDetail.profileImage) {
-        await deleteFromCloudinary(userDetail.profileImage);
+        try {
+          await deleteFromCloudinary(userDetail.profileImage);
+        } catch (error) {
+          console.log("Cloudinary delete error (Non-critical):", error.message);
+        }
       }
 
+      // Nayi image upload stream
       profileImage = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           { folder: "admin_profiles" },
@@ -515,9 +589,9 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    
+    // 3. Update with NEW Mongoose Standard
     const updatedadminDetail = await adminAuth_Model.findByIdAndUpdate(
-      _id,
+      adminId,
       {
         $set: {
           name,
@@ -530,7 +604,7 @@ const updateProfile = async (req, res) => {
           profileImage 
         }
       },
-      { new: true } 
+      { returnDocument: 'after' } // ✅ Warning fixed here
     ).select("-password"); 
 
     return res.status(200).json(new ApiResponse(200, updatedadminDetail, "Profile Updated Successfully."));
@@ -559,14 +633,14 @@ const updateProfile = async (req, res) => {
 
 
 
-
-
 const getMyProfile = async (req, res) => {
+  //  console.log("getMyprofile me hoo.");
+  //       console.log("req.user",req.user);
   try {
     const { _id } = req.user;
-      console.log(_id);
+      // console.log(_id);
     const userDetail = await adminAuth_Model.findById(_id);
-    console.log(userDetail)
+    // console.log(userDetail)
     if (!userDetail) {
       return res.status(404).json(new ApiError(404, "User Profile is not found"));
     }

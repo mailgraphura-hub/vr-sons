@@ -25,14 +25,14 @@ const ResetPassword = () => {
         let err = {};
 
         if (!form.newPassword) 
-            err.newPassword = "Password required hai";
+            err.newPassword = "Password is required";
         else if (form.newPassword.length < 6) 
             err.newPassword = "Minimum 6 characters";
 
         if (!form.confirmPassword) 
-            err.confirmPassword = "Password confirm karo";
+            err.confirmPassword = "Confirm you password";
         else if (form.newPassword !== form.confirmPassword) 
-            err.confirmPassword = "Passwords match nahi karte";
+            err.confirmPassword = "Passwords is not matching";
 
         setErrors(err);
         return Object.keys(err).length === 0;
@@ -84,7 +84,7 @@ const ResetPassword = () => {
                         </label>
                         <input
                             type="password"
-                            placeholder="Naya password daalo"
+                            placeholder="Enter your new Password"
                             value={form.newPassword}
                             onChange={(e) => setForm({ ...form, newPassword: e.target.value })}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
@@ -101,7 +101,7 @@ const ResetPassword = () => {
                         </label>
                         <input
                             type="password"
-                            placeholder="Password confirm karo"
+                            placeholder="Confirm your password"
                             value={form.confirmPassword}
                             onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
