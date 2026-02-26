@@ -67,6 +67,34 @@ const GlobalPortal = () => {
       transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
     },
   };
+  const Counter = ({ value, suffix }) => {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+      let start = 0;
+      const duration = 1500;
+      const step = Math.ceil(value / (duration / 16));
+
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= value) {
+          setCount(value);
+          clearInterval(timer);
+        } else {
+          setCount(start);
+        }
+      }, 16);
+
+      return () => clearInterval(timer);
+    }, [value]);
+
+    return (
+      <span>
+        {count}
+        {suffix}
+      </span>
+    );
+  };
 
   return (
     <>
@@ -245,29 +273,42 @@ const GlobalPortal = () => {
         </section>
 
         {/* ── STATS ── */}
-        <div className="gp-stats">
-          <div className="gp-stats__row">
-            {[
-              { n: "13+", l: "Countries" },
-              { n: "6+", l: "Categories" },
-              { n: "93%", l: "Satisfaction" },
-              { n: "10+", l: "Years Active" },
-            ].map((s, i) => (
-              <motion.div
-                key={i}
-                className="gp-stat"
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07, duration: 0.5 }}
-              >
-                <div className="gp-stat__n">{s.n}</div>
-                <div className="gp-stat__l">{s.l}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+        <section className="bg-black py-20">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-neutral-800">
+              {[
+                { value: 13, suffix: "+", label: "Countries" },
+                { value: 6, suffix: "+", label: "Categories" },
+                { value: 93, suffix: "%", label: "Satisfaction" },
+                { value: 10, suffix: "+", label: "Years Active" },
+              ].map((s, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.6 }}
+                  className="flex flex-col items-center justify-center py-10"
+                >
+                  <h3
+                    className="text-4xl md:text-5xl font-extrabold tracking-tight 
+                         bg-gradient-to-b from-[#e58c6a] to-[#b85c3e] 
+                         bg-clip-text text-transparent"
+                  >
+                    <Counter value={s.value} suffix={s.suffix} />
+                  </h3>
 
+                  <p
+                    className="mt-3 text-xs md:text-sm tracking-[0.25em] 
+                        uppercase text-neutral-400"
+                  >
+                    {s.label}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>c
         {/* ── CATEGORIES ── */}
         <section className="gp-cats">
           <div className="gp-cats__inner">
