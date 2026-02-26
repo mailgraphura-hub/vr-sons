@@ -18,32 +18,30 @@ import Footer from "./components/homePageComp/Footer";
 import Footer2 from "./components/homePageComp/Footer2";
 import AboutUsSection from "./components/homePageComp/Aboutussection";
 import ProductsSection from './components/homePageComp/Productssection';
+import TestimonialSection from "./components/homePageComp/TestimonialSection";
 
 const Homepage = memo(() => {
-  return (<>
-    <Navbar/>
-    <HeroSection/>
-    <ProductsSection/>
-    <ServicesSection/>
-    {/* <WhyChooseUsSection/> */}
-    {/* <DiscoverCategoriesSection/>
+  return (
+    <>
+      <Navbar />
+      <HeroSection />
+      <ProductsSection />
+      <ServicesSection />
+      {/* <WhyChooseUsSection/> */}
+      {/* <DiscoverCategoriesSection/>
     <ExtendedCategoryGrid/> */}
-    {/* <PartnersSection/> */}
-    <StatsSection/>
-    {/* <WhyChooseUsCards/> */}
-    <AboutUsSection/>
-    {/* <CTABanner/> */}
-    <Footer/>
-    
+      {/* <PartnersSection/> */}
+      <StatsSection />
+      <TestimonialSection />
+      {/* <WhyChooseUsCards/> */}
+      <AboutUsSection />
+      {/* <CTABanner/> */}
+      <Footer />
 
-
-
-
-
-   {/* <PropertyPortfolioSection/>
+      {/* <PropertyPortfolioSection/>
     <NextSections/>
     <FinalSections/> */}
-   {/* <CategoryGrid/>
+      {/* <CategoryGrid/>
    <PartnersSection/>
    <StatsSection/>
    <WhyChooseUp/>
@@ -51,11 +49,11 @@ const Homepage = memo(() => {
    <CTABanner/>
    <InquiryForm/>
    <Footer/> */}
-    {/* <MasonrySection/>
+      {/* <MasonrySection/>
     <LogoFaqSection/>
     <Footer/> */}
     </>
-  )
+  );
 })
 
 export default Homepage
