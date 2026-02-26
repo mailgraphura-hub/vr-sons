@@ -14,8 +14,8 @@ import {
 } from "lucide-react";
 
 // IMPORT YOUR COMPONENTS HERE:
-import Navbar from "../../components/homePageComp/Navbar";
-import Footer from "../../components/homePageComp/Footer";
+// import Navbar from "../../components/homePageComp/Navbar";
+// import Footer from "../../components/homePageComp/Footer";
 
 const PRIVACY_CONTENT = [
   {
@@ -89,7 +89,7 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="bg-[#FCFCFC] text-neutral-900 font-sans min-h-screen">
-      <Navbar />
+      {/* <Navbar /> */}
 
       {/* ── HERO SECTION ────────────────────────────────────────── */}
       <section className="relative pt-40 pb-20 px-6 overflow-hidden bg-neutral-900">
@@ -218,7 +218,7 @@ export default function PrivacyPolicy() {
         </div>
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
