@@ -12,10 +12,9 @@ export default function Profile() {
   const { user } = userProfile();
 
   useEffect(() => {
-      const userName = localStorage.getItem("username")
       const access = localStorage.getItem("access")
-      if (!userName && !access) {
-        navigate("/");
+      if (!access) {
+        navigate("/login");
       }
     }, [navigate]);
 

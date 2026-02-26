@@ -29,15 +29,15 @@ export default function Dashboard() {
   const { user } = userProfile();
 
   useEffect(() => {
-    const userName = localStorage.getItem("username");
-    if (!userName) {
-      navigate("/");
-    }
-  }, [navigate]);
+      const access = localStorage.getItem("access")
+      if (!access) {
+        navigate("/login");
+      }
+    }, [navigate]);
 
 
   useEffect(() => {
-    if (!user) return; // condition INSIDE effect
+    if (!user) return; 
 
     fetchDashboardData();
   }, [user]);

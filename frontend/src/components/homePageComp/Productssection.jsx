@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getService } from "../../service/axios";
+import { useNavigate } from "react-router-dom";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ██████  DATA — Replace with API response mapped to this shape
@@ -15,6 +16,7 @@ const SECTION_HEADING = "Discover Our\nProduct Categories";
 
 const ProductCard = ({ product, delay }) => {
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -25,6 +27,7 @@ const ProductCard = ({ product, delay }) => {
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
       className="relative rounded-2xl overflow-hidden cursor-pointer w-full h-full"
+      onClick={() => navigate(`/productsDetail/${product._id}`)}
     >
       {/* ── Image with zoom ── */}
       <motion.img

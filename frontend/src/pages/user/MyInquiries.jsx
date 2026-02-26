@@ -23,12 +23,11 @@ export default function MyInquiries() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const userName = localStorage.getItem("username")
-    const access = localStorage.getItem("access")
-    if (!userName && !access) {
-      navigate("/");
-    }
-  }, [navigate]);
+      const access = localStorage.getItem("access")
+      if (!access) {
+        navigate("/login");
+      }
+    }, [navigate]);
 
 
   const { id } = useParams();
