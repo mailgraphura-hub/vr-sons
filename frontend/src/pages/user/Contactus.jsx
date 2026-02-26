@@ -13,7 +13,7 @@ import Footer from "../../components/homePageComp/Footer";
 
 export default function ContactPage() {
   return (
-    <div className="relative bg-neutral-950 text-white font-sans overflow-x-hidden">
+    <div className="overflow-x-hidden font-sans bg-white text-neutral-900">
 
       <Navbar />
 
@@ -26,21 +26,21 @@ export default function ContactPage() {
           animate={{ scale: 1 }}
           transition={{ duration: 6 }}
           src="https://images.pexels.com/photos/906494/pexels-photo-906494.jpeg"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 object-cover w-full h-full"
           style={{ filter: "brightness(0.3)" }}
           alt=""
         />
 
         {/* Floating Gradient Blobs */}
         <div className="absolute top-10 left-10 w-72 h-72 bg-[#C36A4D]/20 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-10 right-10 w-72 h-72 bg-blue-500/20 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-10 right-10 w-72 h-72 bg-white-500/20 blur-[120px] rounded-full animate-pulse" />
 
         <div className="relative z-10 max-w-4xl px-6">
           <motion.h1
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="text-5xl md:text-7xl font-black leading-tight"
+            className="text-5xl font-black leading-tight md:text-7xl"
           >
             Let’s Build <span className="text-[#C36A4D]">Global Trade</span>
           </motion.h1>
@@ -49,7 +49,7 @@ export default function ContactPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="mt-6 text-white/70 max-w-2xl mx-auto"
+            className="max-w-2xl mx-auto mt-6 text-white/70"
           >
             Connect with VR & Sons for secure, compliant and premium
             international export partnerships.
@@ -58,8 +58,8 @@ export default function ContactPage() {
       </section>
 
       {/* ================= GLASS CONTACT CARDS ================= */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
+      <section className="px-6 py-20">
+        <div className="grid gap-10 mx-auto max-w-7xl md:grid-cols-3">
           {[
             { icon: Phone, title: "Call Us", desc: "+91 98765 43210" },
             { icon: Mail, title: "Email Us", desc: "info@vrsons.com" },
@@ -74,24 +74,24 @@ export default function ContactPage() {
                 <item.icon size={26} className="text-[#C36A4D]" />
               </div>
 
-              <h3 className="font-bold text-lg mb-3">{item.title}</h3>
-              <p className="text-white/60 text-sm">{item.desc}</p>
+              <h3 className="mb-3 text-lg font-bold">{item.title}</h3>
+              <p className="text-sm text-black/60">{item.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* ================= CONTACT FORM ================= */}
-      <section className="py-24 px-6 bg-gradient-to-b from-neutral-950 to-neutral-900">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <section className="px-6 py-24 bg-gradient-to-b from-[#C36A4D]/10 to-blue-500/10">
+        <div className="grid items-center max-w-6xl gap-16 mx-auto md:grid-cols-2">
 
           {/* LEFT CONTENT */}
           <div>
-            <h2 className="text-4xl font-black mb-6">
+            <h2 className="mb-6 text-4xl font-black">
               Send Us <span className="text-[#C36A4D]">Message</span>
             </h2>
 
-            <p className="text-white/60 leading-relaxed mb-8">
+            <p className="mb-8 leading-relaxed text-black/60">
               Our export team responds within 24 hours.
               Let’s discuss pricing, logistics and global supply.
             </p>
@@ -99,7 +99,7 @@ export default function ContactPage() {
             <motion.img
               whileHover={{ scale: 1.05 }}
               src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg"
-              className="rounded-3xl shadow-2xl"
+              className="shadow-2xl rounded-3xl"
               alt=""
             />
           </div>
@@ -109,15 +109,15 @@ export default function ContactPage() {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl space-y-8 shadow-2xl"
+            className="p-10 space-y-8 border shadow-2xl bg-black/5 backdrop-blur-xl border-black/10 rounded-3xl"
           >
             <div className="relative">
               <input
                 type="text"
                 required
-                className="peer w-full bg-transparent border-b border-white/30 py-3 focus:border-[#C36A4D] outline-none"
+                className="peer w-full bg-transparent border-b border-black/30 py-3 focus:border-[#C36A4D] outline-none"
               />
-              <label className="absolute left-0 top-3 text-white/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
+              <label className="absolute left-0 top-3 text-black/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
                 Full Name
               </label>
             </div>
@@ -126,9 +126,9 @@ export default function ContactPage() {
               <input
                 type="email"
                 required
-                className="peer w-full bg-transparent border-b border-white/30 py-3 focus:border-[#C36A4D] outline-none"
+                className="peer w-full bg-transparent border-b border-black/30 py-3 focus:border-[#C36A4D] outline-none"
               />
-              <label className="absolute left-0 top-3 text-white/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
+              <label className="absolute left-0 top-3 text-black/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
                 Email Address
               </label>
             </div>
@@ -137,9 +137,9 @@ export default function ContactPage() {
               <textarea
                 rows="4"
                 required
-                className="peer w-full bg-transparent border-b border-white/30 py-3 focus:border-[#C36A4D] outline-none"
+                className="peer w-full bg-transparent border-b border-black/30 py-3 focus:border-[#C36A4D] outline-none"
               />
-              <label className="absolute left-0 top-3 text-white/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
+              <label className="absolute left-0 top-3 text-black/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
                 Your Message
               </label>
             </div>
@@ -147,7 +147,7 @@ export default function ContactPage() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full py-4 rounded-2xl bg-[#C36A4D] text-white font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:shadow-[0_15px_40px_rgba(195,106,77,0.4)] transition"
+              className="w-full py-4 rounded-2xl bg-[#C36A4D] text-black font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:shadow-[0_15px_40px_rgba(195,106,77,0.4)] transition"
             >
               Send Inquiry
               <ArrowUpRight size={16} />
@@ -157,24 +157,24 @@ export default function ContactPage() {
       </section>
 
       {/* ================= GLOBAL CTA ================= */}
-      <section className="relative py-28 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#C36A4D]/20 to-blue-500/20 blur-[150px]" />
+      <section className="relative overflow-hidden text-center py-28">
+        <div className="overflow-x-hidden font-sans bg-white text-neutral-900" />
 
-        <div className="relative z-10 max-w-4xl mx-auto px-6">
+        <div className="relative z-10 max-w-4xl px-6 mx-auto">
           <Globe className="mx-auto mb-6 text-[#C36A4D]" size={45} />
 
-          <h2 className="text-4xl md:text-6xl font-black mb-6">
+          <h2 className="mb-6 text-4xl font-black md:text-6xl">
             Trade Beyond Borders
           </h2>
 
-          <p className="text-white/60 max-w-2xl mx-auto mb-8">
+          <p className="max-w-2xl mx-auto mb-8 text-black/60">
             VR & Sons ensures structured global supply chains
             and long-term business partnerships.
           </p>
 
           <a
             href="/MainCategory"
-            className="px-12 py-4 rounded-2xl bg-white text-black font-bold uppercase tracking-widest text-xs hover:scale-105 transition"
+            className="px-12 py-4 text-xs font-bold tracking-widest text-white transition bg-black upperwhitecase rounded-2xl hover:scale-105"
           >
             Explore Products
           </a>
