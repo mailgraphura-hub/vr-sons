@@ -218,9 +218,87 @@
 
 
 
+// import { useState, useEffect } from "react";
+// import { getService } from "../../service/axios";
+// import { User } from "lucide-react";
+
+// export default function Header() {
+//   const [admin, setAdmin] = useState(null);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchProfile = async () => {
+//       try {
+//         const response = await getService("/admin/auth/myprofile");
+        
+//         if (response.ok) {
+//           // Backend data access: response.data (Axios) -> data (ApiResponse)
+//           setAdmin(response.data.data);
+//         }
+//       } catch (error) {
+//         console.error("Profile Fetch Error:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchProfile();
+//   }, []);
+
+//   return (
+//     <header className="bg-white border-b border-gray-100 px-8 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm">
+      
+//       {/* Left Side: Branding */}
+//       <div className="flex flex-col">
+//         <h2 className="text-xl font-extrabold text-gray-800 tracking-tight leading-none">
+//           IMPORT<span className="text-blue-600 font-medium tracking-normal ml-1 text-lg">EXPORT</span>
+//         </h2>
+//         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em] mt-1">
+//           Management Console
+//         </span>
+//       </div>
+
+//       {/* Right Side: Profile Info (Non-clickable style) */}
+//       <div className="flex items-center gap-4 p-1 pr-4 rounded-full border border-gray-50 bg-gray-50/50">
+        
+       
+
+//         {/* User Info */}
+//         <div className="flex flex-col text-left">
+//           <span className="text-sm font-bold text-gray-800 leading-none">
+//             {loading ? "Fetching..." : (admin?.name || "Admin")}
+//           </span>
+//           <span className="text-[11px] text-gray-400 font-semibold mt-1 uppercase tracking-wider">
+//             Super Admin
+//           </span>
+//         </div>
+//       </div>
+//     </header>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { useState, useEffect } from "react";
 import { getService } from "../../service/axios";
-import { User } from "lucide-react";
 
 export default function Header() {
   const [admin, setAdmin] = useState(null);
@@ -230,9 +308,7 @@ export default function Header() {
     const fetchProfile = async () => {
       try {
         const response = await getService("/admin/auth/myprofile");
-        
         if (response.ok) {
-          // Backend data access: response.data (Axios) -> data (ApiResponse)
           setAdmin(response.data.data);
         }
       } catch (error) {
@@ -241,54 +317,31 @@ export default function Header() {
         setLoading(false);
       }
     };
-
     fetchProfile();
   }, []);
 
   return (
-    <header className="bg-white border-b border-gray-100 px-8 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm">
+    <header className="bg-white border-b border-gray-100 px-8 py-5 flex justify-end items-center sticky top-0 z-50 shadow-sm">
       
-      {/* Left Side: Branding */}
-      <div className="flex flex-col">
-        <h2 className="text-xl font-extrabold text-gray-800 tracking-tight leading-none">
-          IMPORT<span className="text-blue-600 font-medium tracking-normal ml-1 text-lg">EXPORT</span>
-        </h2>
-        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em] mt-1">
-          Management Console
-        </span>
-      </div>
-
-      {/* Right Side: Profile Info (Non-clickable style) */}
-      <div className="flex items-center gap-4 p-1 pr-4 rounded-full border border-gray-50 bg-gray-50/50">
+      {/* Right Side: Admin Name Only with Subtle Styling */}
+      <div className="flex items-center gap-3">
+        {/* Vertical Divider Line */}
+        <div className="h-8 w-[1px] bg-gray-200 mr-2"></div>
         
-        <div className="relative">
-          {/* Avatar Logic */}
-          <div className="h-11 w-11 rounded-full border-2 border-white ring-2 ring-blue-50 overflow-hidden bg-white flex items-center justify-center shadow-sm">
-            {admin?.profileImage ? (
-              <img 
-                src={admin.profileImage} 
-                alt={admin?.name} 
-                className="h-full w-full object-cover"
-              />
+        <div className="flex flex-col text-right">
+          {/* <span className="text-[11px] font-bold text-blue-600 uppercase tracking-[0.2em] mb-0.5">
+            Logged in as
+          </span> */}
+          <span className="text-base font-bold text-gray-800 capitalize tracking-tight leading-none">
+            {loading ? (
+              <span className="text-gray-300 animate-pulse italic font-medium">Fetching Profile...</span>
             ) : (
-              <User size={22} className="text-blue-400" />
+              admin?.name || "Administrator"
             )}
-          </div>
-          
-          {/* Status Dot */}
-          <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-white rounded-full shadow-sm"></div>
-        </div>
-
-        {/* User Info */}
-        <div className="flex flex-col text-left">
-          <span className="text-sm font-bold text-gray-800 leading-none">
-            {loading ? "Fetching..." : (admin?.name || "Admin")}
-          </span>
-          <span className="text-[11px] text-gray-400 font-semibold mt-1 uppercase tracking-wider">
-            Super Admin
           </span>
         </div>
       </div>
+
     </header>
   );
 }
