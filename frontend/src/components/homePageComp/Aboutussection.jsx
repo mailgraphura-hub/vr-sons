@@ -10,11 +10,7 @@ const ABOUT_DATA = {
   heading: "A Trusted Name\nin Global Trade",
   para1:
     "VR & Sons Import Export is a professionally managed trading company dedicated to exporting high-quality products to international markets. With a strong commitment to reliability, transparency, and long-term business relationships, we aim to bridge the gap between trusted manufacturers and global buyers.",
-  para2:
-    "We specialize in sourcing and exporting premium-grade products that meet international quality standards. Every product undergoes careful selection and quality inspection to ensure consistency, durability, and customer satisfaction.",
-  para3:
-    "Our company operates with a structured product hierarchy and efficient supply chain system, enabling smooth coordination from procurement to final delivery. We focus on building sustainable global partnerships by ensuring timely shipments, secure packaging, and competitive trade practices.",
-
+ 
   mission: {
     label: "Our Mission",
     text: "To deliver high-quality export products to global markets while upholding the highest standards of integrity, transparency, and professionalism — building long-term trade partnerships through consistent quality and smooth international transactions.",
@@ -58,7 +54,7 @@ const MiniFAQ = ({ faq, index }) => {
         className="w-full flex items-center justify-between py-3.5 text-left group"
       >
         <span
-          className="text-sm text-neutral-700 group-hover:text-neutral-400 transition-colors pr-6 leading-snug"
+          className="text-sm font-semibold text-neutral-800 group-hover:text-black transition-colors pr-6 leading-snug"
           style={{ fontFamily: "'DM Sans', sans-serif" }}
         >
           {faq.q}
@@ -66,7 +62,7 @@ const MiniFAQ = ({ faq, index }) => {
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.22 }}
-          className="text-neutral-300 flex-shrink-0 text-lg leading-none"
+          className="text-neutral-600 flex-shrink-0 text-lg leading-none"
         >
           +
         </motion.span>
@@ -171,7 +167,7 @@ const AboutUsSection = () => {
               className="mt-8 pt-7 border-t border-neutral-100"
             >
               <p
-                className="text-[10px] text-neutral-300 tracking-widest uppercase mb-4"
+                className="text-xs text-neutral-700 font-semibold tracking-widest uppercase mb-5"
                 style={{ fontFamily: "'DM Sans', sans-serif" }}
               >
                 Quick Answers
@@ -183,47 +179,45 @@ const AboutUsSection = () => {
           </div>
 
           {/* Right — 4 images, 2x2 grid, hero-style animation */}
-         <div className="relative bg-neutral-50 p-6 grid grid-cols-2 gap-5 overflow-hidden">
+          <div className="relative bg-neutral-50 p-6 grid grid-cols-2 gap-5 overflow-hidden">
+            {ABOUT_DATA.images.map((src, i) => {
+              const isTop = i < 2;
 
-  {ABOUT_DATA.images.map((src, i) => {
-    const isTop = i < 2;
+              return (
+                <div key={i} className="relative">
+                  {/* Animated Premium Frame */}
+                  <motion.div
+                    initial={{ rotate: 0 }}
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="absolute -inset-1 rounded-3xl opacity-40 blur-xl bg-gradient-to-tr from-neutral-300 via-neutral-200 to-neutral-400"
+                  />
 
-    return (
-      <div key={i} className="relative">
-
-        {/* Animated Premium Frame */}
-        <motion.div
-          initial={{ rotate: 0 }}
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          className="absolute -inset-1 rounded-3xl opacity-40 blur-xl bg-gradient-to-tr from-neutral-300 via-neutral-200 to-neutral-400"
-        />
-
-        {/* Image Card */}
-        <motion.div
-          initial={{
-            y: isTop ? -60 : 60,
-            opacity: 0,
-          }}
-          whileInView={{
-            y: 0,
-            opacity: 1,
-          }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 0.8,
-            delay: 0.1 + i * 0.12,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          whileHover={{
-            y: isTop ? -8 : 8,
-            scale: 1.04,
-          }}
-          className="
+                  {/* Image Card */}
+                  <motion.div
+                    initial={{
+                      y: isTop ? -60 : 60,
+                      opacity: 0,
+                    }}
+                    whileInView={{
+                      y: 0,
+                      opacity: 1,
+                    }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 0.8,
+                      delay: 0.1 + i * 0.12,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    whileHover={{
+                      y: isTop ? -8 : 8,
+                      scale: 1.04,
+                    }}
+                    className="
             relative
             rounded-2xl
             overflow-hidden
@@ -233,23 +227,21 @@ const AboutUsSection = () => {
             duration-300
             cursor-pointer
           "
-          style={{ height: "220px" }}
-        >
-          {/* Subtle Glass Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10 pointer-events-none" />
+                    style={{ height: "220px" }}
+                  >
+                    {/* Subtle Glass Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10 pointer-events-none" />
 
-          <img
-            src={src}
-            alt={`VR & Sons export product ${i + 1}`}
-            className="w-full h-full object-cover"
-          />
-        </motion.div>
-
-      </div>
-    );
-  })}
-
-</div>
+                    <img
+                      src={src}
+                      alt={`VR & Sons export product ${i + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* ══════════════════════════════════════════════

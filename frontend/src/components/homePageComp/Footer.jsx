@@ -1,179 +1,169 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Globe, ShieldCheck } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Globe,
+  ShieldCheck,
+  Linkedin,
+  Instagram,
+  Facebook,
+} from "lucide-react";
 
 import logo from "../../assets/logo/NavLogo.svg";
 
-const COMPANY_DATA = {
-  name: "VR & Sons",
-  tagline: "Import Export",
-  description: "Trusted exporters of high-quality Food Products, Spices, Agricultural Goods & Bricks to 13+ countries worldwide.",
-  highlights: [
-    { icon: Globe, text: "Serving 13+ Countries Globally" },
-    { icon: ShieldCheck, text: "Compliance & Export Certified" },
-  ],
-  contact: {
-    phone: "+91 98254 74047",
-    email: "support@vrandsons.com",
-    address: "Kamrej, Surat, Gujarat, India",
-  }
-};
-
-const FOOTER_LINKS = {
-  quickLinks: [
-    { label: "Home", href: "/" },
-    { label: "Our Products", href: "/MainCategory" },
-    { label: "About Us", href: "/AboutUs" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "/ContactUs" },
-  ],
-  categories: [
-    { label: "Food Products", href: "/MainCategory" },
-    { label: "Spices", href: "/MainCategory" },
-    { label: "Agricultural Goods", href: "/MainCategory" },
-    { label: "Bricks", href: "/MainCategory" },
-  ],
-  legal: [
-    { label: "Terms of Service", href: "/Term_Services" },
-    { label: "Privacy Policy", href: "/PrivacyPolicy" },
-  ]
-};
-
 const Footer = () => {
   return (
-    <footer className="bg-[#f4f1ec] px-4 md:px-8 pt-10 pb-6 font-sans">
-      {/* Mobile: px-6 | Desktop: px-14 */}
-      <div className="bg-white rounded-3xl shadow-sm border border-neutral-100 px-6 md:px-14 py-10 md:py-12">
-        
-        {/* ── Top Section ── */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-10 pb-12 border-b border-neutral-100">
-          
-          {/* 1. Brand & Description */}
+    <footer className="bg-gradient-to-b from-[#f4f1ec] to-[#e9e4dc] px-4 md:px-10 pt-16 pb-12">
+      <div className="bg-white rounded-3xl shadow-lg border border-neutral-200 px-8 md:px-16 py-12">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-8 border-b border-neutral-200">
+          {/* Brand Section */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="flex flex-col items-center md:items-start text-center md:text-left"
+            className="space-y-6"
           >
-            {/* Logo: Mobile pe center, Desktop pe ml-14/left */}
-            <div className="mb-6 md:ml-14">
-                <img 
-                  src={logo} 
-                  alt={COMPANY_DATA.name} 
-                  className="h-16 w-auto object-contain" 
-                />
-            </div>
-            
-            <p className="text-sm text-neutral-500 mt-2 leading-relaxed max-w-xs">
-              {COMPANY_DATA.description}
+            <img
+              src={logo}
+              alt="VR & Sons Logo"
+              className="h-20 md:h-24 w-auto object-contain"
+            />
+
+            <p className="text-sm text-neutral-700 leading-relaxed max-w-xs">
+              Leading exporter of premium Food Products, Spices, Agricultural
+              Goods & Bricks serving 13+ countries with certified compliance and
+              dependable logistics.
             </p>
 
-            <div className="w-full flex flex-col items-center md:items-start">
-                {COMPANY_DATA.highlights.map((highlight, index) => {
-                  const Icon = highlight.icon;
-                  return (
-                    <div key={index} className="flex items-center gap-2 mt-4 text-sm text-neutral-600">
-                      <Icon size={16} />
-                      <span>{highlight.text}</span>
-                    </div>
-                  );
-                })}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-sm text-neutral-800">
+                <Globe size={16} />
+                Serving 13+ Countries Worldwide
+              </div>
+              <div className="flex items-center gap-2 text-sm text-neutral-800">
+                <ShieldCheck size={16} />
+                100% Compliance & Export Certified
+              </div>
             </div>
           </motion.div>
 
-          {/* 2. Quick Links */}
-          <motion.div
-            className="text-center md:text-left"
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-sm font-semibold text-neutral-900 mb-4">
+          {/* Quick Links */}
+          <div className="md:ml-6">
+            <h3 className="text-sm font-semibold text-neutral-900 mb-5 tracking-wide">
               Quick Links
             </h3>
-            <ul className="space-y-3 md:space-y-2 text-sm text-neutral-500">
-              {FOOTER_LINKS.quickLinks.map((link) => (
+            <ul className="space-y-3 text-sm text-neutral-700">
+              {[
+                { label: "Home", href: "/" },
+                { label: "Our Products", href: "/MainCategory" },
+                { label: "About Us", href: "/AboutUs" },
+                { label: "Blog", href: "/blog" },
+                { label: "Contact", href: "/ContactUs" },
+              ].map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="hover:text-black transition-colors duration-300">
+                  <a
+                    href={link.href}
+                    className="hover:text-black hover:underline underline-offset-4 transition"
+                  >
                     {link.label}
                   </a>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          {/* 3. Export Categories */}
-          <motion.div
-            className="text-center md:text-left"
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-sm font-semibold text-neutral-900 mb-4">
+          {/* Export Categories */}
+          <div>
+            <h3 className="text-sm font-semibold text-neutral-900 mb-5 tracking-wide">
               Export Categories
             </h3>
-            <ul className="space-y-3 md:space-y-2 text-sm text-neutral-500">
-              {FOOTER_LINKS.categories.map((category) => (
-                <li key={category.label}>
-                  <a href={category.href} className="hover:text-black transition-colors duration-300">
-                    {category.label}
-                  </a>
-                </li>
-              ))}
+            <ul className="space-y-3 text-sm text-neutral-700">
+              {["Food Products", "Spices", "Agricultural Goods", "Bricks"].map(
+                (item) => (
+                  <li key={item}>
+                    <a
+                      href="/MainCategory"
+                      className="hover:text-black hover:underline underline-offset-4 transition"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ),
+              )}
             </ul>
-          </motion.div>
+          </div>
 
-          {/* 4. Contact Information */}
-          <motion.div
-            className="text-center md:text-left"
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-sm font-semibold text-neutral-900 mb-4">
+          {/* Contact Section */}
+          <div>
+            <h3 className="text-sm font-semibold text-neutral-900 mb-5 tracking-wide">
               Contact Information
             </h3>
-            <div className="space-y-4 md:space-y-3 text-sm text-neutral-500 flex flex-col items-center md:items-start">
-              <div className="flex items-start gap-2 group">
-                <Phone size={16} className="mt-1 flex-shrink-0" />
-                <a href={`tel:${COMPANY_DATA.contact.phone.replace(/[^+\d]/g, '')}`} className="group-hover:text-black transition-colors">
-                  {COMPANY_DATA.contact.phone}
+
+            <div className="space-y-4 text-sm text-neutral-700">
+              <div className="flex gap-2 items-start">
+                <Phone size={16} className="mt-1" />
+                <a href="tel:+919825474047" className="hover:text-black">
+                  +91 98254 74047
                 </a>
               </div>
-              <div className="flex items-start gap-2 group">
-                <Mail size={16} className="mt-1 flex-shrink-0" />
-                <a href={`mailto:${COMPANY_DATA.contact.email}`} className="group-hover:text-black transition-colors">
-                  {COMPANY_DATA.contact.email}
+
+              <div className="flex gap-2 items-start">
+                <Mail size={16} className="mt-1" />
+                <a
+                  href="mailto:support@vrandsons.com"
+                  className="hover:text-black"
+                >
+                  support@vrandsons.com
                 </a>
               </div>
-              <div className="flex items-start gap-2 justify-center md:justify-start">
-                <MapPin size={16} className="mt-1 flex-shrink-0" />
-                <span className="leading-relaxed">{COMPANY_DATA.contact.address}</span>
+
+              <div className="flex gap-2 items-start">
+                <MapPin size={16} className="mt-1" />
+                <span>Kamrej, Surat, Gujarat, India</span>
               </div>
             </div>
-          </motion.div>
 
-        </div>
-
-        {/* ── Bottom Bar ── */}
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 md:pt-6 gap-6 md:gap-4">
-          <p className="text-xs text-neutral-400 text-center md:text-left">
-            © {new Date().getFullYear()} {COMPANY_DATA.name}. All rights reserved.
-          </p>
-
-          <div className="flex gap-6 text-xs text-neutral-400">
-            {FOOTER_LINKS.legal.map((link) => (
-              <a key={link.label} href={link.href} className="hover:text-neutral-700 transition-colors">
-                {link.label}
-              </a>
-            ))}
+            {/* Social Icons */}
+            <div className="flex gap-4 mt-6">
+              {[Linkedin, Instagram, Facebook].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="w-9 h-9 flex items-center justify-center rounded-full border border-neutral-300 text-neutral-700 hover:bg-black hover:text-white hover:scale-105 transition-all duration-300"
+                >
+                  <Icon size={16} />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
-        
+
+        {/* Bottom Strip */}
+        <div className="mt-6 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm font-semibold text-neutral-900">
+            © {new Date().getFullYear()} VR & Sons. Built for global trade
+            excellence.
+          </p>
+
+          <div className="flex gap-8 text-sm font-semibold text-neutral-900">
+            <a
+              href="/Term_Services"
+              className="hover:underline underline-offset-4"
+            >
+              Terms of Service
+            </a>
+            <a
+              href="/PrivacyPolicy"
+              className="hover:underline underline-offset-4"
+            >
+              Privacy Policy
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );
