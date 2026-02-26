@@ -25,7 +25,8 @@ const upload = multer({
 router.post("/signup", Signup);
 router.post("/login", adminPresent, Login);
 // router.patch('/forgetpassword', forgetPassword);
-router.put('/updateProfile', requiredLogin, upload.single("profileImage"), updateProfile);
+//router.put('/updateProfile', requiredLogin, upload.single("profileImage"), updateProfile);
+router.put('/updateProfile', requiredLogin, updateProfile);
 router.get("/myprofile", getMyProfile);
 router.post('/signupOtp', duplicateEmail, signupOtp);
 //router.post("/forgetpassword", adminPresent, forgetPasswordOtp);
