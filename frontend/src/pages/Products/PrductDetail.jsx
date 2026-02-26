@@ -28,10 +28,10 @@ const parseSpecifications = (specStr = "") => {
 const formatDate = (iso) =>
   iso
     ? new Date(iso).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })
     : "";
 
 export default function ProductDetail() {
@@ -39,7 +39,7 @@ export default function ProductDetail() {
 
   const { user } = userProfile();
 
-  const navigate = useNavigate();
+  const navigate= useNavigate();
 
   const [product, setProduct] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
@@ -49,7 +49,9 @@ export default function ProductDetail() {
     if (!id) return;
 
     (async () => {
-      const apiResponse = await getService(`/customer/product/product/${id}`);
+      const apiResponse = await getService(
+        `/customer/product/product/${id}`
+      );
 
       if (!apiResponse.ok) {
         console.log(apiResponse.message);
@@ -67,6 +69,7 @@ export default function ProductDetail() {
 
   return (
     <div className="bg-[#0D0D0D] min-h-screen text-white font-sans">
+
       {/* ── BREADCRUMB NAV ───────────────────────────────────── */}
       <div className="sticky top-0 z-50 bg-[#0D0D0D]/95 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.35em] text-white/25">
@@ -84,8 +87,10 @@ export default function ProductDetail() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-2 gap-16">
+
         {/* LEFT SIDE */}
         <div className="flex flex-col gap-4">
+
           <motion.div
             key={activeImage}
             initial={{ opacity: 0, scale: 1.03 }}
@@ -131,10 +136,9 @@ export default function ProductDetail() {
                   key={i}
                   onClick={() => setActiveImage(i)}
                   className={`relative flex-1 aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300
-                    ${
-                      activeImage === i
-                        ? "border-[#C36A4D] shadow-[0_0_20px_rgba(195,106,77,0.3)]"
-                        : "border-white/5 opacity-40 hover:opacity-70"
+                    ${activeImage === i
+                      ? "border-[#C36A4D] shadow-[0_0_20px_rgba(195,106,77,0.3)]"
+                      : "border-white/5 opacity-40 hover:opacity-70"
                     }`}
                 >
                   <img
@@ -150,6 +154,7 @@ export default function ProductDetail() {
 
         {/* RIGHT SIDE */}
         <div className="flex flex-col gap-8">
+
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-5">
               <span className="flex items-center gap-1.5 text-[9px] font-mono text-white/30 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
@@ -165,10 +170,8 @@ export default function ProductDetail() {
               </span>
             </div>
 
-            <h1
-              className="text-white font-black uppercase tracking-tighter leading-[0.85] mb-5"
-              style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
-            >
+            <h1 className="text-white font-black uppercase tracking-tighter leading-[0.85] mb-5"
+              style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}>
               {product.name}
             </h1>
 
@@ -239,25 +242,22 @@ export default function ProductDetail() {
                 if (!user) {
                   navigate("/login");
                 }
-                setShowInquiry(true);
+                setShowInquiry(true)
               }}
-              className="flex-1 px-6 py-4 rounded-2xl bg-[#C36A4D] text-white text-[11px] font-black uppercase tracking-[0.35em] hover:bg-[#d4785a] transition-all duration-300 hover:shadow-[0_15px_40px_rgba(195,106,77,0.35)]"
-            >
+              className="flex-1 px-6 py-4 rounded-2xl bg-[#C36A4D] text-white text-[11px] font-black uppercase tracking-[0.35em] hover:bg-[#d4785a] transition-all duration-300 hover:shadow-[0_15px_40px_rgba(195,106,77,0.35)]">
               Send Inquiry
             </button>
 
-            {/* <button className="flex-1 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white/60 text-[11px] font-black uppercase tracking-[0.35em] hover:bg-white/10 hover:text-white transition-all duration-300">
+            <button className="flex-1 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white/60 text-[11px] font-black uppercase tracking-[0.35em] hover:bg-white/10 hover:text-white transition-all duration-300">
               Download Spec Sheet
-            </button> */}
+            </button>
           </motion.div>
 
-          {showInquiry && (
-            <InquiryForm
-              productName={product.name}
-              show={showInquiry}
-              onClose={() => setShowInquiry(false)}
-            />
-          )}
+          {showInquiry && <InquiryForm
+            productName={product.name}
+            show={showInquiry}
+            onClose={() => setShowInquiry(false)}
+          />}
         </div>
       </div>
     </div>
