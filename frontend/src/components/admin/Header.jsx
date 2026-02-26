@@ -1,318 +1,79 @@
-// import { useNavigate } from "react-router-dom";
-// import { postService } from "../../service/axios";
-// import { Toaster, toast } from "react-hot-toast";
-
-// export default function Header() {
-
-//   const navigate = useNavigate();
-//   const signout = async () => {
-//     const apiResponse = await postService("/signout");
-
-//     if (!apiResponse.ok) {
-//       console.log(apiResponse.message)
-//       toast.error("Signout Failed");
-//       return
-//     }
-
-//     toast.success("Signout");
-//     localStorage.clear();
-
-//     setTimeout(() => {
-//       navigate("/")
-//     }, 1000)
-//   }
-
-//   return (
-//     <header className="bg-white shadow px-6 py-4 flex justify-between">
-//       <Toaster />
-//       <h2 className="font-semibold text-gray-700">
-//         Import Export Admin
-//       </h2>
-
-//       <button
-//         onClick={signout}
-//         className="text-red-600 font-medium"
-//       >
-//         Logout
-//       </button>
-//     </header>
-//   );
-// }
-
-
-
-
-
-
-
-// import { useNavigate } from "react-router-dom";
-// import { postService } from "../../service/axios";
-// import { Toaster, toast } from "react-hot-toast";
-
-// export default function Header() {
-
-//   const navigate = useNavigate();
-//   const signout = async () => {
-//     const apiResponse = await postService("/signout");
-
-//     if (!apiResponse.ok) {
-//       console.log(apiResponse.message)
-//       toast.error("Signout Failed");
-//       return
-//     }
-
-//     toast.success("Signout");
-//     localStorage.clear();
-
-//     setTimeout(() => {
-//       navigate("/")
-//     }, 1000)
-//   }
-
-//   return (
-//     <header className="bg-white shadow px-6 py-4 flex justify-between">
-//       <Toaster />
-//       <h2 className="font-semibold text-gray-700">
-//         Import Export Admin
-//       </h2>
-
-//       <button
-//         onClick={signout}
-//         className="text-red-600 font-medium"
-//       >
-//         Logout
-//       </button>
-//     </header>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useState, useEffect } from "react";
-// import { getService } from "../../service/axios";
-// import { User, ChevronDown } from "lucide-react";
-
-// export default function Header() {
-//   const [admin, setAdmin] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchProfile = async () => {
-//       try {
-//         const response = await getService("/myprofile");
-//         // Backend handle: new ApiResponse(200, userDetail, "Successful")
-//         if (response.status === 200) {
-//           setAdmin(response.data);
-//         }
-//       } catch (error) {
-//         console.error("Profile Fetch Error:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchProfile();
-//   }, []);
-
-//   return (
-//     <header className="bg-white border-b border-gray-100 px-8 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm">
-      
-//       {/* Left: Branding */}
-//       <div className="flex flex-col">
-//         <h2 className="text-xl font-extrabold text-gray-800 tracking-tight leading-none">
-//           IMPORT<span className="text-blue-600 font-medium tracking-normal ml-1 text-lg">EXPORT</span>
-//         </h2>
-//         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em] mt-1">
-//           Management Console
-//         </span>
-//       </div>
-
-//       {/* Right: User Profile Only */}
-//       <div className="flex items-center gap-4 group cursor-pointer hover:bg-gray-50 p-1 pr-3 rounded-full transition-all duration-200 border border-transparent hover:border-gray-100">
-        
-//         <div className="relative">
-//           {/* Profile Image Logic */}
-//           <div className="h-11 w-11 rounded-full border-2 border-white ring-2 ring-blue-50 overflow-hidden bg-blue-50 flex items-center justify-center shadow-sm">
-//             {admin?.profileImage ? (
-//               <img 
-//                 src={admin.profileImage} 
-//                 alt={admin?.name} 
-//                 className="h-full w-full object-cover"
-//               />
-//             ) : (
-//               <User size={22} className="text-blue-400" />
-//             )}
-//           </div>
-          
-//           {/* Green Status Indicator */}
-//           <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-white rounded-full shadow-sm"></div>
-//         </div>
-
-//         <div className="flex flex-col text-left">
-//           <span className="text-sm font-bold text-gray-800 leading-none">
-//             {loading ? "Fetching..." : admin?.name}
-//           </span>
-//           <span className="text-[11px] text-gray-400 font-semibold mt-0.5">
-//             Admin Account
-//           </span>
-//         </div>
-
-//         <ChevronDown size={16} className="text-gray-300 group-hover:text-blue-500 transition-colors ml-1" />
-//       </div>
-//     </header>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useState, useEffect } from "react";
-// import { getService } from "../../service/axios";
-// import { User } from "lucide-react";
-
-// export default function Header() {
-//   const [admin, setAdmin] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchProfile = async () => {
-//       try {
-//         const response = await getService("/admin/auth/myprofile");
-        
-//         if (response.ok) {
-//           // Backend data access: response.data (Axios) -> data (ApiResponse)
-//           setAdmin(response.data.data);
-//         }
-//       } catch (error) {
-//         console.error("Profile Fetch Error:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchProfile();
-//   }, []);
-
-//   return (
-//     <header className="bg-white border-b border-gray-100 px-8 py-4 flex justify-between items-center sticky top-0 z-10 shadow-sm">
-      
-//       {/* Left Side: Branding */}
-//       <div className="flex flex-col">
-//         <h2 className="text-xl font-extrabold text-gray-800 tracking-tight leading-none">
-//           IMPORT<span className="text-blue-600 font-medium tracking-normal ml-1 text-lg">EXPORT</span>
-//         </h2>
-//         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em] mt-1">
-//           Management Console
-//         </span>
-//       </div>
-
-//       {/* Right Side: Profile Info (Non-clickable style) */}
-//       <div className="flex items-center gap-4 p-1 pr-4 rounded-full border border-gray-50 bg-gray-50/50">
-        
-       
-
-//         {/* User Info */}
-//         <div className="flex flex-col text-left">
-//           <span className="text-sm font-bold text-gray-800 leading-none">
-//             {loading ? "Fetching..." : (admin?.name || "Admin")}
-//           </span>
-//           <span className="text-[11px] text-gray-400 font-semibold mt-1 uppercase tracking-wider">
-//             Super Admin
-//           </span>
-//         </div>
-//       </div>
-//     </header>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { useState, useEffect } from "react";
+import { useLocation, Link } from "react-router-dom"; 
+import { Bell, UserCircle, ChevronRight } from "lucide-react"; 
 import { getService } from "../../service/axios";
 
 export default function Header() {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
+  const renderBreadcrumbs = () => {
+    const path = location.pathname;
+    if (path.includes("dashboard")) return "Dashboard";
+
+    // Path segments nikalna
+    const segments = path.split("/").filter((p) => p !== "" && p !== "admin");
+    
+    // Mapping for clean display names
+    const nameMap = {
+      "categories": "Categories",
+      "sub-categories": "Categories", // Main heading for sub-cats
+      "products": "Products",
+      "promotion": "Promotion",
+      "settings": "Settings",
+      "managPromotion": "Promotion Manager",
+      "blogs": "Blogs",
+      "profile": "Profile"
+    };
+
+    const breadcrumbs = [];
+
+    // Logic: Agar sub-category ya specific page hai, toh parent bhi add karo
+    if (path.includes("sub-categories")) {
+      breadcrumbs.push("Categories", "Sub Categories");
+    } else if (path.includes("categories")) {
+      breadcrumbs.push("Categories", "All Categories");
+    } else if (path.includes("products")) {
+      breadcrumbs.push("Products", "Management");
+    } else if (path.includes("promotion/blogs")) {
+      breadcrumbs.push("Promotion", "Blogs");
+    } else if (path.includes("promotion/managPromotion")) {
+      breadcrumbs.push("Promotion", "Manager");
+    } else if (path.includes("settings/profile")) {
+      breadcrumbs.push("Settings", "Profile");
+    } else {
+      // Fallback for single levels like /admin/inquiries
+      segments.forEach(s => breadcrumbs.push(nameMap[s] || s.charAt(0).toUpperCase() + s.slice(1)));
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        {breadcrumbs.map((crumb, index) => {
+          const isLast = index === breadcrumbs.length - 1;
+          return (
+            <div key={index} className="flex items-center gap-2">
+              <span className={`${isLast ? "text-gray-800 font-bold" : "text-gray-400 font-medium"}`}>
+                {crumb}
+              </span>
+              {!isLast && <ChevronRight size={14} className="text-gray-300" />}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await getService("/admin/auth/myprofile");
-        if (response.ok) {
+        if (response?.data?.data) {
           setAdmin(response.data.data);
         }
       } catch (error) {
         console.error("Profile Fetch Error:", error);
+        setAdmin(null);
       } finally {
         setLoading(false);
       }
@@ -321,27 +82,48 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-white border-b border-gray-100 px-8 py-5 flex justify-end items-center sticky top-0 z-50 shadow-sm">
-      
-      {/* Right Side: Admin Name Only with Subtle Styling */}
-      <div className="flex items-center gap-3">
-        {/* Vertical Divider Line */}
-        <div className="h-8 w-[1px] bg-gray-200 mr-2"></div>
-        
-        <div className="flex flex-col text-right">
-          {/* <span className="text-[11px] font-bold text-blue-600 uppercase tracking-[0.2em] mb-0.5">
-            Logged in as
-          </span> */}
-          <span className="text-base font-bold text-gray-800 capitalize tracking-tight leading-none">
-            {loading ? (
-              <span className="text-gray-300 animate-pulse italic font-medium">Fetching Profile...</span>
-            ) : (
-              admin?.name || "Administrator"
-            )}
-          </span>
-        </div>
+    <header className="bg-white border-b border-gray-100 px-8 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+      <div className="flex items-center">
+        <h2 className="text-xl tracking-tight">
+          {renderBreadcrumbs()}
+        </h2>
       </div>
 
+      <div className="flex items-center gap-5">
+        <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-all">
+          <Bell size={20} />
+          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
+        </button>
+
+        <div className="h-8 w-[1px] bg-gray-200"></div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex flex-col text-right hidden sm:flex">
+            {loading ? (
+              <div className="h-4 w-20 bg-gray-100 animate-pulse rounded"></div>
+            ) : (
+              <>
+                <span className="text-sm font-bold text-gray-800 capitalize leading-none">
+                  {admin?.name || "Guest Admin"}
+                </span>
+                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mt-1">
+                  {admin ? "Administrator" : "Not Logged In"}
+                </span>
+              </>
+            )}
+          </div>
+
+          <Link to="/admin/settings/profile" className="h-10 w-10 rounded-full overflow-hidden bg-gray-50 border border-gray-200 shadow-sm flex items-center justify-center hover:ring-2 hover:ring-gray-100 transition-all">
+            {loading ? (
+              <div className="w-full h-full animate-pulse bg-gray-200" />
+            ) : admin?.profileImage ? (
+              <img src={admin.profileImage} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <UserCircle size={28} className="text-gray-400" />
+            )}
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }

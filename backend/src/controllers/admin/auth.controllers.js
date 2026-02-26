@@ -255,20 +255,20 @@ const Signup = async (req, res) => {
     try {
         const { name, email, password, securityKey } = req.body;
 
-        // ✅ Validation
+        
         if (!name || !email || !password || !securityKey) {
             return res.status(400).json(new ApiError(400, "Sab fields required hain"));
         }
 
-        // ✅ Security key check
+        
         if (securityKey !== process.env.adminKey) {
             return res.status(401).json(new ApiError(401, "Wrong Security Key"));
         }
 
-        // ✅ Password encrypt
+        
         const hashPassword = await passwordEncrypt(password);
 
-        // ✅ new keyword add kiya
+
         const adminDetail = new adminAuth_Model({
             name,
             email,
@@ -277,7 +277,7 @@ const Signup = async (req, res) => {
 
         await adminDetail.save();
 
-        // ✅ Sensitive fields hide karo
+        
         adminDetail.password = undefined;
 
         await cookiesForUser(res, adminDetail);
@@ -566,7 +566,7 @@ const getMyProfile = async (req, res) => {
     const { _id } = req.user;
       console.log(_id);
     const userDetail = await adminAuth_Model.findById(_id);
-
+    console.log(userDetail)
     if (!userDetail) {
       return res.status(404).json(new ApiError(404, "User Profile is not found"));
     }
