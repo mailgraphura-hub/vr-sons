@@ -1,30 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import { getService } from "../../service/axios";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/homePageComp/Navbar";
-import Footer from "../../components/homePageComp/Footer";
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
+import { getService } from '../../service/axios';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/homePageComp/Navbar';
+import Footer from '../../components/homePageComp/Footer';
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1494412651409-8963ce7935a7?auto=format&fit=crop&q=80&w=2000";
-const TYPING_TEXT =
-  "Optimizing the flow of international trade with precision.";
+const HERO_IMAGE = "https://images.unsplash.com/photo-1494412651409-8963ce7935a7?auto=format&fit=crop&q=80&w=2000";
+const TYPING_TEXT = "Optimizing the flow of international trade with precision.";
 
 const GlobalPortal = () => {
   const [categories, setCategory] = useState([]);
   const [hoveredId, setHoveredId] = useState(null);
-  const [displayText, setDisplayText] = useState("");
+  const [displayText, setDisplayText] = useState('');
   const navigate = useNavigate();
 
   // ── API (unchanged) ───────────────────────────────────────────────────────
   useEffect(() => {
     (async () => {
       const apiResponse = await getService("/customer/product/category");
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return;
-      }
+      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
       setCategory(apiResponse.data.data.categoryList);
     })();
   }, []);
@@ -42,30 +37,19 @@ const GlobalPortal = () => {
 
   const heroContainer = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } }
   };
   const fadeUp = {
     hidden: { opacity: 0, y: 24 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }
   };
   const cardContainer = {
     hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
   const cardItem = {
     hidden: { opacity: 0, y: 28 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-    },
+    show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }
   };
 
   return (
@@ -94,7 +78,7 @@ const GlobalPortal = () => {
         .gp-hero__tag {
           display: inline-block; font-size: 11px; font-weight: 500;
           letter-spacing: 0.2em; text-transform: uppercase;
-          color: #C36A4D; margin-bottom: 20px;
+          color: #7EB3FF; margin-bottom: 20px;
         }
         .gp-hero h1 {
           font-family: 'Sora', sans-serif;
@@ -102,9 +86,9 @@ const GlobalPortal = () => {
           font-weight: 800; line-height: 1.05;
           color: #fff; letter-spacing: -0.03em; margin: 0 0 18px;
         }
-        .gp-hero h1 span { color: #C36A4D; }
+        .gp-hero h1 span { color: #7EB3FF; }
         .gp-hero__sub { font-size: 15px; font-weight: 300; color: #6d849e; min-height: 1.5em; }
-        .gp-cursor { color: #C36A4D; animation: blink 1s step-end infinite; }
+        .gp-cursor { color: #7EB3FF; animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
         /* ── STATS ── */
@@ -125,7 +109,7 @@ const GlobalPortal = () => {
         .gp-cats { padding: 72px 24px 96px; }
         .gp-cats__inner { max-width: 1160px; margin: 0 auto; }
 
-        .gp-sec-label { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #C36A4D; margin-bottom: 8px; }
+        .gp-sec-label { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #7EB3FF; margin-bottom: 8px; }
         .gp-sec-title {
           font-family: 'Sora', sans-serif; font-size: clamp(24px, 4vw, 36px);
           font-weight: 700; color: #111; letter-spacing: -0.02em; margin: 0 0 40px;
@@ -195,11 +179,11 @@ const GlobalPortal = () => {
           border: 1.5px solid rgba(255,255,255,0.25); color: #fff;
           transition: all 0.25s;
         }
-        .gp-card:hover .gp-card__arrow { background: #C36A4D; border-color: #C36A4D; transform: translate(2px, -2px); }
+        .gp-card:hover .gp-card__arrow { background: #7EB3FF; border-color: #7EB3FF; transform: translate(2px, -2px); }
 
         /* ── LOADING ── */
         .gp-loading { grid-column: 1/-1; padding: 60px 0; display: flex; justify-content: center; gap: 6px; }
-        .gp-dot { width: 7px; height: 7px; border-radius: 50%; background: #C36A4D; animation: bdot 1.2s ease-in-out infinite; }
+        .gp-dot { width: 7px; height: 7px; border-radius: 50%; background: #7EB3FF; animation: bdot 1.2s ease-in-out infinite; }
         .gp-dot:nth-child(2) { animation-delay: 0.2s; }
         .gp-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes bdot { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-8px);opacity:1} }
@@ -216,30 +200,17 @@ const GlobalPortal = () => {
 
         {/* ── HERO ── */}
         <section className="gp-hero">
-          <img
-            className="gp-hero__bg"
-            src={HERO_IMAGE}
-            alt="Global Trade"
-            loading="lazy"
-          />
+          <img className="gp-hero__bg" src={HERO_IMAGE} alt="Global Trade" loading="lazy" />
           <div className="gp-hero__fade" />
-          <motion.div
-            className="gp-hero__content"
-            variants={heroContainer}
-            initial="hidden"
-            animate="visible"
-          >
+          <motion.div className="gp-hero__content" variants={heroContainer} initial="hidden" animate="visible">
             <motion.span variants={fadeUp} className="gp-hero__tag">
               VR &amp; Sons Import Export
             </motion.span>
             <motion.h1 variants={fadeUp}>
-              Direct. <span className="text-[#C36A4D]">Global.</span>
-              <br />
-              Reliable.
+              Direct. <span>Global.</span><br />Reliable.
             </motion.h1>
             <motion.p variants={fadeUp} className="gp-hero__sub">
-              {displayText}
-              <span className="gp-cursor">|</span>
+              {displayText}<span className="gp-cursor">|</span>
             </motion.p>
           </motion.div>
         </section>
@@ -248,19 +219,14 @@ const GlobalPortal = () => {
         <div className="gp-stats">
           <div className="gp-stats__row">
             {[
-              { n: "13+", l: "Countries" },
-              { n: "6+", l: "Categories" },
-              { n: "93%", l: "Satisfaction" },
-              { n: "10+", l: "Years Active" },
+              { n: '13+', l: 'Countries' },
+              { n: '6+',  l: 'Categories' },
+              { n: '93%', l: 'Satisfaction' },
+              { n: '10+', l: 'Years Active' },
             ].map((s, i) => (
-              <motion.div
-                key={i}
-                className="gp-stat"
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07, duration: 0.5 }}
-              >
+              <motion.div key={i} className="gp-stat"
+                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.07, duration: 0.5 }}>
                 <div className="gp-stat__n">{s.n}</div>
                 <div className="gp-stat__l">{s.l}</div>
               </motion.div>
@@ -272,29 +238,19 @@ const GlobalPortal = () => {
         <section className="gp-cats">
           <div className="gp-cats__inner">
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6 }}>
               <p className="gp-sec-label">Product Categories</p>
               <h2 className="gp-sec-title">Our Trade Units</h2>
             </motion.div>
 
-            <motion.div
-              className="gp-grid"
-              variants={cardContainer}
-              initial="hidden"
-              animate="show"
-            >
+            <motion.div className="gp-grid" variants={cardContainer} initial="hidden" whileInView="show" viewport={{ once: true }}>
               {categories.length === 0 ? (
                 <div className="gp-loading">
-                  <div className="gp-dot" />
-                  <div className="gp-dot" />
-                  <div className="gp-dot" />
+                  <div className="gp-dot" /><div className="gp-dot" /><div className="gp-dot" />
                 </div>
               ) : (
-                categories.map((cat) => (
+                categories.map(cat => (
                   <motion.div
                     key={cat._id}
                     className="gp-card"
@@ -308,12 +264,7 @@ const GlobalPortal = () => {
 
                     {/* always-visible image */}
                     {cat.categoryImage && (
-                      <img
-                        className="gp-card__img"
-                        src={cat.categoryImage}
-                        alt={cat.name}
-                        loading="lazy"
-                      />
+                      <img className="gp-card__img" src={cat.categoryImage} alt={cat.name} loading="lazy" />
                     )}
 
                     {/* always-visible scrim */}
@@ -324,9 +275,7 @@ const GlobalPortal = () => {
                       <p className="gp-card__desc">{cat.decription}</p>
                       <div className="gp-card__foot">
                         <span className="gp-card__badge">13+ Countries</span>
-                        <div className="gp-card__arrow">
-                          <ArrowUpRight size={13} />
-                        </div>
+                        <div className="gp-card__arrow"><ArrowUpRight size={13} /></div>
                       </div>
                     </div>
                   </motion.div>
