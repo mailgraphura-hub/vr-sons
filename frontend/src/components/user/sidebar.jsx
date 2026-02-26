@@ -9,7 +9,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useState } from "react";
-import logo from "../../assets/logo/logo.webp";
+import logo from "../../assets/logo/TextLogo.png";
 import { postService } from "../../service/axios";
 import { Toaster, toast } from "react-hot-toast";
 
@@ -68,7 +68,7 @@ export default function Sidebar() {
         md:translate-x-0`}
       >
         {/* Logo Section */}
-        <div className="h-16 px-6 flex items-center justify-between border-b border-gray-200">
+        <div className="h-16 pl-20 px-6 flex items-center justify-between border-b border-gray-200">
           <img src={logo} alt="Logo" className="h-8" />
           <button onClick={() => setOpen(false)} className="md:hidden">
             <X size={20} />
