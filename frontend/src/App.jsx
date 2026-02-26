@@ -34,7 +34,7 @@ import Product from "./pages/Products/Product"
 import AboutUs from "./pages/user/AboutUs";
 import ContactUs from "./pages/user/Contactus ";
 import Term_Services from "./pages/user/Term_Services";
-import PrivacyPolicy from "./pages/user/CompanyPolicy";
+import PrivacyPolicy from "./pages/user/Privacy_Policy";
 
 function App() {
   

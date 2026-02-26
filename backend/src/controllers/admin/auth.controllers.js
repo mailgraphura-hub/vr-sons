@@ -430,51 +430,135 @@ const forgetPassword = async (req, res) => {
 
 
 
+// const updateProfile = async (req, res) => {
+//   try {
+//     const { _id } = req.user;
+//     const { contact, gender, dob, country, state } = req.body;
+
+//     const userDetail = await adminAuth_Model.findById(_id);
+
+//     if (userDetail.profileImage) {
+//       deleteFromCloudinary(userDetail.profileImage)
+//     }
+
+//     let profileImage = null;
+
+//     if (req.file) {
+//       profileImage = await new Promise((resolve, reject) => {
+//         const stream = cloudinary.uploader.upload_stream(
+//           { folder: "image" },
+//           (err, result) => {
+//             if (err) reject(err);
+//             else resolve(result.secure_url);
+//           }
+//         );
+//         stream.end(req.file.buffer);
+//       })
+//     }
+
+//     const updatedadminDetail = await adminAuth_Model.findByIdAndUpdate(
+//       _id,
+//       {
+//         contact,
+//         gender,
+//         dob,
+//         country,
+//         state,
+//         profileImage
+//       }
+//     )
+
+//     return res.status(200).json(new ApiResponse(200, updatedadminDetail, "Profile Update Successfully."));
+
+//   }
+//   catch (err) {
+//     return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name }]));
+//   }
+// }
+
+
+
+
+
+
+
+
 const updateProfile = async (req, res) => {
   try {
     const { _id } = req.user;
-    const { contact, gender, dob, country, state } = req.body;
+    
+    const { name, email, contact, gender, dob, country, state } = req.body;
 
     const userDetail = await adminAuth_Model.findById(_id);
-
-    if (userDetail.profileImage) {
-      deleteFromCloudinary(userDetail.profileImage)
+    if (!userDetail) {
+      return res.status(404).json(new ApiResponse(404, null, "Admin not found"));
     }
 
-    let profileImage = null;
+    
+    let profileImage = userDetail.profileImage; 
 
     if (req.file) {
+      
+      if (userDetail.profileImage) {
+        await deleteFromCloudinary(userDetail.profileImage);
+      }
+
       profileImage = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { folder: "image" },
+          { folder: "admin_profiles" },
           (err, result) => {
             if (err) reject(err);
             else resolve(result.secure_url);
           }
         );
         stream.end(req.file.buffer);
-      })
+      });
     }
 
+    
     const updatedadminDetail = await adminAuth_Model.findByIdAndUpdate(
       _id,
       {
-        contact,
-        gender,
-        dob,
-        country,
-        state,
-        profileImage
-      }
-    )
+        $set: {
+          name,
+          email, 
+          contact,
+          gender,
+          dob,
+          country,
+          state,
+          profileImage 
+        }
+      },
+      { new: true } 
+    ).select("-password"); 
 
-    return res.status(200).json(new ApiResponse(200, updatedadminDetail, "Profile Update Successfully."));
+    return res.status(200).json(new ApiResponse(200, updatedadminDetail, "Profile Updated Successfully."));
 
+  } catch (err) {
+    console.error("Update Error:", err);
+    return res.status(500).json(new ApiError(500, "Internal Server Error", [{ message: err.message }]));
   }
-  catch (err) {
-    return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name }]));
-  }
-}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const getMyProfile = async (req, res) => {

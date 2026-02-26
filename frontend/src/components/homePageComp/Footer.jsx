@@ -2,10 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Globe, ShieldCheck } from "lucide-react";
 
-// ═══════════════════════════════════════════════════════════════
-//  DATA & CONFIGURATION 
-//  (Update anything here, and the footer will automatically change)
-// ═══════════════════════════════════════════════════════════════
+import logo from "../../assets/logo/NavLogo.svg";
 
 const COMPANY_DATA = {
   name: "VR & Sons",
@@ -27,7 +24,6 @@ const FOOTER_LINKS = {
     { label: "Home", href: "/" },
     { label: "Our Products", href: "/MainCategory" },
     { label: "About Us", href: "/AboutUs" },
-    // { label: "Why Choose Us", href: "/#why-choose-us" },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/ContactUs" },
   ],
@@ -43,17 +39,14 @@ const FOOTER_LINKS = {
   ]
 };
 
-// ═══════════════════════════════════════════════════════════════
-//  COMPONENT
-// ═══════════════════════════════════════════════════════════════
-
 const Footer = () => {
   return (
     <footer className="bg-[#f4f1ec] px-4 md:px-8 pt-10 pb-6 font-sans">
-      <div className="bg-white rounded-3xl shadow-sm border border-neutral-100 px-8 md:px-14 py-12">
+      {/* Mobile: px-6 | Desktop: px-14 */}
+      <div className="bg-white rounded-3xl shadow-sm border border-neutral-100 px-6 md:px-14 py-10 md:py-12">
         
         {/* ── Top Section ── */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-neutral-100">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-10 pb-12 border-b border-neutral-100">
           
           {/* 1. Brand & Description */}
           <motion.div
@@ -61,31 +54,37 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
+            className="flex flex-col items-center md:items-start text-center md:text-left"
           >
-            <h2 className="text-xl font-semibold text-neutral-900">
-              {COMPANY_DATA.name}
-            </h2>
-            <p className="text-xs tracking-widest uppercase text-neutral-400 mt-1">
-              {COMPANY_DATA.tagline}
-            </p>
-            <p className="text-sm text-neutral-500 mt-4 leading-relaxed max-w-xs">
+            {/* Logo: Mobile pe center, Desktop pe ml-14/left */}
+            <div className="mb-6 md:ml-14">
+                <img 
+                  src={logo} 
+                  alt={COMPANY_DATA.name} 
+                  className="h-16 w-auto object-contain" 
+                />
+            </div>
+            
+            <p className="text-sm text-neutral-500 mt-2 leading-relaxed max-w-xs">
               {COMPANY_DATA.description}
             </p>
 
-            {/* FIX: Extracted highlight.icon to a capitalized variable 'Icon' */}
-            {COMPANY_DATA.highlights.map((highlight, index) => {
-              const Icon = highlight.icon;
-              return (
-                <div key={index} className="flex items-center gap-2 mt-4 text-sm text-neutral-600">
-                  <Icon size={16} />
-                  <span>{highlight.text}</span>
-                </div>
-              );
-            })}
+            <div className="w-full flex flex-col items-center md:items-start">
+                {COMPANY_DATA.highlights.map((highlight, index) => {
+                  const Icon = highlight.icon;
+                  return (
+                    <div key={index} className="flex items-center gap-2 mt-4 text-sm text-neutral-600">
+                      <Icon size={16} />
+                      <span>{highlight.text}</span>
+                    </div>
+                  );
+                })}
+            </div>
           </motion.div>
 
           {/* 2. Quick Links */}
           <motion.div
+            className="text-center md:text-left"
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -94,13 +93,10 @@ const Footer = () => {
             <h3 className="text-sm font-semibold text-neutral-900 mb-4">
               Quick Links
             </h3>
-            <ul className="space-y-2 text-sm text-neutral-500">
+            <ul className="space-y-3 md:space-y-2 text-sm text-neutral-500">
               {FOOTER_LINKS.quickLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="hover:text-black transition-colors duration-300"
-                  >
+                  <a href={link.href} className="hover:text-black transition-colors duration-300">
                     {link.label}
                   </a>
                 </li>
@@ -110,6 +106,7 @@ const Footer = () => {
 
           {/* 3. Export Categories */}
           <motion.div
+            className="text-center md:text-left"
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -118,13 +115,10 @@ const Footer = () => {
             <h3 className="text-sm font-semibold text-neutral-900 mb-4">
               Export Categories
             </h3>
-            <ul className="space-y-2 text-sm text-neutral-500">
+            <ul className="space-y-3 md:space-y-2 text-sm text-neutral-500">
               {FOOTER_LINKS.categories.map((category) => (
                 <li key={category.label}>
-                  <a
-                    href={category.href}
-                    className="hover:text-black transition-colors duration-300"
-                  >
+                  <a href={category.href} className="hover:text-black transition-colors duration-300">
                     {category.label}
                   </a>
                 </li>
@@ -134,6 +128,7 @@ const Footer = () => {
 
           {/* 4. Contact Information */}
           <motion.div
+            className="text-center md:text-left"
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -142,7 +137,7 @@ const Footer = () => {
             <h3 className="text-sm font-semibold text-neutral-900 mb-4">
               Contact Information
             </h3>
-            <div className="space-y-3 text-sm text-neutral-500">
+            <div className="space-y-4 md:space-y-3 text-sm text-neutral-500 flex flex-col items-center md:items-start">
               <div className="flex items-start gap-2 group">
                 <Phone size={16} className="mt-1 flex-shrink-0" />
                 <a href={`tel:${COMPANY_DATA.contact.phone.replace(/[^+\d]/g, '')}`} className="group-hover:text-black transition-colors">
@@ -155,7 +150,7 @@ const Footer = () => {
                   {COMPANY_DATA.contact.email}
                 </a>
               </div>
-              <div className="flex items-start gap-2">
+              <div className="flex items-start gap-2 justify-center md:justify-start">
                 <MapPin size={16} className="mt-1 flex-shrink-0" />
                 <span className="leading-relaxed">{COMPANY_DATA.contact.address}</span>
               </div>
@@ -165,9 +160,9 @@ const Footer = () => {
         </div>
 
         {/* ── Bottom Bar ── */}
-        <div className="flex flex-col md:flex-row items-center justify-between pt-6 gap-4">
-          <p className="text-xs text-neutral-400">
-            © {new Date().getFullYear()} {COMPANY_DATA.name} {COMPANY_DATA.tagline}. All rights reserved.
+        <div className="flex flex-col md:flex-row items-center justify-between pt-8 md:pt-6 gap-6 md:gap-4">
+          <p className="text-xs text-neutral-400 text-center md:text-left">
+            © {new Date().getFullYear()} {COMPANY_DATA.name}. All rights reserved.
           </p>
 
           <div className="flex gap-6 text-xs text-neutral-400">

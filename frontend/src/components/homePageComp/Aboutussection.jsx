@@ -104,15 +104,12 @@ const AboutUsSection = () => {
       style={{ fontFamily: "'DM Sans', sans-serif" }}
     >
       <div className="bg-white rounded-3xl overflow-hidden">
-
         {/* ══════════════════════════════════════════════
             TOP — Heading + Para + Stats grid
         ══════════════════════════════════════════════ */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-
           {/* Left — text + FAQ, natural flow, no justify-between */}
           <div className="px-6 md:px-12 py-10 md:py-14 flex flex-col border-b md:border-b-0 md:border-r border-neutral-100">
-
             {/* Badge */}
             <motion.p
               initial={{ opacity: 0 }}
@@ -146,18 +143,24 @@ const AboutUsSection = () => {
             />
 
             {/* Paragraphs */}
-            {[ABOUT_DATA.para1, ABOUT_DATA.para2, ABOUT_DATA.para3].map((para, i) => (
-              <motion.p
-                key={i}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.55, delay: 0.2 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
-                className="text-xs text-neutral-500 leading-relaxed mb-4 last:mb-0"
-              >
-                {para}
-              </motion.p>
-            ))}
+            {[ABOUT_DATA.para1, ABOUT_DATA.para2, ABOUT_DATA.para3].map(
+              (para, i) => (
+                <motion.p
+                  key={i}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.55,
+                    delay: 0.2 + i * 0.12,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="text-xs text-neutral-500 leading-relaxed mb-4 last:mb-0"
+                >
+                  {para}
+                </motion.p>
+              ),
+            )}
 
             {/* FAQ — flows naturally after paragraphs */}
             <motion.div
@@ -177,77 +180,140 @@ const AboutUsSection = () => {
                 <MiniFAQ key={i} faq={faq} index={i} />
               ))}
             </motion.div>
-
           </div>
 
           {/* Right — 4 images, 2x2 grid, hero-style animation */}
-          <div className="bg-neutral-50 p-4 grid grid-cols-2 gap-3">
-            {ABOUT_DATA.images.map((src, i) => {
-              const isTop = i < 2;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ y: isTop ? -120 : 120, opacity: 0, rotate: i % 2 === 0 ? -6 : 6 }}
-                  whileInView={{ y: 0, opacity: 1, rotate: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.9, delay: 0.05 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ y: isTop ? -6 : 6, transition: { duration: 0.3 } }}
-                  className="rounded-2xl overflow-hidden cursor-pointer"
-                  style={{ height: "200px" }}
-                >
-                  <img
-                    src={src}
-                    alt={`VR & Sons export product ${i + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-              );
-            })}
-          </div>
+         <div className="relative bg-neutral-50 p-6 grid grid-cols-2 gap-5 overflow-hidden">
+
+  {ABOUT_DATA.images.map((src, i) => {
+    const isTop = i < 2;
+
+    return (
+      <div key={i} className="relative">
+
+        {/* Animated Premium Frame */}
+        <motion.div
+          initial={{ rotate: 0 }}
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          className="absolute -inset-1 rounded-3xl opacity-40 blur-xl bg-gradient-to-tr from-neutral-300 via-neutral-200 to-neutral-400"
+        />
+
+        {/* Image Card */}
+        <motion.div
+          initial={{
+            y: isTop ? -60 : 60,
+            opacity: 0,
+          }}
+          whileInView={{
+            y: 0,
+            opacity: 1,
+          }}
+          viewport={{ once: true }}
+          transition={{
+            duration: 0.8,
+            delay: 0.1 + i * 0.12,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          whileHover={{
+            y: isTop ? -8 : 8,
+            scale: 1.04,
+          }}
+          className="
+            relative
+            rounded-2xl
+            overflow-hidden
+            bg-white
+            shadow-[0_15px_40px_rgba(0,0,0,0.12)]
+            transition-all
+            duration-300
+            cursor-pointer
+          "
+          style={{ height: "220px" }}
+        >
+          {/* Subtle Glass Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10 pointer-events-none" />
+
+          <img
+            src={src}
+            alt={`VR & Sons export product ${i + 1}`}
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+
+      </div>
+    );
+  })}
+
+</div>
         </div>
 
         {/* ══════════════════════════════════════════════
             MISSION & VISION — dark card
         ══════════════════════════════════════════════ */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-neutral-100 border-t border-neutral-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-neutral-200 pt-14 mt-6">
           {[ABOUT_DATA.mission, ABOUT_DATA.vision].map((item, i) => (
             <motion.div
               key={item.label}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-[#1c1c1c] px-8 md:px-12 py-10 md:py-14 flex flex-col gap-5"
+              transition={{
+                duration: 0.7,
+                delay: i * 0.15,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              whileHover={{ y: -6 }}
+              className="
+        relative
+        bg-[#1c1c1c]
+        rounded-2xl
+        px-10 md:px-14
+        py-12 md:py-16
+        overflow-hidden
+        transition-all
+        duration-300
+        shadow-[0_10px_35px_rgba(0,0,0,0.25)]
+        hover:shadow-[0_18px_50px_rgba(0,0,0,0.35)]
+      "
             >
+              {/* Subtle Accent Line */}
+              <motion.div
+                initial={{ scaleY: 0 }}
+                whileInView={{ scaleY: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 + i * 0.1 }}
+                className="absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-white/60 to-white/10 origin-top"
+              />
+
+              {/* Label */}
               <span
-                className="text-white/30 text-xs tracking-widest uppercase"
+                className="text-white/40 text-xs tracking-[0.25em] uppercase mb-6 block"
                 style={{ fontFamily: "'DM Sans', sans-serif" }}
               >
                 {item.label}
               </span>
+
+              {/* Text */}
               <p
-                className="text-white/80 text-sm md:text-base font-light leading-relaxed"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(0.95rem, 1.4vw, 1.1rem)" }}
+                className="text-white/85 font-light leading-relaxed"
+                style={{
+                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  fontSize: "clamp(1rem, 1.4vw, 1.15rem)",
+                }}
               >
                 {item.text}
               </p>
-              {/* Decorative dots */}
-              <div className="flex gap-1.5 mt-2">
-                {[...Array(3)].map((_, j) => (
-                  <motion.div
-                    key={j}
-                    className="w-1 h-1 rounded-full bg-white/20"
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 + i * 0.15 + j * 0.05, type: "spring" }}
-                  />
-                ))}
-              </div>
+
+              {/* Soft Background Glow */}
+              <div className="absolute -right-16 -bottom-16 w-48 h-48 bg-white/5 rounded-full blur-3xl pointer-events-none" />
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom';
-
+import logo from "../../assets/logo/TextLogo.png"; 
 
 const navLinks = [
   { id: 1, label: "Home", href: "/" },
@@ -35,22 +35,23 @@ const Navbar = () => {
 
   return (
     <section
-      className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out pt-1 pb-2 ${
+      className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out pt-2 pb-2 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       <div className="max-w-[1500px] mx-auto px-4 md:px-8">
 
-        {/* Main navbar row */}
-        <div className="flex items-center justify-between px-5 md:px-8 py-3 md:py-4 rounded-full bg-white/80 backdrop-blur-lg shadow-lg border border-white/40">
+        {/* Main navbar row - Solid White Background */}
+        <div className="flex items-center justify-between px-5 md:px-8 py-3 md:py-4 rounded-full bg-white shadow-md border border-gray-100">
 
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white text-sm">
-              ●
-            </div>
-            <span className="font-semibold text-lg tracking-wide">GRAPHURA</span>
-          </div>
+          {/* Logo Section */}
+          <Link to="/" className="flex items-center">
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className="h-8 md:h-10 w-auto object-contain" 
+            />
+          </Link>
 
           {/* Center Links — desktop only */}
           <ul className="hidden md:flex items-center gap-10 text-sm font-semibold text-neutral-700">
@@ -63,14 +64,12 @@ const Navbar = () => {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-
-            {/* CTA button — desktop only */}
-           <a 
-  href="/login"
-  className="hidden md:inline-flex px-5 py-2 rounded-full bg-black text-white text-sm font-medium hover:scale-105 transition-all duration-300 shadow-md"
->
-  Get Started
-</a>
+            <a 
+              href="/login"
+              className="hidden md:inline-flex px-5 py-2 rounded-full bg-black text-white text-sm font-medium hover:bg-neutral-800 transition-all duration-300 shadow-sm"
+            >
+              Get Started
+            </a>
 
             {/* Hamburger — mobile only */}
             <button
@@ -97,38 +96,34 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Dropdown Menu - Solid White */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
             menuOpen ? "max-h-96 opacity-100 mt-2" : "max-h-0 opacity-0"
           }`}
         >
-          <ul className="flex flex-col gap-1 px-4 py-4 rounded-2xl bg-white/90 backdrop-blur-lg shadow-lg border border-white/40">
+          <ul className="flex flex-col gap-1 px-4 py-4 rounded-2xl bg-white shadow-xl border border-gray-100">
             {navLinks.map((link) => (
               <li key={link.id}>
                 <a
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-neutral-700 hover:bg-neutral-100 hover:text-black transition"
+                  className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-neutral-700 hover:bg-neutral-50 hover:text-black transition"
                 >
                   {link.label}
                 </a>
               </li>
             ))}
 
-            {/* Get Started button — mobile menu */}
             <li className="mt-2">
-             
-<Link
-  to="/login"
-  onClick={() => setMenuOpen(false)}
-  className="block text-center w-full px-4 py-2.5 rounded-xl bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition"
->
-  Get Started
-</Link>
-              
+              <Link
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                className="block text-center w-full px-4 py-2.5 rounded-xl bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition"
+              >
+                Get Started
+              </Link>
             </li>
-            
           </ul>
         </div>
 

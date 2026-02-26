@@ -40,10 +40,10 @@ import Footer from '../../components/homePageComp/Footer';
 //   },
 // ];
 
-// ─── HERO CONFIG ─────────────────────────────────────────────────────────────
+
 const HERO_IMAGE = "https://images.unsplash.com/photo-1494412651409-8963ce7935a7?auto=format&fit=crop&q=80&w=2000";
 const TYPING_TEXT = "Optimizing the flow of international trade with precision.";
-// ─────────────────────────────────────────────────────────────────────────────
+
 
 const GlobalPortal = () => {
   const [categories, setCategory] = useState([]);
