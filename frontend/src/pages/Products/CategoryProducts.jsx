@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ArrowLeft,
-  Search,
-  ChevronRight,
-} from "lucide-react";
+import { ArrowLeft, Search, ChevronRight } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getService } from "../../service/axios";
 
@@ -15,21 +11,35 @@ const SubcategoryCard = ({ sub, index, onClick }) => {
     <motion.div
       initial={{ opacity: 0, y: 28 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        delay: index * 0.07,
+        duration: 0.55,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       onClick={() => available && onClick(sub)}
       className="cd-card"
-      style={{ opacity: available ? 1 : 0.5, cursor: available ? "pointer" : "not-allowed" }}
+      style={{
+        opacity: available ? 1 : 0.5,
+        cursor: available ? "pointer" : "not-allowed",
+      }}
     >
       {/* always-visible image */}
       {sub.subcategoryImage && (
-        <img className="cd-card__img" src={sub.subcategoryImage} alt={sub.name} loading="lazy" />
+        <img
+          className="cd-card__img"
+          src={sub.subcategoryImage}
+          alt={sub.name}
+          loading="lazy"
+        />
       )}
       <div className="cd-card__scrim" />
 
       <div className="cd-card__body">
         {/* top row */}
         <div className="cd-card__top">
-          <span className={`cd-badge ${available ? "cd-badge--green" : "cd-badge--red"}`}>
+          <span
+            className={`cd-badge ${available ? "cd-badge--green" : "cd-badge--red"}`}
+          >
             {sub.status}
           </span>
           {sub.skuId && <span className="cd-sku">{sub.skuId}</span>}
@@ -69,7 +79,10 @@ export default function CategoryDetail() {
     if (!id) return;
     (async () => {
       const apiResponse = await getService(`/customer/product/category/${id}`);
-      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
+      }
       setCategory(apiResponse.data.data);
     })();
   }, [id]);
@@ -78,9 +91,12 @@ export default function CategoryDetail() {
     if (!id || searchQuery) return;
     (async () => {
       const apiResponse = await getService(
-        `/customer/product/subcategorybycategoryId?categoryId=${id}&page=${currentPage}&limit=12`
+        `/customer/product/subcategorybycategoryId?categoryId=${id}&page=${currentPage}&limit=12`,
       );
-      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
+      }
       const data = apiResponse.data.data;
       setSubCateogory(data.subcategoryList);
       setSubCategoryCount(data.totalItems);
@@ -93,9 +109,12 @@ export default function CategoryDetail() {
     if (!searchQuery) return;
     const delayDebounce = setTimeout(async () => {
       const apiResponse = await getService(
-        `/customer/search/subcategory?keyword=${searchQuery}&categoryId=${id}&page=${currentPage}&limit=12`
+        `/customer/search/subcategory?keyword=${searchQuery}&categoryId=${id}&page=${currentPage}&limit=12`,
       );
-      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
+      }
       const data = apiResponse.data.data;
       setSubCateogory(data.subcategories);
       setSubCategoryCount(data.subcategories.length);
@@ -112,9 +131,12 @@ export default function CategoryDetail() {
     }
     const delayDebounce = setTimeout(async () => {
       const apiResponse = await getService(
-        `/customer/search/suggestion/subcategory?keyword=${searchQuery}&categoryId=${id}`
+        `/customer/search/suggestion/subcategory?keyword=${searchQuery}&categoryId=${id}`,
       );
-      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
+      }
       setSuggestions(apiResponse.data.data.subcategories);
     }, 300);
     return () => clearTimeout(delayDebounce);
@@ -167,7 +189,7 @@ export default function CategoryDetail() {
           margin-bottom: 20px; background: none; border: none; cursor: pointer;
           transition: color 0.2s;
         }
-        .cd-breadcrumb:hover { color: #7EB3FF; }
+        .cd-breadcrumb:hover { color: #C36A4D; }
         .cd-hero h1 {
           font-family: 'Sora', sans-serif;
           font-size: clamp(36px, 7vw, 72px);
@@ -206,7 +228,7 @@ export default function CategoryDetail() {
           transition: border-color 0.2s;
         }
         .cd-search::placeholder { color: #aaa; }
-        .cd-search:focus { border-color: #7EB3FF; background: #fff; }
+        .cd-search:focus { border-color: #C36A4D; background: #fff; }
         .cd-search-icon {
           position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
           color: #bbb; pointer-events: none;
@@ -286,7 +308,7 @@ export default function CategoryDetail() {
           margin: 0 0 6px; line-height: 1.2;
           transition: color 0.25s;
         }
-        .cd-card:hover .cd-card__name { color: #a8ccff; }
+        .cd-card:hover .cd-card__name { color: #C36A4D; }
 
         .cd-card__desc {
           font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.55);
@@ -300,7 +322,7 @@ export default function CategoryDetail() {
           border: 1.5px solid rgba(255,255,255,0.2); color: #fff;
           transition: all 0.25s;
         }
-        .cd-card:hover .cd-card__arrow { background: #7EB3FF; border-color: #7EB3FF; transform: translateX(2px); }
+        .cd-card:hover .cd-card__arrow { background: #C36A4D; border-color: #C36A4D; transform: translateX(2px); }
 
         /* ── EMPTY STATE ── */
         .cd-empty {
@@ -311,7 +333,7 @@ export default function CategoryDetail() {
           width: 72px; height: 72px; border-radius: 18px;
           background: #f4f5f7; border: 1.5px solid #e8e8e8;
           display: flex; align-items: center; justify-content: center;
-          margin-bottom: 24px; color: #7EB3FF;
+          margin-bottom: 24px; color: #C36A4D;
         }
         .cd-empty h2 {
           font-family: 'Sora', sans-serif;
@@ -327,7 +349,7 @@ export default function CategoryDetail() {
           border: 1.5px solid #e8e8e8; background: #fff; color: #444; cursor: pointer;
           transition: all 0.2s;
         }
-        .cd-page-btn:hover:not(:disabled) { border-color: #7EB3FF; color: #7EB3FF; }
+        .cd-page-btn:hover:not(:disabled) { border-color: #C36A4D; color: #C36A4D; }
         .cd-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
         .cd-page-num {
           width: 36px; height: 36px; border-radius: 8px;
@@ -335,12 +357,12 @@ export default function CategoryDetail() {
           font-size: 13px; font-weight: 500; border: 1.5px solid #e8e8e8;
           background: #fff; color: #555; cursor: pointer; transition: all 0.2s;
         }
-        .cd-page-num:hover { border-color: #7EB3FF; color: #7EB3FF; }
-        .cd-page-num--active { background: #7EB3FF; border-color: #7EB3FF; color: #fff; }
+        .cd-page-num:hover { border-color: #C36A4D; color: #C36A4D; }
+        .cd-page-num--active { background: #C36A4D; border-color: #C36A4D; color: #fff; }
 
         /* loading dots */
         .cd-loading { display: flex; justify-content: center; gap: 6px; padding: 80px 0; }
-        .cd-dot { width: 7px; height: 7px; border-radius: 50%; background: #7EB3FF; animation: bdot 1.2s ease-in-out infinite; }
+        .cd-dot { width: 7px; height: 7px; border-radius: 50%; background: #C36A4D; animation: bdot 1.2s ease-in-out infinite; }
         .cd-dot:nth-child(2) { animation-delay: 0.2s; }
         .cd-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes bdot { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-8px);opacity:1} }
@@ -353,11 +375,14 @@ export default function CategoryDetail() {
       `}</style>
 
       <div className="cd-page">
-
         {/* ── HERO ── */}
         <section className="cd-hero">
           {category?.categoryImage && (
-            <img className="cd-hero__img" src={category.categoryImage} alt={category?.name} />
+            <img
+              className="cd-hero__img"
+              src={category.categoryImage}
+              alt={category?.name}
+            />
           )}
           <div className="cd-hero__fade" />
           <div className="cd-hero__content">
@@ -389,7 +414,10 @@ export default function CategoryDetail() {
                 className="cd-search"
                 placeholder="Search subcategories…"
                 value={searchQuery}
-                onChange={(e) => { setCurrentPage(1); setSearchQuery(e.target.value); }}
+                onChange={(e) => {
+                  setCurrentPage(1);
+                  setSearchQuery(e.target.value);
+                }}
               />
               <Search size={14} className="cd-search-icon" />
               {suggestions.length > 0 && (
@@ -398,7 +426,11 @@ export default function CategoryDetail() {
                     <div
                       key={item._id}
                       className="cd-suggestion-item"
-                      onClick={() => { setIsSuggestionClick(true); setSearchQuery(item.name); setSuggestions([]); }}
+                      onClick={() => {
+                        setIsSuggestionClick(true);
+                        setSearchQuery(item.name);
+                        setSuggestions([]);
+                      }}
                     >
                       {item.name}
                     </div>
@@ -429,9 +461,14 @@ export default function CategoryDetail() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="cd-empty__icon"><Search size={28} /></div>
+              <div className="cd-empty__icon">
+                <Search size={28} />
+              </div>
               <h2>No Subcategories Found</h2>
-              <p>We couldn't find any matching results. Try adjusting your search or explore other categories.</p>
+              <p>
+                We couldn't find any matching results. Try adjusting your search
+                or explore other categories.
+              </p>
             </motion.div>
           )}
 
@@ -441,7 +478,7 @@ export default function CategoryDetail() {
               <button
                 className="cd-page-btn"
                 disabled={currentPage === 1}
-                onClick={() => setCurrentPage(p => p - 1)}
+                onClick={() => setCurrentPage((p) => p - 1)}
               >
                 Prev
               </button>
@@ -460,7 +497,7 @@ export default function CategoryDetail() {
               <button
                 className="cd-page-btn"
                 disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(p => p + 1)}
+                onClick={() => setCurrentPage((p) => p + 1)}
               >
                 Next
               </button>
