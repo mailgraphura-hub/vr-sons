@@ -1,58 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, MoveRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 import { getService } from '../../service/axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/homePageComp/Navbar';
 import Footer from '../../components/homePageComp/Footer';
 
-// ─── MOCK DATA ───────────────────────────────────────────────────────────────
-// Replace this with your API response when going live.
-// Shape mirrors: apiResponse.data.data.categoryList
-// const MOCK_CATEGORIES = [
-//   {
-//     _id: "cat_001",
-//     name: "Food Products",
-//     decription: "Processed & packaged export-quality food products meeting international hygiene and labelling standards.",
-//     categoryImage: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=800",
-//     markets: "25 Countries",
-//   },
-//   {
-//     _id: "cat_002",
-//     name: "Pure Spices",
-//     decription: "Authentic farm-sourced spices with verified origin certificates and high global demand.",
-//     categoryImage: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=800",
-//     markets: "18 Countries",
-//   },
-//   {
-//     _id: "cat_003",
-//     name: "Agri Goods",
-//     decription: "Bulk agricultural commodities for global supply chains, available year-round with flexible MOQs.",
-//     categoryImage: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=800",
-//     markets: "30 Countries",
-//   },
-//   {
-//     _id: "cat_004",
-//     name: "Industrial",
-//     decription: "Industrial raw materials meeting strict export grading standards with ISO documentation.",
-//     categoryImage: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&q=80&w=800",
-//     markets: "12 Countries",
-//   },
-// ];
-
-
 const HERO_IMAGE = "https://images.unsplash.com/photo-1494412651409-8963ce7935a7?auto=format&fit=crop&q=80&w=2000";
 const TYPING_TEXT = "Optimizing the flow of international trade with precision.";
-
 
 const GlobalPortal = () => {
   const [categories, setCategory] = useState([]);
   const [hoveredId, setHoveredId] = useState(null);
   const [displayText, setDisplayText] = useState('');
-
   const navigate = useNavigate();
 
-  // Swap this block with the real API call when going live:
+  // ── API (unchanged) ───────────────────────────────────────────────────────
   useEffect(() => {
     (async () => {
       const apiResponse = await getService("/customer/product/category");
@@ -61,7 +24,7 @@ const GlobalPortal = () => {
     })();
   }, []);
 
-  // Typing Effect
+  // ── TYPING EFFECT (unchanged) ─────────────────────────────────────────────
   useEffect(() => {
     let i = 0;
     const timer = setInterval(() => {
@@ -72,181 +35,259 @@ const GlobalPortal = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Animation Variants
   const heroContainer = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 0.3 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } }
   };
-
-  const titleVariant = {
-    hidden: { opacity: 0, scale: 2.5, filter: "blur(20px)", y: 50 },
-    visible: {
-      opacity: 1, scale: 1, filter: "blur(0px)", y: 0,
-      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] }
-    }
+  const fadeUp = {
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }
   };
-
   const cardContainer = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
-
   const cardItem = {
-    hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+    hidden: { opacity: 0, y: 28 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }
   };
 
   return (
-    <div className="bg-[#FAF9F6] text-[#1A1A1A] font-sans overflow-x-hidden">
-         <Navbar/>
-      {/* HERO SECTION */}
-      <section className="relative h-[90vh] flex items-center justify-center px-6 text-center overflow-hidden bg-black">
-        <div className="absolute inset-0">
-          <img
-            src={HERO_IMAGE}
-            className="w-full h-full object-cover opacity-50 scale-105"
-            alt="Logistics"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#FAF9F6] via-transparent to-transparent opacity-30" />
-        </div>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@700;800&display=swap');
 
-        <motion.div
-          className="relative z-20 max-w-7xl"
-          variants={heroContainer}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.span
-            variants={titleVariant}
-            className="text-[#C36A4D] font-black tracking-[0.5em] text-[10px] uppercase block mb-6"
-          >
-            Established Enterprise
-          </motion.span>
+        .gp { font-family: 'Inter', sans-serif; background: #fff; color: #111; overflow-x: hidden; }
 
-          <motion.h1
-            variants={titleVariant}
-            className="text-white text-[70px] md:text-[90px] font-black leading-[0.8] tracking-tighter"
-          >
-            DIRECT.<br />
-            <span className="text-[#C36A4D]">GLOBAL.</span><br />
-            RELIABLE.
-          </motion.h1>
+        /* ── HERO ── */
+        .gp-hero {
+          position: relative; height: 88vh; min-height: 520px;
+          display: flex; align-items: center; justify-content: center;
+          text-align: center; overflow: hidden; background: #0a0f1a;
+        }
+        .gp-hero__bg {
+          position: absolute; inset: 0;
+          width: 100%; height: 100%; object-fit: cover; opacity: 0.22;
+        }
+        .gp-hero__fade {
+          position: absolute; inset: 0;
+          background: linear-gradient(to bottom, rgba(10,15,26,0.3) 0%, #0a0f1a 100%);
+        }
+        .gp-hero__content { position: relative; z-index: 5; max-width: 700px; padding: 0 24px; }
 
-          <motion.p variants={titleVariant} className="text-gray-300 text-lg mt-8 font-mono min-h-[1.5em]">
-            {displayText}
-            <span className="animate-pulse ml-1 text-[#C36A4D]">|</span>
-          </motion.p>
+        .gp-hero__tag {
+          display: inline-block; font-size: 11px; font-weight: 500;
+          letter-spacing: 0.2em; text-transform: uppercase;
+          color: #7EB3FF; margin-bottom: 20px;
+        }
+        .gp-hero h1 {
+          font-family: 'Sora', sans-serif;
+          font-size: clamp(38px, 7vw, 74px);
+          font-weight: 800; line-height: 1.05;
+          color: #fff; letter-spacing: -0.03em; margin: 0 0 18px;
+        }
+        .gp-hero h1 span { color: #7EB3FF; }
+        .gp-hero__sub { font-size: 15px; font-weight: 300; color: #6d849e; min-height: 1.5em; }
+        .gp-cursor { color: #7EB3FF; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
 
-          <motion.div variants={titleVariant} className="mt-12 flex justify-center gap-6">
-            <button className="bg-[#C36A4D] px-10 py-5 rounded-xl text-white font-bold flex items-center gap-3 hover:bg-white hover:text-black transition-all duration-300 shadow-2xl">
-              Inquiry <MoveRight size={16} />
-            </button>
-            <button className="border border-white/20 px-10 py-5 rounded-xl text-white backdrop-blur-md hover:bg-white/10 transition-all">
-              Network
-            </button>
+        /* ── STATS ── */
+        .gp-stats { background: #f8f9fb; border-bottom: 1px solid #e8e8e8; }
+        .gp-stats__row { max-width: 860px; margin: 0 auto; display: flex; flex-wrap: wrap; }
+        .gp-stat {
+          flex: 1 1 150px; padding: 26px 20px; text-align: center;
+          border-right: 1px solid #e8e8e8;
+        }
+        .gp-stat:last-child { border-right: none; }
+        .gp-stat__n {
+          font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800;
+          color: #111; letter-spacing: -0.03em; line-height: 1;
+        }
+        .gp-stat__l { font-size: 10px; font-weight: 500; color: #999; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 5px; }
+
+        /* ── CATEGORIES SECTION ── */
+        .gp-cats { padding: 72px 24px 96px; }
+        .gp-cats__inner { max-width: 1160px; margin: 0 auto; }
+
+        .gp-sec-label { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #7EB3FF; margin-bottom: 8px; }
+        .gp-sec-title {
+          font-family: 'Sora', sans-serif; font-size: clamp(24px, 4vw, 36px);
+          font-weight: 700; color: #111; letter-spacing: -0.02em; margin: 0 0 40px;
+        }
+
+        /* ── GRID ── */
+        .gp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+
+        /* ── CARD ── always shows image ── */
+        .gp-card {
+          position: relative; border-radius: 16px; overflow: hidden;
+          height: 340px; cursor: pointer;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+          transition: transform 0.28s ease, box-shadow 0.28s ease;
+        }
+        .gp-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,0.16); }
+
+        /* image always visible */
+        .gp-card__img {
+          position: absolute; inset: 0;
+          width: 100%; height: 100%; object-fit: cover;
+          transition: transform 0.5s ease;
+        }
+        .gp-card:hover .gp-card__img { transform: scale(1.05); }
+
+        /* gradient scrim — always present, deepens on hover */
+        .gp-card__scrim {
+          position: absolute; inset: 0;
+          background: linear-gradient(180deg, rgba(5,10,20,0.08) 0%, rgba(5,10,20,0.72) 60%, rgba(5,10,20,0.90) 100%);
+          transition: background 0.3s;
+        }
+        .gp-card:hover .gp-card__scrim {
+          background: linear-gradient(180deg, rgba(5,10,20,0.18) 0%, rgba(5,10,20,0.82) 55%, rgba(5,10,20,0.96) 100%);
+        }
+
+        /* fallback bg when image not loaded */
+        .gp-card__fallback {
+          position: absolute; inset: 0;
+          background: linear-gradient(135deg, #1a2a40 0%, #0e1828 100%);
+        }
+
+        /* card body */
+        .gp-card__body {
+          position: relative; z-index: 5; height: 100%; padding: 22px;
+          display: flex; flex-direction: column; justify-content: flex-end;
+        }
+
+        .gp-card__name {
+          font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700;
+          color: #fff; margin: 0 0 7px; line-height: 1.2;
+        }
+        .gp-card__desc {
+          font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.65);
+          line-height: 1.6; margin: 0 0 16px;
+          display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        .gp-card__foot {
+          display: flex; justify-content: space-between; align-items: center;
+          padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .gp-card__badge { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+
+        .gp-card__arrow {
+          width: 30px; height: 30px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          border: 1.5px solid rgba(255,255,255,0.25); color: #fff;
+          transition: all 0.25s;
+        }
+        .gp-card:hover .gp-card__arrow { background: #7EB3FF; border-color: #7EB3FF; transform: translate(2px, -2px); }
+
+        /* ── LOADING ── */
+        .gp-loading { grid-column: 1/-1; padding: 60px 0; display: flex; justify-content: center; gap: 6px; }
+        .gp-dot { width: 7px; height: 7px; border-radius: 50%; background: #7EB3FF; animation: bdot 1.2s ease-in-out infinite; }
+        .gp-dot:nth-child(2) { animation-delay: 0.2s; }
+        .gp-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bdot { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-8px);opacity:1} }
+
+        @media (max-width: 600px) {
+          .gp-stat { border-right: none; border-bottom: 1px solid #e8e8e8; }
+          .gp-stat:last-child { border-bottom: none; }
+          .gp-grid { grid-template-columns: 1fr; }
+        }
+      `}</style>
+
+      <div className="gp">
+        <Navbar />
+
+        {/* ── HERO ── */}
+        <section className="gp-hero">
+          <img className="gp-hero__bg" src={HERO_IMAGE} alt="Global Trade" loading="lazy" />
+          <div className="gp-hero__fade" />
+          <motion.div className="gp-hero__content" variants={heroContainer} initial="hidden" animate="visible">
+            <motion.span variants={fadeUp} className="gp-hero__tag">
+              VR &amp; Sons Import Export
+            </motion.span>
+            <motion.h1 variants={fadeUp}>
+              Direct. <span>Global.</span><br />Reliable.
+            </motion.h1>
+            <motion.p variants={fadeUp} className="gp-hero__sub">
+              {displayText}<span className="gp-cursor">|</span>
+            </motion.p>
           </motion.div>
-        </motion.div>
-      </section>
+        </section>
 
-      {/* TRADE UNITS */}
-      <section className="py-24 px-6 relative">
-        <div
-          className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
-          style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/carbon-fibre.png')` }}
-        />
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.h2
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl font-black mb-14 uppercase italic border-l-4 border-[#C36A4D] pl-6"
-          >
-            Trade Units
-          </motion.h2>
-
-          <motion.div
-            variants={cardContainer}
-            initial="hidden"
-            whileInView="show"
-            animate="show"
-            viewport={{ once: true }}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {categories.map(cat => (
-              <motion.div
-                key={cat._id}
-                variants={cardItem}
-                onMouseEnter={() => setHoveredId(cat._id)}
-                onMouseLeave={() => setHoveredId(null)}
-                whileHover={{ y: -15 }}
-                className="relative h-[420px] rounded-[2rem] overflow-hidden bg-white shadow-2xl border border-slate-100 cursor-pointer group"
-              >
-                {/* Image Reveal on Hover */}
-                <AnimatePresence>
-                  {hoveredId === cat._id && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 1.1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 1.1 }}
-                      className="absolute inset-0 z-0"
-                    >
-                      <img src={cat.categoryImage} className="w-full h-full object-cover" alt="" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="relative z-10 h-full p-8 flex flex-col justify-between" onClick={() => navigate(`/CategoryProducts/${cat._id}`)}>
-                  <div>
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-all duration-500 ${
-                      hoveredId === cat._id ? 'bg-[#C36A4D] text-white rotate-12 scale-110' : 'bg-slate-100 text-slate-500'
-                    }`}>
-                      <img
-                        src="https://cdn.prod.website-files.com/6209ea9aee1f965d7fce7c19/6549e52943c26955e3fb9516_xpo%20logistics.jpg"
-                        alt="Shipment"
-                        className="w-12 h-12 rounded-xl"
-                      />
-                    </div>
-
-                    <h3 className={`text-2xl font-black mt-2 transition-colors duration-300 ${
-                      hoveredId === cat._id ? 'text-white' : ''
-                    }`}>
-                      {cat.name}
-                    </h3>
-
-                    <p className={`text-sm mt-3 leading-relaxed transition-colors duration-300 ${
-                      hoveredId === cat._id ? "text-white/70" : "text-slate-500"
-                    }`}>
-                      {hoveredId === cat._id
-                        ? "Explore premium quality products in this category."
-                        : cat.decription}
-                    </p>
-                  </div>
-
-                  <div className="mt-auto">
-                    <div className={`flex justify-between text-[10px] font-black uppercase tracking-widest mb-4 transition-colors ${
-                      hoveredId === cat._id ? 'text-white/60' : 'text-slate-400'
-                    }`}>
-                      <span>13+ Countries</span>
-                    </div>
-
-                    <div className={`flex justify-between items-center pt-4 border-t transition-all duration-300 ${
-                      hoveredId === cat._id ? 'text-white border-white/20' : 'text-slate-300 border-slate-100'
-                    }`}>
-                      <span className="text-[10px] font-bold uppercase tracking-widest">Explore Unit</span>
-                      <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                    </div>
-                  </div>
-                </div>
+        {/* ── STATS ── */}
+        <div className="gp-stats">
+          <div className="gp-stats__row">
+            {[
+              { n: '13+', l: 'Countries' },
+              { n: '6+',  l: 'Categories' },
+              { n: '93%', l: 'Satisfaction' },
+              { n: '10+', l: 'Years Active' },
+            ].map((s, i) => (
+              <motion.div key={i} className="gp-stat"
+                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.07, duration: 0.5 }}>
+                <div className="gp-stat__n">{s.n}</div>
+                <div className="gp-stat__l">{s.l}</div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
-      </section>
-      <Footer/>
-    </div>
+
+        {/* ── CATEGORIES ── */}
+        <section className="gp-cats">
+          <div className="gp-cats__inner">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6 }}>
+              <p className="gp-sec-label">Product Categories</p>
+              <h2 className="gp-sec-title">Our Trade Units</h2>
+            </motion.div>
+
+            <motion.div className="gp-grid" variants={cardContainer} initial="hidden" whileInView="show" viewport={{ once: true }}>
+              {categories.length === 0 ? (
+                <div className="gp-loading">
+                  <div className="gp-dot" /><div className="gp-dot" /><div className="gp-dot" />
+                </div>
+              ) : (
+                categories.map(cat => (
+                  <motion.div
+                    key={cat._id}
+                    className="gp-card"
+                    variants={cardItem}
+                    onMouseEnter={() => setHoveredId(cat._id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    onClick={() => navigate(`/CategoryProducts/${cat._id}`)}
+                  >
+                    {/* fallback bg */}
+                    <div className="gp-card__fallback" />
+
+                    {/* always-visible image */}
+                    {cat.categoryImage && (
+                      <img className="gp-card__img" src={cat.categoryImage} alt={cat.name} loading="lazy" />
+                    )}
+
+                    {/* always-visible scrim */}
+                    <div className="gp-card__scrim" />
+
+                    <div className="gp-card__body">
+                      <h3 className="gp-card__name">{cat.name}</h3>
+                      <p className="gp-card__desc">{cat.decription}</p>
+                      <div className="gp-card__foot">
+                        <span className="gp-card__badge">13+ Countries</span>
+                        <div className="gp-card__arrow"><ArrowUpRight size={13} /></div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </motion.div>
+          </div>
+        </section>
+
+        <Footer />
+      </div>
+    </>
   );
 };
 
