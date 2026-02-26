@@ -23,8 +23,9 @@ export const customerPresent = async (req, res, next) => {
 
 export const adminPresent = async (req, res, next) => {
     try {
+        // console.log(req.body);
         const { email } = req.body;
-
+    
         if (!email) {
             return res.status(400).json(new ApiError(400, "Email is required"));
         }

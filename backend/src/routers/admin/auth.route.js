@@ -24,9 +24,14 @@ const upload = multer({
 
 router.post("/signup", Signup);
 router.post("/login", adminPresent, Login);
+
+
 // router.patch('/forgetpassword', forgetPassword);
 //router.put('/updateProfile', requiredLogin, upload.single("profileImage"), updateProfile);
 router.put('/updateProfile', requiredLogin, upload.single("profileImage"),updateProfile);
+// router.put('/updateProfile', ()=>{
+//     console.log("got the req.");
+// });
 router.get("/myprofile",requiredLogin, getMyProfile);
 router.post('/signupOtp', duplicateEmail, signupOtp);
 //router.post("/forgetpassword", adminPresent, forgetPasswordOtp);
@@ -34,6 +39,9 @@ router.post('/signupOtp', duplicateEmail, signupOtp);
 
 // Forget Password routes
 router.post("/forgetpasswordOtp", adminPresent, forgetPasswordOtp);  
+// router.post("/forgetpasswordOtp", ()=>{
+//     console.log("got the req");
+// });  
 router.post("/verifyOtp", verifyOTP);                                 
 router.post('/forgetpassword', forgetPassword);                      
 

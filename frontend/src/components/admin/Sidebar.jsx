@@ -727,7 +727,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-import logo from "../../assets/logo/NavLogo.svg";
+import logo from "../../assets/logo/TextLogo.png";
 
 export default function Sidebar() {
   const location = useLocation();
@@ -794,7 +794,7 @@ export default function Sidebar() {
       <Toaster />
       
       {/* TOP SECTION: Logo */}
-      <div className="p-4 ml-12 pl-8 border-b border-gray-100">
+      <div className="p-4  pl-20 border-b border-gray-100">
         <img src={logo} alt="Logo" className="h-10 object-contain" />
       </div>
 

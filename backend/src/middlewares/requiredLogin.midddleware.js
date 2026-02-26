@@ -3,6 +3,7 @@ import { cookiesForUser } from "../utils/cookiesForUser.js";
 import { ApiError } from "../utils/api-error.js";
 
 export const requiredLogin = async (req, res, next) => {
+    // console.log("I was in reqired login there.");
     try {
         const accessToken = req.cookies?.AccessToken;
         const refreshToken = req.cookies?.RefreshToken;
@@ -21,6 +22,7 @@ export const requiredLogin = async (req, res, next) => {
         else {
             return res.status(401).json(new ApiError(401, "Please Login"));
         }
+       
     }
     catch (err) {
         
