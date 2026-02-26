@@ -1,143 +1,224 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { 
+  ShieldCheck, 
+  Eye, 
+  Database, 
+  Cookie, 
+  UserCheck, 
+  Lock, 
+  Send, 
+  FileWarning, 
+  Mail, 
+  Globe 
+} from "lucide-react";
 
 // IMPORT YOUR COMPONENTS HERE:
 import Navbar from "../../components/homePageComp/Navbar";
 import Footer from "../../components/homePageComp/Footer";
 
-const FadeUp = ({ children, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-50px" }}
-    transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-  >
-    {children}
-  </motion.div>
-);
-
 const PRIVACY_CONTENT = [
   {
-    title: "1. Introduction",
-    content: "VR & Sons Import Export values your privacy and is committed to protecting your personal and business data. This Privacy Policy explains how we collect, use, and safeguard the information you provide when using our global B2B product inquiry platform."
+    id: "collection",
+    icon: <Database size={20} />,
+    title: "1. Information We Collect",
+    content: "We collect information you provide directly to us through our inquiry forms, including your name, company name, email address, phone number, and business country. This data is essential for processing B2B trade inquiries and establishing professional communication."
   },
   {
-    title: "2. Information We Collect",
-    content: "When you register for an account or submit a product inquiry on our platform, we collect specific information to facilitate international trade. This includes your Name, Email, Mobile Number, Company Name, Country, Required Quantity, and any specific messages or requirements you provide[cite: 107, 108, 109, 110, 111, 112, 113]."
+    id: "usage",
+    icon: <Eye size={20} />,
+    title: "2. How We Use Data",
+    content: "Your information is used strictly to facilitate international trade inquiries, provide product quotations, and improve our platform's user experience. We do not use your business data for unrelated marketing purposes without your explicit consent."
   },
   {
-    title: "3. How We Use Your Information",
-    content: "The information we collect is strictly used to process your product inquiries, communicate export quotes, manage your user dashboard, and facilitate global trade operations. When you submit an inquiry, it is automatically linked to the specific product ID to help our admin team provide accurate and timely responses[cite: 115, 139]."
+    id: "cookies",
+    icon: <Cookie size={20} />,
+    title: "3. Cookies & Tracking",
+    content: "VR & Sons uses cookies to enhance site navigation and analyze website traffic. Cookies help us understand which product categories are most relevant to our global buyers. You can manage your cookie preferences through your browser settings at any time."
   },
   {
-    title: "4. Data Protection & Security",
-    content: "We implement robust security measures to protect your data. This includes secure password hashing, role-based access control (differentiating between standard Users and Admins), and secure data transmission protocols to ensure your business information remains confidential."
+    id: "security",
+    icon: <Lock size={20} />,
+    title: "4. Data Security",
+    content: "We implement robust technical and organizational security measures to protect your business information from unauthorized access, loss, or alteration. While we strive to use commercially acceptable means to protect your data, no method of transmission over the internet is 100% secure."
   },
   {
-    title: "5. Sharing of Information (Third Parties)",
-    content: "We do not sell, trade, or rent your personal or business information to outside parties. However, to fulfill your export orders, we may share necessary logistical information with our reliable shipping partners and supply chain networks to ensure timely delivery and smooth global transportation of goods."
+    id: "sharing",
+    icon: <Send size={20} />,
+    title: "5. Third-Party Sharing",
+    content: "We do not sell or rent your business data to third parties. Information may only be shared with trusted logistics partners or regulatory authorities when necessary to fulfill an export order or comply with Indian export-import laws."
   },
   {
-    title: "6. Cookies and Tracking Technologies",
-    content: "Our website utilizes cookies to enhance performance, maintain secure user sessions (JWT/Session Authentication) [cite: 202], and provide an optimized, SEO-friendly browsing experience[cite: 189]. You can choose to disable cookies through your browser settings, though this may limit your ability to use certain features like the inquiry dashboard."
+    id: "rights",
+    icon: <UserCheck size={20} />,
+    title: "6. Your Data Rights",
+    content: "You have the right to request access to the personal data we hold about you, or to request corrections or deletion of your information. To exercise these rights, please contact our data compliance officer through the provided support channels."
   },
   {
-    title: "7. Your Data Rights",
-    content: "As a registered user (Buyer/Importer), you have the right to access, update, or request the deletion of your personal data from our systems. You can manage your profile details directly through your account dashboard or by contacting our support team."
+    id: "retention",
+    icon: <FileWarning size={20} />,
+    title: "7. Data Retention",
+    content: "We retain your business inquiry data for as long as necessary to provide our services and comply with legal obligations, resolve disputes, and enforce our commercial agreements."
   },
   {
-    title: "8. Changes to This Privacy Policy",
-    content: "We may update this Privacy Policy periodically to reflect changes in international trade laws or our platform's operations. We encourage our global partners to review this page occasionally for any updates."
+    id: "compliance",
+    icon: <ShieldCheck size={20} />,
+    title: "8. Legal Compliance",
+    content: "Our privacy practices are governed by the Information Technology Act of India and international data protection standards where applicable to our global trade operations."
   }
 ];
 
 export default function PrivacyPolicy() {
-  const lastUpdated = "October 2025";
+  const [activeSection, setActiveSection] = useState(PRIVACY_CONTENT[0].id);
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 120;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
 
   return (
-    <div className="bg-white text-neutral-900 font-sans min-h-screen flex flex-col">
-      
-      {/* ── HEADER ──────────────────────────────────────────────── */}
+    <div className="bg-[#FCFCFC] text-neutral-900 font-sans min-h-screen">
       <Navbar />
 
       {/* ── HERO SECTION ────────────────────────────────────────── */}
-      <section className="pt-32 pb-16 px-6 md:px-20 bg-neutral-50 border-b border-neutral-200">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative pt-40 pb-20 px-6 overflow-hidden bg-neutral-900">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#C36A4D_1px,transparent_1px)] [background-size:40px_40px]" />
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8 }}
+            className="text-center md:text-left"
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-0.5 bg-[#C36A4D]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C36A4D]">
-                Data Protection
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-neutral-900 mb-6">
-              Privacy <span className="text-[#C36A4D]">Policy</span>
+            <span className="inline-block py-1 px-3 rounded-full bg-[#C36A4D]/20 text-[#C36A4D] text-[10px] font-bold uppercase tracking-[0.3em] mb-6">
+              Data Protection
+            </span>
+            <h1 className="text-5xl md:text-7xl font-black text-white leading-none mb-8">
+              PRIVACY <span className="text-neutral-500 underline decoration-[#C36A4D] decoration-4 underline-offset-8">POLICY</span>
             </h1>
-            <p className="text-neutral-500 font-medium text-sm md:text-base max-w-2xl leading-relaxed">
-              Your trust is the foundation of our global trade network. Learn how we handle, secure, and protect your business data across our platform.
-            </p>
-            <p className="text-neutral-400 text-xs font-bold uppercase tracking-widest mt-8">
-              Effective Date: {lastUpdated}
+            <p className="text-neutral-400 text-lg max-w-2xl leading-relaxed">
+              Updated October 2025 • Transparency regarding how we handle, store, and protect your global business data.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* ── CONTENT SECTION ─────────────────────────────────────── */}
-      <main className="flex-grow py-20 px-6 md:px-20">
-        <div className="max-w-4xl mx-auto">
+      {/* ── MAIN LAYOUT ─────────────────────────────────────────── */}
+      <main className="max-w-7xl mx-auto px-6 py-20">
+        <div className="flex flex-col lg:flex-row gap-16">
           
-          <div className="space-y-12 md:space-y-16">
-            {PRIVACY_CONTENT.map((section, index) => (
-              <FadeUp key={index} delay={index * 0.05}>
-                <div className="group">
-                  <h2 className="text-xl md:text-2xl font-bold text-neutral-900 mb-4 group-hover:text-[#C36A4D] transition-colors duration-300">
-                    {section.title}
-                  </h2>
-                  <div className="w-12 h-px bg-neutral-200 mb-5 group-hover:bg-[#C36A4D]/30 transition-colors duration-300" />
-                  <p className="text-neutral-600 leading-[1.8] text-[15px] font-medium">
-                    {section.content}
+          {/* Sticky Sidebar Navigation */}
+          <aside className="lg:w-1/4 hidden lg:block">
+            <div className="sticky top-32 space-y-2 p-6 bg-white border border-neutral-100 rounded-3xl shadow-sm">
+              <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-6 px-4">Jump to Section</p>
+              {PRIVACY_CONTENT.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveSection(item.id);
+                    scrollToSection(item.id);
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                    activeSection === item.id 
+                    ? "bg-[#C36A4D] text-white shadow-lg shadow-[#C36A4D]/20" 
+                    : "text-neutral-500 hover:bg-neutral-50 hover:text-[#C36A4D]"
+                  }`}
+                >
+                  {item.icon}
+                  {item.title.split('. ')[1]}
+                </button>
+              ))}
+            </div>
+          </aside>
+
+          {/* Content Area */}
+          <div className="lg:w-3/4 space-y-24">
+            {PRIVACY_CONTENT.map((section) => (
+              <motion.section
+                key={section.id}
+                id={section.id}
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                onViewportEnter={() => setActiveSection(section.id)}
+                className="group scroll-mt-32"
+              >
+                <div className="flex items-start gap-6">
+                  <div className="hidden md:flex items-center justify-center w-14 h-14 rounded-2xl bg-white border border-neutral-100 text-[#C36A4D] shadow-sm group-hover:scale-110 transition-transform duration-500">
+                    {section.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-6 group-hover:text-[#C36A4D] transition-colors">
+                      {section.title}
+                    </h2>
+                    <div className="prose prose-neutral max-w-none">
+                      <p className="text-neutral-600 leading-[2] text-lg font-normal">
+                        {section.content}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.section>
+            ))}
+
+            {/* Support Card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="relative overflow-hidden p-8 md:p-12 bg-[#C36A4D] rounded-[2.5rem] text-white shadow-2xl shadow-[#C36A4D]/30"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+              
+              <div className="relative z-10 grid md:grid-cols-2 gap-10 items-center">
+                <div>
+                  <h3 className="text-3xl font-bold mb-4">Privacy Concerns?</h3>
+                  <p className="text-white/80 leading-relaxed mb-0">
+                    If you have questions about how we handle your data or wish to request data deletion, contact our privacy officer.
                   </p>
                 </div>
-              </FadeUp>
-            ))}
-          </div>
-
-          {/* Contact Block */}
-          <FadeUp delay={0.2}>
-            <div className="mt-20 p-8 md:p-12 bg-neutral-50 border border-neutral-200 rounded-3xl">
-              <h3 className="text-lg font-bold text-neutral-900 mb-3">
-                Data Privacy Inquiries
-              </h3>
-              <p className="text-neutral-600 text-sm leading-relaxed mb-6">
-                If you have questions about how we handle your data or wish to exercise your data protection rights, please reach out to us at:
-              </p>
-              
-              <div className="space-y-2 text-sm font-medium text-neutral-800">
-                <p>
-                  <span className="text-neutral-400 mr-2">Email:</span> 
-                  <a href="mailto:support@vrandsons.com" className="hover:text-[#C36A4D] transition-colors">
-                    support@vrandsons.com
-                  </a> 
-                </p>
-                <p>
-                  <span className="text-neutral-400 mr-2">Address:</span> 
-                  Kamrej, Surat, Gujarat, India 
-                </p>
+                <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 bg-white rounded-lg text-[#C36A4D]">
+                        <Mail size={18} />
+                      </div>
+                      <div>
+                        <p className="text-xs text-white/60 font-bold uppercase tracking-tighter">Privacy Email</p>
+                        <a href="mailto:privacy@vrandsons.com" className="font-semibold hover:underline">privacy@vrandsons.com</a>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 bg-white rounded-lg text-[#C36A4D]">
+                        <Globe size={18} />
+                      </div>
+                      <div>
+                        <p className="text-xs text-white/60 font-bold uppercase tracking-tighter">HQ Office</p>
+                        <p className="font-semibold uppercase text-xs">Kamrej, Surat, Gujarat, India</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </FadeUp>
-
+            </motion.div>
+          </div>
         </div>
       </main>
 
-      {/* ── FOOTER ──────────────────────────────────────────────── */}
       <Footer />
-
     </div>
   );
 }

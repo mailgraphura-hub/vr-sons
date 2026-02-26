@@ -27,8 +27,7 @@ router.post("/login", adminPresent, Login);
 
 
 // router.patch('/forgetpassword', forgetPassword);
-//router.put('/updateProfile', requiredLogin, upload.single("profileImage"), updateProfile);
-router.put('/updateProfile', requiredLogin, upload.single("profileImage"),updateProfile);
+router.put('/updateProfile', requiredLogin, upload.single("profileImage"), updateProfile);
 // router.put('/updateProfile', ()=>{
 //     console.log("got the req.");
 // });

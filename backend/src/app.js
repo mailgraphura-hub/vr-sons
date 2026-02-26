@@ -17,6 +17,7 @@ import adminSearchRouter from "./routers/admin/search.route.js";
 import adminPromotionRouter from "./routers/admin/promotion.route.js";
 import adminBlogRouter from "./routers/admin/blogs.route.js";
 import {Signout} from "./controllers/customer/auth.controllers.js";
+import NotificationRouters from "./routers/common/notification.route.js";
 
 
 import dotenv from "dotenv";
@@ -71,6 +72,7 @@ app.use("/api/v1/admin/promotion", adminPromotionRouter);
 app.use("/api/v1/admin/blog", adminBlogRouter);
 
 app.use("/api/v1/signout",Signout);
+app.use("/api/v1/notification", NotificationRouters);
 
 
 export default app;

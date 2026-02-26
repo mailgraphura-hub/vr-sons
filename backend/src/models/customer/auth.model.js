@@ -12,8 +12,7 @@ const customerAuth_Schema = new Schema({
         unique: true
     },
     password:{
-        type: String,
-        required: true
+        type: String,   
     },
     contact: {
         type: Number,
