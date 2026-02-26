@@ -709,6 +709,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { postService } from "../../service/axios";
 import { Toaster, toast } from "react-hot-toast";
+// import logo from "../../assets/logo/TextLogo2.png"
 
 import {
   LayoutDashboard,
@@ -726,7 +727,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-import logo from "../../assets/logo/logo.webp";
+import logo from "../../assets/logo/NavLogo.svg";
 
 export default function Sidebar() {
   const location = useLocation();
@@ -793,7 +794,7 @@ export default function Sidebar() {
       <Toaster />
       
       {/* TOP SECTION: Logo */}
-      <div className="p-4 border-b border-gray-100">
+      <div className="p-4 ml-12 pl-8 border-b border-gray-100">
         <img src={logo} alt="Logo" className="h-10 object-contain" />
       </div>
 
