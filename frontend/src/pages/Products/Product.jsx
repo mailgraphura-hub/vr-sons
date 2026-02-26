@@ -24,19 +24,30 @@ const ProductCard = ({ product, index, onClick }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ delay: index * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        delay: index * 0.06,
+        duration: 0.45,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className="pl-card"
     >
       {/* Image */}
       <div className="pl-card__img-wrap">
         {product.productImage?.[0] ? (
-          <img className="pl-card__img" src={product.productImage[0]} alt={product.name} loading="lazy" />
+          <img
+            className="pl-card__img"
+            src={product.productImage[0]}
+            alt={product.name}
+            loading="lazy"
+          />
         ) : (
           <div className="pl-card__img-placeholder">
             <Tag size={28} color="#ccc" />
           </div>
         )}
-        <span className={`pl-card__badge ${available ? "pl-card__badge--green" : "pl-card__badge--red"}`}>
+        <span
+          className={`pl-card__badge ${available ? "pl-card__badge--green" : "pl-card__badge--red"}`}
+        >
           {available ? <CheckCircle2 size={9} /> : <XCircle size={9} />}
           {available ? "In Stock" : "Out of Stock"}
         </span>
@@ -54,14 +65,18 @@ const ProductCard = ({ product, index, onClick }) => {
         {/* Specs snippet */}
         {product.specifications && (
           <div className="pl-card__specs">
-            <p className="pl-card__specs-label"><Layers size={9} /> Specifications</p>
+            <p className="pl-card__specs-label">
+              <Layers size={9} /> Specifications
+            </p>
             <p className="pl-card__specs-val">{product.specifications}</p>
           </div>
         )}
 
         <div className="pl-card__foot">
           <span className="pl-card__view">View Details</span>
-          <div className="pl-card__arrow"><ArrowUpRight size={13} /></div>
+          <div className="pl-card__arrow">
+            <ArrowUpRight size={13} />
+          </div>
         </div>
       </div>
     </motion.div>
@@ -86,8 +101,13 @@ export default function ProductDetail() {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const apiResponse = await getService(`/customer/product/subcategory/${id}`);
-      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
+      const apiResponse = await getService(
+        `/customer/product/subcategory/${id}`,
+      );
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
+      }
       setSubCateogory(apiResponse.data.data);
     })();
   }, [id]);
@@ -96,9 +116,12 @@ export default function ProductDetail() {
     if (!id || searchQuery) return;
     (async () => {
       const apiResponse = await getService(
-        `/customer/product/productbyparentId?subCategoryId=${id}&page=${currentPage}&limit=12`
+        `/customer/product/productbyparentId?subCategoryId=${id}&page=${currentPage}&limit=12`,
       );
-      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
+      }
       const data = apiResponse.data.data;
       setProduct(data.productList);
       setProductCount(data.totalItems);
@@ -111,9 +134,12 @@ export default function ProductDetail() {
     if (!searchQuery) return;
     const delayDebounce = setTimeout(async () => {
       const apiResponse = await getService(
-        `/customer/search/product?keyword=${searchQuery}&subCategoryId=${id}&page=${currentPage}&limit=12`
+        `/customer/search/product?keyword=${searchQuery}&subCategoryId=${id}&page=${currentPage}&limit=12`,
       );
-      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
+      }
       const data = apiResponse.data.data;
       setProduct(data.products);
       setProductCount(data.products.length);
@@ -130,9 +156,12 @@ export default function ProductDetail() {
     }
     const delayDebounce = setTimeout(async () => {
       const apiResponse = await getService(
-        `/customer/search/suggestion/product?keyword=${searchQuery}&subCategoryId=${id}`
+        `/customer/search/suggestion/product?keyword=${searchQuery}&subCategoryId=${id}`,
       );
-      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
+      }
       console.log(apiResponse.data.data.products);
       setSuggestions(apiResponse.data.data.products);
     }, 300);
@@ -174,7 +203,7 @@ export default function ProductDetail() {
           margin-bottom: 18px; transition: color 0.2s; padding: 0;
           font-family: 'Inter', sans-serif;
         }
-        .pl-breadcrumb:hover { color: #7EB3FF; }
+        .pl-breadcrumb:hover { color: #C36A4D; }
         .pl-hero h1 {
           font-family: 'Sora', sans-serif;
           font-size: clamp(34px, 6.5vw, 68px);
@@ -207,7 +236,7 @@ export default function ProductDetail() {
           color: #111; outline: none; transition: border-color 0.2s;
         }
         .pl-search::placeholder { color: #aaa; }
-        .pl-search:focus { border-color: #7EB3FF; background: #fff; }
+        .pl-search:focus { border-color: #C36A4D; background: #fff; }
         .pl-search-icon {
           position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
           color: #bbb; pointer-events: none;
@@ -284,7 +313,7 @@ export default function ProductDetail() {
           color: #111; margin: 0; line-height: 1.2;
           transition: color 0.22s;
         }
-        .pl-card:hover .pl-card__name { color: #3b82f6; }
+        .pl-card:hover .pl-card__name { color: #C36A4D; }
 
         .pl-card__desc {
           font-size: 13px; font-weight: 300; color: #666; line-height: 1.6; margin: 0;
@@ -318,7 +347,7 @@ export default function ProductDetail() {
           border: 1.5px solid #e0e0e0; color: #aaa;
           transition: all 0.22s;
         }
-        .pl-card:hover .pl-card__arrow { background: #7EB3FF; border-color: #7EB3FF; color: #fff; transform: translate(2px,-2px); }
+        .pl-card:hover .pl-card__arrow { background: #C36A4D; border-color: #C36A4D; color: #fff; transform: translate(2px,-2px); }
 
         /* ── EMPTY STATE ── */
         .pl-empty {
@@ -329,7 +358,7 @@ export default function ProductDetail() {
           width: 72px; height: 72px; border-radius: 18px;
           background: #f4f5f7; border: 1.5px solid #e8e8e8;
           display: flex; align-items: center; justify-content: center;
-          margin-bottom: 24px; color: #7EB3FF;
+          margin-bottom: 24px; color: #C36A4D;
         }
         .pl-empty h2 {
           font-family: 'Sora', sans-serif; font-size: clamp(22px,4vw,30px);
@@ -344,7 +373,7 @@ export default function ProductDetail() {
           border: 1.5px solid #e8e8e8; background: #fff; color: #555;
           cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif;
         }
-        .pl-page-btn:hover:not(:disabled) { border-color: #7EB3FF; color: #7EB3FF; }
+        .pl-page-btn:hover:not(:disabled) { border-color: #C36A4D; color: #C36A4D; }
         .pl-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
         .pl-page-num {
           width: 36px; height: 36px; border-radius: 8px;
@@ -353,12 +382,12 @@ export default function ProductDetail() {
           background: #fff; color: #555; cursor: pointer; transition: all 0.2s;
           font-family: 'Inter', sans-serif;
         }
-        .pl-page-num:hover { border-color: #7EB3FF; color: #7EB3FF; }
-        .pl-page-num--active { background: #7EB3FF; border-color: #7EB3FF; color: #fff; }
+        .pl-page-num:hover { border-color: #C36A4D; color: #C36A4D; }
+        .pl-page-num--active { background: #C36A4D; border-color: #C36A4D; color: #fff; }
 
         /* loading dots */
         .pl-loading { display: flex; justify-content: center; gap: 6px; padding: 80px 0; }
-        .pl-dot { width: 7px; height: 7px; border-radius: 50%; background: #7EB3FF; animation: pldot 1.2s ease-in-out infinite; }
+        .pl-dot { width: 7px; height: 7px; border-radius: 50%; background: #C36A4D; animation: pldot 1.2s ease-in-out infinite; }
         .pl-dot:nth-child(2) { animation-delay: 0.2s; }
         .pl-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes pldot { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-8px);opacity:1} }
@@ -371,11 +400,14 @@ export default function ProductDetail() {
       `}</style>
 
       <div className="pl">
-
         {/* ── HERO ── */}
         <section className="pl-hero">
           {subcategory?.subcategoryImage && (
-            <img className="pl-hero__img" src={subcategory.subcategoryImage} alt={subcategory?.name} />
+            <img
+              className="pl-hero__img"
+              src={subcategory.subcategoryImage}
+              alt={subcategory?.name}
+            />
           )}
           <div className="pl-hero__fade" />
           <div className="pl-hero__content">
@@ -406,14 +438,24 @@ export default function ProductDetail() {
                 className="pl-search"
                 placeholder="Search products…"
                 value={searchQuery}
-                onChange={(e) => { setCurrentPage(1); setSearchQuery(e.target.value); }}
+                onChange={(e) => {
+                  setCurrentPage(1);
+                  setSearchQuery(e.target.value);
+                }}
               />
               <Search size={14} className="pl-search-icon" />
               {suggestions.length > 0 && (
                 <div className="pl-suggestions">
                   {suggestions.map((item) => (
-                    <div key={item._id} className="pl-suggestion-item"
-                      onClick={() => { setIsSuggestionClick(true); setSearchQuery(item.name); setSuggestions([]); }}>
+                    <div
+                      key={item._id}
+                      className="pl-suggestion-item"
+                      onClick={() => {
+                        setIsSuggestionClick(true);
+                        setSearchQuery(item.name);
+                        setSuggestions([]);
+                      }}
+                    >
                       {item.name}
                     </div>
                   ))}
@@ -438,26 +480,52 @@ export default function ProductDetail() {
               ))}
             </div>
           ) : (
-            <motion.div className="pl-empty" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <div className="pl-empty__icon"><Search size={28} /></div>
+            <motion.div
+              className="pl-empty"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="pl-empty__icon">
+                <Search size={28} />
+              </div>
               <h2>No Products Found</h2>
-              <p>We couldn't find any matching products. Try adjusting your search or explore other subcategories.</p>
+              <p>
+                We couldn't find any matching products. Try adjusting your
+                search or explore other subcategories.
+              </p>
             </motion.div>
           )}
 
           {/* ── PAGINATION ── */}
           {totalPages > 1 && (
             <div className="pl-pagination">
-              <button className="pl-page-btn" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Prev</button>
+              <button
+                className="pl-page-btn"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+              >
+                Prev
+              </button>
               {[...Array(totalPages)].map((_, i) => {
                 const p = i + 1;
                 return (
-                  <button key={p} className={`pl-page-num${currentPage === p ? " pl-page-num--active" : ""}`} onClick={() => setCurrentPage(p)}>
+                  <button
+                    key={p}
+                    className={`pl-page-num${currentPage === p ? " pl-page-num--active" : ""}`}
+                    onClick={() => setCurrentPage(p)}
+                  >
                     {p}
                   </button>
                 );
               })}
-              <button className="pl-page-btn" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</button>
+              <button
+                className="pl-page-btn"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+              >
+                Next
+              </button>
             </div>
           )}
         </main>
