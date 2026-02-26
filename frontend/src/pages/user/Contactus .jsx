@@ -1,205 +1,184 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {
+  Phone,
+  Mail,
+  MapPin,
   Globe,
-  ShieldCheck,
-  Truck,
-  Award,
-  Target,
-  Eye,
-  BarChart3
+  ArrowUpRight,
 } from "lucide-react";
 
 import Navbar from "../../components/homePageComp/Navbar";
 import Footer from "../../components/homePageComp/Footer";
 
-// ─────────────────────────────
-// Animation Wrapper
-// ─────────────────────────────
-const FadeUp = ({ children, delay = 0, className = "" }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 40 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.7, delay }}
-    className={className}
-  >
-    {children}
-  </motion.div>
-);
-
-export default function AboutUs() {
+export default function ContactPage() {
   return (
-    <div className="bg-white text-neutral-900 overflow-x-hidden">
+    <div className="relative bg-neutral-950 text-white font-sans overflow-x-hidden">
 
       <Navbar />
 
-      {/* ───────── HERO SECTION ───────── */}
-      <section className="relative h-[85vh] flex items-end px-6 md:px-20 pb-24 overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1494415859740-21e878dd929d?w=1800&q=80"
-            alt="Global Trade"
-            className="w-full h-full object-cover"
-            style={{ filter: "brightness(0.35)" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+      {/* ================= HERO ================= */}
+      <section className="relative h-[80vh] flex items-center justify-center text-center overflow-hidden">
+
+        {/* Animated Background Image */}
+        <motion.img
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 6 }}
+          src="https://images.pexels.com/photos/906494/pexels-photo-906494.jpeg"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "brightness(0.3)" }}
+          alt=""
+        />
+
+        {/* Floating Gradient Blobs */}
+        <div className="absolute top-10 left-10 w-72 h-72 bg-[#C36A4D]/20 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-10 right-10 w-72 h-72 bg-blue-500/20 blur-[120px] rounded-full animate-pulse" />
+
+        <div className="relative z-10 max-w-4xl px-6">
+          <motion.h1
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="text-5xl md:text-7xl font-black leading-tight"
+          >
+            Let’s Build <span className="text-[#C36A4D]">Global Trade</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="mt-6 text-white/70 max-w-2xl mx-auto"
+          >
+            Connect with VR & Sons for secure, compliant and premium
+            international export partnerships.
+          </motion.p>
         </div>
+      </section>
 
-        <div className="relative z-10 max-w-7xl mx-auto w-full">
-          <FadeUp>
-            <p className="text-[#C36A4D] uppercase tracking-[0.5em] text-xs font-bold mb-6">
-              About VR & Sons
-            </p>
-
-            <h1
-              className="text-white font-black uppercase leading-[0.85]"
-              style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
+      {/* ================= GLASS CONTACT CARDS ================= */}
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
+          {[
+            { icon: Phone, title: "Call Us", desc: "+91 98765 43210" },
+            { icon: Mail, title: "Email Us", desc: "info@vrsons.com" },
+            { icon: MapPin, title: "Visit Office", desc: "Nashik, India" },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -10 }}
+              className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl text-center shadow-2xl hover:border-[#C36A4D]/40 transition"
             >
-              Delivering Quality <br />
-              <span className="text-[#C36A4D]">Across Borders</span>
-            </h1>
-
-            <p className="text-white/70 max-w-xl mt-6 border-l-2 border-[#C36A4D]/40 pl-5">
-              We build long-term international trade partnerships
-              through reliability, transparency, and uncompromised quality.
-            </p>
-          </FadeUp>
-        </div>
-      </section>
-
-      {/* ───────── COMPANY INTRO ───────── */}
-      <section className="py-28 px-6 md:px-20">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
-
-          <FadeUp>
-            <img
-              src="https://images.unsplash.com/photo-1581090700227-1e8f4d9cda3f?w=900&q=80"
-              alt="Factory"
-              className="rounded-3xl shadow-2xl border border-neutral-200"
-            />
-          </FadeUp>
-
-          <FadeUp delay={0.1}>
-            <p className="text-[#C36A4D] uppercase tracking-[0.4em] text-xs font-bold mb-4">
-              Who We Are
-            </p>
-
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-6 leading-tight">
-              A Trusted Export Partner
-            </h2>
-
-            <p className="text-neutral-600 leading-relaxed mb-6">
-              VR & Sons specializes in exporting premium spices,
-              agricultural products, and industrial goods to global markets.
-              Our operations focus on strict quality control,
-              efficient logistics, and transparent business practices.
-            </p>
-
-            <p className="text-neutral-600 leading-relaxed mb-8">
-              With years of experience in international trade,
-              we have established reliable distribution networks
-              across multiple countries.
-            </p>
-
-            <div className="grid grid-cols-2 gap-6">
-              {[
-                { number: "13+", label: "Export Countries" },
-                { number: "500+", label: "Satisfied Clients" },
-                { number: "10+", label: "Years Experience" },
-                { number: "24h", label: "Response Time" }
-              ].map((item, i) => (
-                <div key={i}>
-                  <h3 className="text-3xl font-black text-[#C36A4D]">
-                    {item.number}
-                  </h3>
-                  <p className="text-neutral-600 text-sm font-medium">
-                    {item.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </FadeUp>
-
-        </div>
-      </section>
-
-      {/* ───────── MISSION & VISION ───────── */}
-      <section className="py-28 px-6 md:px-20 bg-neutral-50">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10">
-
-          {[{
-            icon: Target,
-            title: "Our Mission",
-            text: "To deliver consistent quality products worldwide while maintaining ethical standards and competitive pricing."
-          },
-          {
-            icon: Eye,
-            title: "Our Vision",
-            text: "To become a globally recognized export brand known for excellence, trust, and sustainable trade growth."
-          }].map((item, i) => (
-            <FadeUp key={i} delay={i * 0.1}>
-              <div className="bg-white rounded-3xl p-12 border border-neutral-200 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                <item.icon size={32} className="text-[#C36A4D] mb-6" />
-                <h3 className="text-2xl font-black uppercase mb-4">
-                  {item.title}
-                </h3>
-                <p className="text-neutral-600 leading-relaxed">
-                  {item.text}
-                </p>
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-[#C36A4D]/20 flex items-center justify-center mb-6">
+                <item.icon size={26} className="text-[#C36A4D]" />
               </div>
-            </FadeUp>
-          ))}
 
+              <h3 className="font-bold text-lg mb-3">{item.title}</h3>
+              <p className="text-white/60 text-sm">{item.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* ───────── WHY CHOOSE US ───────── */}
-      <section className="py-28 px-6 md:px-20">
-        <div className="max-w-7xl mx-auto text-center">
+      {/* ================= CONTACT FORM ================= */}
+      <section className="py-24 px-6 bg-gradient-to-b from-neutral-950 to-neutral-900">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
 
-          <FadeUp>
-            <p className="text-[#C36A4D] uppercase tracking-[0.4em] text-xs font-bold mb-4">
-              Why Choose Us
+          {/* LEFT CONTENT */}
+          <div>
+            <h2 className="text-4xl font-black mb-6">
+              Send Us <span className="text-[#C36A4D]">Message</span>
+            </h2>
+
+            <p className="text-white/60 leading-relaxed mb-8">
+              Our export team responds within 24 hours.
+              Let’s discuss pricing, logistics and global supply.
             </p>
 
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-16">
-              Trusted By Global Buyers
-            </h2>
-          </FadeUp>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { icon: ShieldCheck, text: "Strict Quality Control" },
-              { icon: Truck, text: "On-Time Global Delivery" },
-              { icon: Globe, text: "International Trade Network" },
-              { icon: Award, text: "Competitive Manufacturer Pricing" }
-            ].map((item, i) => (
-              <FadeUp key={i} delay={i * 0.1}>
-                <div className="group border border-neutral-200 rounded-3xl p-10 transition-all duration-500 hover:border-[#C36A4D]/40 hover:shadow-xl">
-                  <item.icon size={30} className="text-[#C36A4D] mx-auto mb-6 transition-transform duration-300 group-hover:scale-110" />
-                  <p className="font-semibold text-neutral-800">
-                    {item.text}
-                  </p>
-                </div>
-              </FadeUp>
-            ))}
+            <motion.img
+              whileHover={{ scale: 1.05 }}
+              src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg"
+              className="rounded-3xl shadow-2xl"
+              alt=""
+            />
           </div>
+
+          {/* RIGHT FORM */}
+          <motion.form
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl space-y-8 shadow-2xl"
+          >
+            <div className="relative">
+              <input
+                type="text"
+                required
+                className="peer w-full bg-transparent border-b border-white/30 py-3 focus:border-[#C36A4D] outline-none"
+              />
+              <label className="absolute left-0 top-3 text-white/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
+                Full Name
+              </label>
+            </div>
+
+            <div className="relative">
+              <input
+                type="email"
+                required
+                className="peer w-full bg-transparent border-b border-white/30 py-3 focus:border-[#C36A4D] outline-none"
+              />
+              <label className="absolute left-0 top-3 text-white/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
+                Email Address
+              </label>
+            </div>
+
+            <div className="relative">
+              <textarea
+                rows="4"
+                required
+                className="peer w-full bg-transparent border-b border-white/30 py-3 focus:border-[#C36A4D] outline-none"
+              />
+              <label className="absolute left-0 top-3 text-white/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
+                Your Message
+              </label>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full py-4 rounded-2xl bg-[#C36A4D] text-white font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:shadow-[0_15px_40px_rgba(195,106,77,0.4)] transition"
+            >
+              Send Inquiry
+              <ArrowUpRight size={16} />
+            </motion.button>
+          </motion.form>
         </div>
       </section>
 
-      {/* ───────── GLOBAL SECTION (Luxury Touch) ───────── */}
-      <section className="py-28 px-6 md:px-20 bg-black text-white text-center">
-        <FadeUp>
-          <BarChart3 size={36} className="text-[#C36A4D] mx-auto mb-6" />
-          <h2 className="text-4xl md:text-5xl font-black uppercase mb-6">
-            Expanding Across Continents
+      {/* ================= GLOBAL CTA ================= */}
+      <section className="relative py-28 text-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#C36A4D]/20 to-blue-500/20 blur-[150px]" />
+
+        <div className="relative z-10 max-w-4xl mx-auto px-6">
+          <Globe className="mx-auto mb-6 text-[#C36A4D]" size={45} />
+
+          <h2 className="text-4xl md:text-6xl font-black mb-6">
+            Trade Beyond Borders
           </h2>
-          <p className="text-white/70 max-w-2xl mx-auto">
-            Our products reach international markets through reliable
-            logistics partners and strong global trade relationships.
+
+          <p className="text-white/60 max-w-2xl mx-auto mb-8">
+            VR & Sons ensures structured global supply chains
+            and long-term business partnerships.
           </p>
-        </FadeUp>
+
+          <a
+            href="/MainCategory"
+            className="px-12 py-4 rounded-2xl bg-white text-black font-bold uppercase tracking-widest text-xs hover:scale-105 transition"
+          >
+            Explore Products
+          </a>
+        </div>
       </section>
 
       <Footer />
