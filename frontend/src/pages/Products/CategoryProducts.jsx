@@ -3,159 +3,106 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Search,
-  ArrowUpRight,
-  LayoutGrid,
-  List,
   ChevronRight,
-  Tag,
-  Layers,
-  CheckCircle2,
-  XCircle,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getService } from "../../service/axios";
 
+/* ─── SUB-CATEGORY CARD ─────────────────────────────────────────────────── */
+const SubcategoryCard = ({ sub, index, onClick }) => {
+  const available = sub.status === "Available";
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      onClick={() => available && onClick(sub)}
+      className="cd-card"
+      style={{ opacity: available ? 1 : 0.5, cursor: available ? "pointer" : "not-allowed" }}
+    >
+      {/* always-visible image */}
+      {sub.subcategoryImage && (
+        <img className="cd-card__img" src={sub.subcategoryImage} alt={sub.name} loading="lazy" />
+      )}
+      <div className="cd-card__scrim" />
 
+      <div className="cd-card__body">
+        {/* top row */}
+        <div className="cd-card__top">
+          <span className={`cd-badge ${available ? "cd-badge--green" : "cd-badge--red"}`}>
+            {sub.status}
+          </span>
+          {sub.skuId && <span className="cd-sku">{sub.skuId}</span>}
+        </div>
 
-const SubcategoryCard = ({ sub, index, onClick }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: index * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-    onClick={() => sub.status === "Available" && onClick(sub)}
-    className={`group relative overflow-hidden rounded-3xl cursor-pointer border transition-all duration-500
-      ${sub.status === "Available"
-        ? "border-white/10 hover:border-[#C36A4D]/40 hover:shadow-[0_30px_60px_-15px_rgba(195,106,77,0.25)]"
-        : "border-white/5 opacity-50 cursor-not-allowed"
-      }`}
-  >
-    {/* Background Image */}
-    <div className="absolute inset-0">
-      <img
-        src={sub.subcategoryImage}
-        alt={sub.name}
-        className="w-full h-full object-cover opacity-20 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/80 to-transparent" />
-    </div>
-
-    <div className="relative z-10 p-7 flex flex-col h-64 justify-between">
-      <div className="flex items-start justify-between">
-        <span className={`text-[9px] font-black tracking-[0.3em] uppercase px-3 py-1.5 rounded-full border
-          ${sub.status === "Available"
-            ? "text-emerald-400 border-emerald-400/30 bg-emerald-400/10"
-            : "text-red-400 border-red-400/30 bg-red-400/10"
-          }`}>
-          {sub.status}
-        </span>
-        <span className="text-white/20 text-[9px] font-mono tracking-widest">{sub.skuId}</span>
-      </div>
-
-      <div>
-        <h3 className="text-white text-2xl font-black uppercase tracking-tight mb-2 group-hover:text-[#C36A4D] transition-colors duration-300">
-          {sub.name}
-        </h3>
-        <p className="text-white/40 text-sm leading-relaxed line-clamp-2">{sub.decription}</p>
-      </div>
-
-      <div className="flex items-center justify-between">
-        {/* <span className="text-white/20 text-[9px] font-black uppercase tracking-[0.3em]">
-          {(MOCK_PRODUCTS[sub._id] || []).length} Products
-        </span> */}
-        <div
-          className="ml-auto w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-[#C36A4D] group-hover:border-[#C36A4D] transition-all duration-300"
-        >
-          <ChevronRight
-            size={14}
-            className="text-white/40 group-hover:text-white transition-colors"
-          />
+        {/* bottom */}
+        <div>
+          <h3 className="cd-card__name">{sub.name}</h3>
+          <p className="cd-card__desc">{sub.decription}</p>
+          <div className="cd-card__foot">
+            <div className="cd-card__arrow">
+              <ChevronRight size={14} />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
-
+/* ─── MAIN COMPONENT ────────────────────────────────────────────────────── */
 export default function CategoryDetail() {
-
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [subCategory, setSubCateogory] = useState([]);
   const [category, setCategory] = useState(null);
   const [subCategoryCount, setSubCategoryCount] = useState(0);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isSuggestionClick, setIsSuggestionClick] = useState(false);
 
-
+  /* ── API calls (unchanged) ─────────────────────────────────────────────── */
   useEffect(() => {
     if (!id) return;
-
     (async () => {
       const apiResponse = await getService(`/customer/product/category/${id}`);
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return
-      };
+      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
       setCategory(apiResponse.data.data);
     })();
   }, [id]);
 
-
   useEffect(() => {
     if (!id || searchQuery) return;
-
     (async () => {
       const apiResponse = await getService(
         `/customer/product/subcategorybycategoryId?categoryId=${id}&page=${currentPage}&limit=12`
       );
-
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return
-      };
-
+      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
       const data = apiResponse.data.data;
-
       setSubCateogory(data.subcategoryList);
       setSubCategoryCount(data.totalItems);
       setCurrentPage(data.currentPage);
       setTotalPages(data.totalPage);
     })();
-
   }, [id, currentPage, searchQuery]);
-
 
   useEffect(() => {
     if (!searchQuery) return;
-
     const delayDebounce = setTimeout(async () => {
       const apiResponse = await getService(
         `/customer/search/subcategory?keyword=${searchQuery}&categoryId=${id}&page=${currentPage}&limit=12`
       );
-
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return
-      };
-
+      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
       const data = apiResponse.data.data;
-
       setSubCateogory(data.subcategories);
       setSubCategoryCount(data.subcategories.length);
       setTotalPages(data.pagination.totalPage);
     }, 400);
-
     return () => clearTimeout(delayDebounce);
-
   }, [searchQuery, currentPage]);
-
 
   useEffect(() => {
     if (!searchQuery || isSuggestionClick) {
@@ -163,213 +110,364 @@ export default function CategoryDetail() {
       setIsSuggestionClick(false);
       return;
     }
-
     const delayDebounce = setTimeout(async () => {
       const apiResponse = await getService(
         `/customer/search/suggestion/subcategory?keyword=${searchQuery}&categoryId=${id}`
       );
-
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return
-      };
-
+      if (!apiResponse.ok) { console.log(apiResponse.message); return; }
       setSuggestions(apiResponse.data.data.subcategories);
     }, 300);
-
     return () => clearTimeout(delayDebounce);
-
   }, [searchQuery]);
 
+  /* ── RENDER ─────────────────────────────────────────────────────────────── */
   return (
-    <div className="bg-[#0D0D0D] min-h-screen text-white font-sans">
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@700;800&display=swap');
 
-      {/* HERO SAME AS BEFORE */}
-      <section className="relative h-[70vh] flex flex-col justify-end px-6 md:px-16 pb-16 overflow-hidden">
+        .cd-page {
+          font-family: 'Inter', sans-serif;
+          background: #fff;
+          color: #111;
+          min-height: 100vh;
+          overflow-x: hidden;
+        }
 
-        <div className="absolute inset-0">
-          <img
-            src={category?.categoryImage}
-            alt={category?.name}
-            className="w-full h-full object-cover transition-all duration-1000"
-            style={{ filter: "brightness(0.25) saturate(0.6)" }}
-          />
+        /* ── HERO ── */
+        .cd-hero {
+          position: relative;
+          height: 56vh;
+          min-height: 380px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          overflow: hidden;
+          background: #0a0f1a;
+        }
+        .cd-hero__img {
+          position: absolute; inset: 0;
+          width: 100%; height: 100%; object-fit: cover;
+          opacity: 0.28;
+          transition: opacity 0.8s;
+        }
+        .cd-hero__fade {
+          position: absolute; inset: 0;
+          background: linear-gradient(to bottom, rgba(10,15,26,0.1) 0%, #0a0f1a 100%);
+        }
+        .cd-hero__content {
+          position: relative; z-index: 5;
+          max-width: 1160px; margin: 0 auto;
+          width: 100%; padding: 0 24px 48px;
+        }
+        .cd-breadcrumb {
+          display: inline-flex; align-items: center; gap: 8px;
+          font-size: 11px; font-weight: 500; letter-spacing: 0.16em;
+          text-transform: uppercase; color: rgba(255,255,255,0.35);
+          margin-bottom: 20px; background: none; border: none; cursor: pointer;
+          transition: color 0.2s;
+        }
+        .cd-breadcrumb:hover { color: #7EB3FF; }
+        .cd-hero h1 {
+          font-family: 'Sora', sans-serif;
+          font-size: clamp(36px, 7vw, 72px);
+          font-weight: 800; color: #fff;
+          letter-spacing: -0.03em; line-height: 1;
+          margin: 0;
+        }
 
-          {/* Overlay Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0D0D0D]/60 to-transparent" />
+        /* ── TOOLBAR ── */
+        .cd-toolbar {
+          position: sticky; top: 0; z-index: 50;
+          background: rgba(255,255,255,0.96);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid #e8e8e8;
+        }
+        .cd-toolbar__inner {
+          max-width: 1160px; margin: 0 auto;
+          padding: 16px 24px;
+          display: flex; align-items: center; justify-content: space-between;
+          gap: 16px; flex-wrap: wrap;
+        }
+        .cd-count {
+          font-size: 11px; font-weight: 500; letter-spacing: 0.16em;
+          text-transform: uppercase; color: #999;
+          white-space: nowrap;
+        }
+        .cd-search-wrap { position: relative; width: 100%; max-width: 320px; }
+        .cd-search {
+          width: 100%;
+          background: #f4f5f7;
+          border: 1.5px solid #e8e8e8;
+          border-radius: 10px;
+          padding: 10px 40px 10px 16px;
+          font-size: 13px; font-family: 'Inter', sans-serif;
+          color: #111; outline: none;
+          transition: border-color 0.2s;
+        }
+        .cd-search::placeholder { color: #aaa; }
+        .cd-search:focus { border-color: #7EB3FF; background: #fff; }
+        .cd-search-icon {
+          position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+          color: #bbb; pointer-events: none;
+        }
+        .cd-suggestions {
+          position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+          background: #fff; border: 1px solid #e8e8e8;
+          border-radius: 12px; overflow: hidden;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.10); z-index: 100;
+        }
+        .cd-suggestion-item {
+          padding: 12px 16px; font-size: 13px; color: #444; cursor: pointer;
+          transition: background 0.15s;
+        }
+        .cd-suggestion-item:hover { background: #f4f5f7; }
+
+        /* ── MAIN ── */
+        .cd-main {
+          max-width: 1160px; margin: 0 auto;
+          padding: 56px 24px 96px;
+        }
+
+        /* ── GRID ── */
+        .cd-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 20px;
+        }
+
+        /* ── CARD ── */
+        .cd-card {
+          position: relative; border-radius: 16px; overflow: hidden;
+          height: 300px;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+          border: 1.5px solid #eaeaea;
+          transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s;
+        }
+        .cd-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 20px 48px rgba(0,0,0,0.13);
+          border-color: #c5d8f7;
+        }
+        .cd-card__img {
+          position: absolute; inset: 0;
+          width: 100%; height: 100%; object-fit: cover;
+          transition: transform 0.5s ease;
+        }
+        .cd-card:hover .cd-card__img { transform: scale(1.05); }
+        .cd-card__scrim {
+          position: absolute; inset: 0;
+          background: linear-gradient(180deg, rgba(5,10,20,0.06) 0%, rgba(5,10,20,0.70) 55%, rgba(5,10,20,0.92) 100%);
+          transition: background 0.3s;
+        }
+        .cd-card:hover .cd-card__scrim {
+          background: linear-gradient(180deg, rgba(5,10,20,0.14) 0%, rgba(5,10,20,0.80) 55%, rgba(5,10,20,0.96) 100%);
+        }
+        .cd-card__body {
+          position: relative; z-index: 5; height: 100%; padding: 20px;
+          display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .cd-card__top { display: flex; align-items: center; justify-content: space-between; }
+
+        /* badge */
+        .cd-badge {
+          font-size: 9px; font-weight: 600; letter-spacing: 0.2em;
+          text-transform: uppercase; padding: 4px 10px;
+          border-radius: 100px; border: 1px solid;
+        }
+        .cd-badge--green { color: #34d399; border-color: rgba(52,211,153,0.35); background: rgba(52,211,153,0.1); }
+        .cd-badge--red   { color: #f87171; border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.1); }
+
+        .cd-sku { font-size: 9px; color: rgba(255,255,255,0.3); font-family: monospace; letter-spacing: 0.1em; }
+
+        .cd-card__name {
+          font-family: 'Sora', sans-serif;
+          font-size: 20px; font-weight: 700; color: #fff;
+          margin: 0 0 6px; line-height: 1.2;
+          transition: color 0.25s;
+        }
+        .cd-card:hover .cd-card__name { color: #a8ccff; }
+
+        .cd-card__desc {
+          font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.55);
+          line-height: 1.6; margin: 0 0 14px;
+          display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .cd-card__foot { display: flex; justify-content: flex-end; }
+        .cd-card__arrow {
+          width: 30px; height: 30px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          border: 1.5px solid rgba(255,255,255,0.2); color: #fff;
+          transition: all 0.25s;
+        }
+        .cd-card:hover .cd-card__arrow { background: #7EB3FF; border-color: #7EB3FF; transform: translateX(2px); }
+
+        /* ── EMPTY STATE ── */
+        .cd-empty {
+          display: flex; flex-direction: column; align-items: center;
+          justify-content: center; padding: 96px 0; text-align: center;
+        }
+        .cd-empty__icon {
+          width: 72px; height: 72px; border-radius: 18px;
+          background: #f4f5f7; border: 1.5px solid #e8e8e8;
+          display: flex; align-items: center; justify-content: center;
+          margin-bottom: 24px; color: #7EB3FF;
+        }
+        .cd-empty h2 {
+          font-family: 'Sora', sans-serif;
+          font-size: clamp(22px, 4vw, 32px); font-weight: 700;
+          color: #111; margin: 0 0 12px;
+        }
+        .cd-empty p { font-size: 15px; color: #888; max-width: 400px; line-height: 1.6; }
+
+        /* ── PAGINATION ── */
+        .cd-pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 56px; }
+        .cd-page-btn {
+          padding: 9px 20px; border-radius: 8px; font-size: 12px; font-weight: 500;
+          border: 1.5px solid #e8e8e8; background: #fff; color: #444; cursor: pointer;
+          transition: all 0.2s;
+        }
+        .cd-page-btn:hover:not(:disabled) { border-color: #7EB3FF; color: #7EB3FF; }
+        .cd-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .cd-page-num {
+          width: 36px; height: 36px; border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 13px; font-weight: 500; border: 1.5px solid #e8e8e8;
+          background: #fff; color: #555; cursor: pointer; transition: all 0.2s;
+        }
+        .cd-page-num:hover { border-color: #7EB3FF; color: #7EB3FF; }
+        .cd-page-num--active { background: #7EB3FF; border-color: #7EB3FF; color: #fff; }
+
+        /* loading dots */
+        .cd-loading { display: flex; justify-content: center; gap: 6px; padding: 80px 0; }
+        .cd-dot { width: 7px; height: 7px; border-radius: 50%; background: #7EB3FF; animation: bdot 1.2s ease-in-out infinite; }
+        .cd-dot:nth-child(2) { animation-delay: 0.2s; }
+        .cd-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bdot { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-8px);opacity:1} }
+
+        @media (max-width: 600px) {
+          .cd-grid { grid-template-columns: 1fr; }
+          .cd-toolbar__inner { flex-direction: column; align-items: flex-start; }
+          .cd-search-wrap { max-width: 100%; }
+        }
+      `}</style>
+
+      <div className="cd-page">
+
+        {/* ── HERO ── */}
+        <section className="cd-hero">
+          {category?.categoryImage && (
+            <img className="cd-hero__img" src={category.categoryImage} alt={category?.name} />
+          )}
+          <div className="cd-hero__fade" />
+          <div className="cd-hero__content">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={category?._id || "cat"}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                <button className="cd-breadcrumb" onClick={() => navigate(-1)}>
+                  <ArrowLeft size={12} />
+                  Back
+                </button>
+                <h1>{category?.name}</h1>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </section>
+
+        {/* ── TOOLBAR ── */}
+        <div className="cd-toolbar">
+          <div className="cd-toolbar__inner">
+            <span className="cd-count">{subCategoryCount} Subcategories</span>
+            <div className="cd-search-wrap">
+              <input
+                type="text"
+                className="cd-search"
+                placeholder="Search subcategories…"
+                value={searchQuery}
+                onChange={(e) => { setCurrentPage(1); setSearchQuery(e.target.value); }}
+              />
+              <Search size={14} className="cd-search-icon" />
+              {suggestions.length > 0 && (
+                <div className="cd-suggestions">
+                  {suggestions.map((item) => (
+                    <div
+                      key={item._id}
+                      className="cd-suggestion-item"
+                      onClick={() => { setIsSuggestionClick(true); setSearchQuery(item.name); setSuggestions([]); }}
+                    >
+                      {item.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto">
-
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-3 mb-8 text-[9px] font-black uppercase tracking-[0.4em] text-white/30">
-
-            <button
-              onClick={() => navigate(-1)}
-              className={`flex items-center gap-2 transition-colors ${"hover:text-[#C36A4D] cursor-pointer"
-                }`}
-            >
-              <ArrowLeft size={11} onClick={() => navigate(-1)} />
-              {category?.name}
-            </button>
-
-          </div>
-
-          {/* Title & Description */}
-          <AnimatePresence mode="wait">
+        {/* ── CONTENT ── */}
+        <main className="cd-main">
+          {subCategory.length > 0 ? (
+            <div className="cd-grid">
+              {subCategory.map((sub, i) => (
+                <SubcategoryCard
+                  key={sub._id}
+                  sub={sub}
+                  index={i}
+                  onClick={(sub) => navigate(`/products/${sub._id}`)}
+                />
+              ))}
+            </div>
+          ) : (
             <motion.div
-              key={category?._id || "category"}
-              initial={{ opacity: 0, y: 20 }}
+              className="cd-empty"
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <h1
-                className="text-white font-black uppercase tracking-tighter leading-[0.8] mb-6"
-                style={{ fontSize: "clamp(3.5rem, 9vw, 8rem)" }}
-              >
-                {category?.name}
-              </h1>
-
+              <div className="cd-empty__icon"><Search size={28} /></div>
+              <h2>No Subcategories Found</h2>
+              <p>We couldn't find any matching results. Try adjusting your search or explore other categories.</p>
             </motion.div>
-          </AnimatePresence>
+          )}
 
-        </div>
-      </section>
-
-      {/* TOOLBAR */}
-      <div className="sticky top-0 z-50 bg-[#0D0D0D]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
-
-          <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/25">
-            {subCategoryCount} Subcategories
-          </span>
-
-          <div className="relative w-full sm:w-80">
-            <Search size={13} className="absolute right-5 top-1/2 -translate-y-1/2 text-white/20" />
-            <input
-              type="text"
-              placeholder="SEARCH SUBCATEGORIES..."
-              value={searchQuery}
-              onChange={(e) => {
-                setCurrentPage(1);
-                setSearchQuery(e.target.value);
-              }}
-              className="w-full bg-white/5 border border-white/8 rounded-full px-5 py-3 text-[10px] font-black uppercase tracking-widest outline-none text-white"
-            />
-
-            {/* Suggestions Dropdown */}
-            {suggestions.length > 0 && (
-              <div className="absolute top-full mt-2 w-full bg-[#111111] border border-white/10 rounded-xl overflow-hidden z-50">
-                {suggestions.map((item) => (
-                  <div
-                    key={item._id}
-                    onClick={() => {
-                      setIsSuggestionClick(true);
-                      setSearchQuery(item.name);
-                      setSuggestions([]);
-                    }}
-                    className="px-4 py-3 text-sm text-white/70 hover:bg-white/5 cursor-pointer"
+          {/* ── PAGINATION ── */}
+          {totalPages > 1 && (
+            <div className="cd-pagination">
+              <button
+                className="cd-page-btn"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(p => p - 1)}
+              >
+                Prev
+              </button>
+              {[...Array(totalPages)].map((_, i) => {
+                const p = i + 1;
+                return (
+                  <button
+                    key={p}
+                    className={`cd-page-num${currentPage === p ? " cd-page-num--active" : ""}`}
+                    onClick={() => setCurrentPage(p)}
                   >
-                    {item.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* CONTENT */}
-      <main className="max-w-7xl mx-auto py-16 px-6">
-
-
-        {subCategory.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {subCategory.map((sub, i) => (
-              <SubcategoryCard
-                key={sub._id}
-                sub={sub}
-                index={i}
-                onClick={(sub) => navigate(`/products/${sub._id}`)}
-              />
-            ))}
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col items-center justify-center py-32 text-center"
-          >
-            <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8">
-              <Search size={32} className="text-[#C36A4D]" />
+                    {p}
+                  </button>
+                );
+              })}
+              <button
+                className="cd-page-btn"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(p => p + 1)}
+              >
+                Next
+              </button>
             </div>
-
-            <h2
-              className="text-white font-black uppercase tracking-tight mb-4"
-              style={{ fontSize: "clamp(2rem, 5vw, 3rem)" }}
-            >
-              No Subcategories Found
-            </h2>
-
-            <p className="text-white/40 text-lg max-w-md leading-relaxed">
-              We couldn’t find any matching results. Try adjusting your search or explore other categories.
-            </p>
-          </motion.div>
-        )}
-
-
-        {/* PAGINATION */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-3 mt-16">
-
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-              className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest border
-                ${currentPage === 1
-                  ? "border-white/5 text-white/20 cursor-not-allowed"
-                  : "border-white/10 hover:border-[#C36A4D]/40 hover:text-[#C36A4D]"
-                }`}
-            >
-              Prev
-            </button>
-
-            {[...Array(totalPages)].map((_, index) => {
-              const pageNumber = index + 1;
-              return (
-                <button
-                  key={pageNumber}
-                  onClick={() => setCurrentPage(pageNumber)}
-                  className={`w-9 h-9 rounded-full text-xs font-black border
-                    ${currentPage === pageNumber
-                      ? "bg-[#C36A4D] border-[#C36A4D] text-white"
-                      : "border-white/10 text-white/30 hover:border-[#C36A4D]/40 hover:text-[#C36A4D]"
-                    }`}
-                >
-                  {pageNumber}
-                </button>
-              );
-            })}
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest border
-                ${currentPage === totalPages
-                  ? "border-white/5 text-white/20 cursor-not-allowed"
-                  : "border-white/10 hover:border-[#C36A4D]/40 hover:text-[#C36A4D]"
-                }`}
-            >
-              Next
-            </button>
-
-          </div>
-        )}
-      </main>
-    </div>
+          )}
+        </main>
+      </div>
+    </>
   );
 }
