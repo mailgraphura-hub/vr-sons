@@ -367,7 +367,6 @@ const GoogleAuth = async (req, res) => {
             user = customerAuth_Model({
                 email: email,
                 name,
-                password: null,
                 profileImage: picture
             })
 

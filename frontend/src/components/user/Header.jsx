@@ -1,25 +1,60 @@
 import { Bell, LogOut, CheckCheck, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { getService, patchService, deleteService } from "../../service/axios";
 
 export default function Header() {
   const location = useLocation();
 
-  const [userName, setUserName] = useState("Akhil");
+  const [userName, setUserName] = useState("User");
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: "Your inquiry was updated.", read: false },
-    { id: 2, text: "New response received.", read: false },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const notificationRef = useRef(null);
   const userMenuRef = useRef(null);
 
+  const fetchNotifications = async () => {
+    const res = await getService("/notification");
+
+    if (res.ok) {
+      const data = res.data.data || [];
+
+      setNotifications(data);
+
+      // calculate unread count directly
+      const unread = data.filter((n) => !n.isRead).length;
+      setUnreadCount(unread);
+    }
+  };
+
+
   useEffect(() => {
+    fetchNotifications();
+
     const storedName = localStorage.getItem("username");
     if (storedName) setUserName(storedName);
   }, []);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchNotifications();
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+
+  useEffect(() => {
+    if (openNotification) {
+      fetchNotifications();
+    }
+  }, [openNotification]);
+
+
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -38,40 +73,76 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  //   TITLE LOGIC 
+
+
+  const markAsRead = async (id) => {
+    await patchService(`/notification/${id}/read`);
+
+    setNotifications((prev) =>
+      prev.map((n) =>
+        n._id === id ? { ...n, isRead: true } : n
+      )
+    );
+
+    setUnreadCount((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
+  /* ================= MARK ALL AS READ ================= */
+
+  const markAllRead = async () => {
+    await Promise.all(
+      notifications
+        .filter((n) => !n.isRead)
+        .map((n) => patchService(`/notification/${n._id}/read`))
+    );
+
+    const updated = notifications.map((n) => ({
+      ...n,
+      isRead: true,
+    }));
+
+    setNotifications(updated);
+    setUnreadCount(0);
+  };
+
+  /* ================= DELETE ALL ================= */
+
+  const clearAll = async () => {
+    await Promise.all(
+      notifications.map((n) => deleteService(`/notification/${n._id}`))
+    );
+
+    setNotifications([]);
+    setUnreadCount(0);
+  };
+
+  /* ================= PAGE TITLE ================= */
+
   const pageTitle =
     location.pathname.split("/").pop()?.replace(/-/g, " ") || "Dashboard";
 
-  const formattedTitle = pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const markAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  };
-
-  const clearAll = () => {
-    setNotifications([]);
-  };
+  const formattedTitle =
+    pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
 
   return (
     <header className="fixed top-0 right-0 left-64 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 z-30">
-      {/* TITLE */}
       <h1 className="text-2xl font-extrabold tracking-wide bg-gradient-to-r from-black to-gray-500 bg-clip-text text-transparent">
         {formattedTitle}
       </h1>
 
-      {/* RIGHT SECTION */}
       <div className="flex items-center gap-6">
+        {/* 🔔 NOTIFICATION */}
         <div className="relative" ref={notificationRef}>
           <button
             onClick={() => setOpenNotification(!openNotification)}
             className="relative text-gray-600 hover:text-black transition"
           >
             <Bell size={20} />
+
+            {/* 🔴 BADGE */}
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                {unreadCount}
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-md">
+                {unreadCount > 99 ? "99+" : unreadCount}
               </span>
             )}
           </button>
@@ -102,7 +173,6 @@ export default function Header() {
                 )}
               </div>
 
-              {/* List */}
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
                   <div className="p-6 text-center text-sm text-gray-500">
@@ -111,12 +181,13 @@ export default function Header() {
                 ) : (
                   notifications.map((item) => (
                     <div
-                      key={item.id}
+                      key={item._id}
+                      onClick={() => markAsRead(item._id)}
                       className={`px-4 py-3 text-sm border-b hover:bg-gray-50 cursor-pointer ${
-                        !item.read ? "bg-blue-50" : ""
+                        !item.isRead ? "bg-blue-50 font-semibold" : ""
                       }`}
                     >
-                      {item.text}
+                      {item.message}
                     </div>
                   ))
                 )}
@@ -125,6 +196,7 @@ export default function Header() {
           )}
         </div>
 
+        {/* 👤 USER MENU */}
         <div className="relative" ref={userMenuRef}>
           <button
             onClick={() => setOpenUserMenu(!openUserMenu)}

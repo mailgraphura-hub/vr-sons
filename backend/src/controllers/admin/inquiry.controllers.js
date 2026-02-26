@@ -68,7 +68,7 @@ const getInquiries = async (req, res) => {
                 $gte: yesterday,
                 $lte: today
             },
-            status: { $in: ["Open", "Processing"] }
+            status: { $in: ["Open", "Processing", "Close"] }
         };
 
         const [inquiryList, totalInquiry] = await Promise.all([
@@ -88,7 +88,8 @@ const getInquiries = async (req, res) => {
         }
 
         const close = await inquiriesModel.find({ status: "Close" });
-        const open = await inquiriesModel.find({ status: "Open" })
+        const open = await inquiriesModel.find({ status: "Open" });
+        const processing = await inquiriesModel.find({status: "Processing"});
 
         return res.status(200).json(
             new ApiResponse(
@@ -99,7 +100,8 @@ const getInquiries = async (req, res) => {
                     totalPage: Math.ceil(totalInquiry / limit),
                     inquiryList,
                     close: close.length,
-                    open: open.length
+                    open: open.length,
+                    processing: processing.length
                 },
                 "Successful"
             )
@@ -129,7 +131,7 @@ const getInquiriesByDate = async (req, res) => {
         end.setHours(23, 59, 59, 999);
 
         const query = {
-            status: { $in: ["Open", "Processing"] }
+            status: { $in: ["Open", "Processing", "Close"] }
         };
 
         if (startDate && endDate) {
