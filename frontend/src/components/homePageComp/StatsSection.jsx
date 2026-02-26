@@ -1,127 +1,95 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 
-// ─────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────
+export default function StatsSection() {
+  const STATS = [
+    { target: 13, suffix: "+", label: "Countries Exported" },
+    { target: 6, suffix: "+", label: "Variety of Products" },
+    { target: 93, suffix: "%", label: "Customer Satisfaction" },
+  ];
 
-const STATS = [
-  { target: 13, suffix: "+", label: "Countries Exported" },
-  { target: 6, suffix: "+", label: "Variety of Products" },
-  { target: 93, suffix: "%", label: "Customer Satisfaction" },
-];
+  const CountUp = ({ target, suffix = "", duration = 1.5 }) => {
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true, margin: "-40px" });
+    const [value, setValue] = useState(0);
 
-// ─────────────────────────────────────────
-// CountUp
-// ─────────────────────────────────────────
+    useEffect(() => {
+      if (!inView) return;
 
-const CountUp = ({ target, suffix = "", duration = 1.5 }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+      let start = null;
 
-  useEffect(() => {
-    if (!inView) return;
+      const step = (timestamp) => {
+        if (!start) start = timestamp;
 
-    let startTime = null;
+        const progress = Math.min((timestamp - start) / (duration * 1000), 1);
 
-    const animate = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = (timestamp - startTime) / 1000;
-      const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setValue(Math.floor(eased * target));
 
-      // Smooth ease-out
-      const eased = 1 - Math.pow(1 - progress, 4);
+        if (progress < 1) requestAnimationFrame(step);
+        else setValue(target);
+      };
 
-      setCount(Math.floor(eased * target));
+      requestAnimationFrame(step);
+    }, [inView, target, duration]);
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setCount(target);
-      }
-    };
-
-    requestAnimationFrame(animate);
-  }, [inView, target, duration]);
+    return (
+      <span ref={ref} className="tabular-nums">
+        {value}
+        {suffix}
+      </span>
+    );
+  };
 
   return (
-    <span ref={ref}>
-      {count}
-      {suffix}
-    </span>
-  );
-};
-
-// ─────────────────────────────────────────
-// MAIN COMPONENT
-// ─────────────────────────────────────────
-
-const StatsSection = () => {
-  return (
-    <section className="bg-[#f0ede8] px-6 pt-6">
-      <motion.div
-        initial={{ opacity: 0, y: 60, scale: 0.98 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{
-          duration: 0.8,
-          ease: [0.16, 1, 0.3, 1],
-        }}
-        className="bg-neutral-900 rounded-3xl px-10 md:px-14 py-14"
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 text-center">
-          {STATS.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.6,
-                delay: i * 0.12,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="group"
+    <section className="bg-[#f5f3ef] py-16 px-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
+        {STATS.map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: i * 0.12 }}
+            whileHover={{
+              y: -6,
+              scale: 1.03,
+            }}
+            className="
+              group
+              bg-white
+              rounded-2xl
+              p-8
+              text-center
+              transition-all
+              duration-300
+              shadow-[0_8px_25px_rgba(0,0,0,0.06)]
+              hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)]
+              border border-neutral-100
+            "
+          >
+            {/* Number */}
+            <h3
+              className="text-4xl md:text-5xl font-light text-neutral-900 mb-3"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
             >
-              {/* Number */}
-              <motion.p
-                className="text-white text-5xl md:text-6xl font-light mb-3 tabular-nums"
-                style={{
-                  fontFamily: "'Cormorant Garamond', Georgia, serif",
-                }}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.25 }}
-              >
-                <CountUp
-                  target={stat.target}
-                  suffix={stat.suffix}
-                  duration={1.4 + i * 0.2}
-                />
-              </motion.p>
-
-              {/* Label */}
-              <motion.p
-                className="text-neutral-400 text-xs tracking-widest uppercase transition-colors duration-300"
-                whileHover={{ color: "#ffffff" }}
-              >
-                {stat.label}
-              </motion.p>
-
-              {/* Minimal underline animation */}
-              <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: "40%" }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
-                className="h-[1px] bg-neutral-700 mx-auto mt-4"
+              <CountUp
+                target={stat.target}
+                suffix={stat.suffix}
+                duration={1.4 + i * 0.2}
               />
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+            </h3>
+
+            {/* Label */}
+            <p className="text-xs tracking-[0.2em] uppercase text-neutral-500 group-hover:text-neutral-800 transition-colors duration-300">
+              {stat.label}
+            </p>
+
+            {/* Premium subtle accent line */}
+            <div className="mt-5 h-[2px] w-8 mx-auto bg-neutral-200 group-hover:w-16 group-hover:bg-neutral-400 transition-all duration-300 rounded-full" />
+          </motion.div>
+        ))}
+      </div>
     </section>
   );
-};
-
-export default StatsSection;
+}
