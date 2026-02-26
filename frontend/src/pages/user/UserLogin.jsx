@@ -31,7 +31,7 @@ export default function Login() {
             }
             toast.success("Login Successful");
             localStorage.setItem("access", "grant");
-            setTimeout(() => navigate("/"), 1500);
+            setTimeout(() => navigate("/user/dashboard"), 1500);
         } catch (error) {
             console.error("Google Login Error:", error);
             toast.error("Google Login Failed");
@@ -58,7 +58,7 @@ export default function Login() {
         toast.success("Login Successful");
         localStorage.setItem("access", "Successful");
         setLoading(false);
-        setTimeout(() => navigate("/"), 1000);
+        setTimeout(() => navigate("/user/dashboard"), 1000);
     };
 
     return (
