@@ -66,7 +66,7 @@ const HeroSection = () => {
       className="relative pt-[90px]"
       style={{ fontFamily: "'Playfair Display', serif" }}
     >
-      <section className="sticky top-[90px] h-[calc(100vh-90px)] bg-[#f0ede8] flex items-center justify-center px-6 overflow-hidden">
+      <section className="sticky top-[90px] min-h-[calc(100vh-90px)] bg-[#f0ede8] flex items-center justify-center px-6 overflow-hidden">
         <motion.div
           className="relative w-full max-w-[1600px] h-[85vh] shadow-2xl overflow-hidden"
           style={{ scale, y, borderRadius: 32 }}
