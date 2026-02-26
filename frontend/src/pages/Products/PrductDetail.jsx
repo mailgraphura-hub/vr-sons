@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   ChevronRight,
   CheckCircle2,
   XCircle,
-  Tag,
   Layers,
-  ImageIcon,
-  Package,
-  Calendar,
-  Hash,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getService } from "../../service/axios";
 import InquiryForm from "../../components/user/InquiryForm";
 import { userProfile } from "../../context/profileContext";
 
-// Parse specifications safely
+/* ---------- UTIL ---------- */
+
 const parseSpecifications = (specStr = "") => {
   return specStr.split("|").map((item) => {
     const [key, ...rest] = item.split(":");
@@ -34,11 +30,11 @@ const formatDate = (iso) =>
       })
     : "";
 
+/* ---------- COMPONENT ---------- */
+
 export default function ProductDetail() {
   const { id } = useParams();
-
   const { user } = userProfile();
-
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
@@ -47,218 +43,179 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (!id) return;
-
     (async () => {
-      const apiResponse = await getService(`/customer/product/product/${id}`);
-
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return;
-      }
-
-      setProduct(apiResponse.data.data);
+      const res = await getService(`/customer/product/product/${id}`);
+      if (!res.ok) return;
+      setProduct(res.data.data);
     })();
   }, [id]);
 
-  // Prevent crash before data loads
-  if (!product) return null;
+  if (!product)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white text-gray-400">
+        Loading Product...
+      </div>
+    );
 
   const specs = parseSpecifications(product.specifications);
 
   return (
-    <div className="bg-[#0D0D0D] min-h-screen text-white font-sans">
-      {/* ── BREADCRUMB NAV ───────────────────────────────────── */}
-      <div className="sticky top-0 z-50 bg-[#0D0D0D]/95 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.35em] text-white/25">
-          <button className="flex items-center gap-1.5 hover:text-[#C36A4D] transition-colors">
-            <ArrowLeft size={10} />
-            {product?.categoryId?.name || ""}
+    <div className="relative min-h-screen bg-gradient-to-br from-white via-[#faf7f5] to-[#f5ede9] text-gray-800 overflow-hidden">
+
+      {/* Soft background glow */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#C36A4D]/10 blur-[120px] rounded-full"></div>
+
+      {/* Breadcrumb */}
+      <div className="sticky top-0 bg-white/70 backdrop-blur-md border-b border-gray-200 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-2 text-sm text-gray-500">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 hover:text-[#C36A4D] transition"
+          >
+            <ArrowLeft size={16} />
+            Back
           </button>
-          <ChevronRight size={9} className="text-white/10" />
-          <button className="hover:text-[#C36A4D] transition-colors">
-            {product?.subCategoryId?.name || ""}
-          </button>
-          <ChevronRight size={9} className="text-white/10" />
-          <span className="text-white/50">{product?.name}</span>
+          <ChevronRight size={16} />
+          <span>{product?.categoryId?.name}</span>
+          <ChevronRight size={16} />
+          <span className="text-gray-700 font-medium">
+            {product?.name}
+          </span>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-2 gap-16">
-        {/* LEFT SIDE */}
-        <div className="flex flex-col gap-4">
-          <motion.div
-            key={activeImage}
-            initial={{ opacity: 0, scale: 1.03 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden bg-[#111]"
-          >
-            {product?.productImage?.length > 0 ? (
-              <img
-                src={product.productImage[activeImage]}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <ImageIcon size={40} className="text-white/10" />
-              </div>
-            )}
+      <div className="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-20 relative z-10">
 
-            <div className="absolute top-4 left-4">
+        {/* LEFT IMAGE */}
+        <motion.div
+          initial={{ opacity: 0, x: -60 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="space-y-6"
+        >
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="relative rounded-3xl overflow-hidden shadow-2xl bg-white"
+          >
+            <img
+              src={product?.productImage?.[activeImage]}
+              alt={product.name}
+              className="w-full h-[450px] object-cover"
+            />
+
+            {/* Stock Badge */}
+            <div className="absolute top-6 left-6">
               {product.status === "Available" ? (
-                <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400 bg-black/70 backdrop-blur px-3 py-1.5 rounded-full border border-emerald-400/25">
-                  <CheckCircle2 size={10} /> In Stock
+                <span className="flex items-center gap-2 bg-emerald-100 text-emerald-600 px-4 py-2 rounded-full text-sm font-medium shadow">
+                  <CheckCircle2 size={16} /> In Stock
                 </span>
               ) : (
-                <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.3em] text-red-400 bg-black/70 backdrop-blur px-3 py-1.5 rounded-full border border-red-400/25">
-                  <XCircle size={10} /> Out of Stock
+                <span className="flex items-center gap-2 bg-red-100 text-red-600 px-4 py-2 rounded-full text-sm font-medium shadow">
+                  <XCircle size={16} /> Out of Stock
                 </span>
               )}
             </div>
-
-            {product?.productImage?.length > 1 && (
-              <div className="absolute bottom-4 right-4 text-[9px] font-black text-white/30 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full">
-                {activeImage + 1} / {product.productImage.length}
-              </div>
-            )}
           </motion.div>
 
-          {product?.productImage?.length > 1 && (
-            <div className="flex gap-3">
-              {product.productImage.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImage(i)}
-                  className={`relative flex-1 aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300
-                    ${
-                      activeImage === i
-                        ? "border-[#C36A4D] shadow-[0_0_20px_rgba(195,106,77,0.3)]"
-                        : "border-white/5 opacity-40 hover:opacity-70"
-                    }`}
-                >
-                  <img
-                    src={img}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+          {/* Thumbnails */}
+          <div className="flex gap-4">
+            {product?.productImage?.map((img, i) => (
+              <motion.button
+                whileHover={{ y: -5 }}
+                key={i}
+                onClick={() => setActiveImage(i)}
+                className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition ${
+                  activeImage === i
+                    ? "border-[#C36A4D]"
+                    : "border-gray-200"
+                }`}
+              >
+                <img
+                  src={img}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
 
-        {/* RIGHT SIDE */}
-        <div className="flex flex-col gap-8">
+        {/* RIGHT CONTENT */}
+        <motion.div
+          initial={{ opacity: 0, x: 60 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col gap-8"
+        >
           <div>
-            <div className="flex flex-wrap items-center gap-2 mb-5">
-              <span className="flex items-center gap-1.5 text-[9px] font-mono text-white/30 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
-                <Hash size={9} /> {product.skuId}
-              </span>
-
-              <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[#C36A4D] bg-[#C36A4D]/10 border border-[#C36A4D]/20 px-3 py-1.5 rounded-full">
-                <Tag size={9} /> {product?.categoryId?.name || ""}
-              </span>
-
-              <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-white/40 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
-                <Package size={9} /> {product?.subCategoryId?.name || ""}
-              </span>
-            </div>
-
-            <h1
-              className="text-white font-black uppercase tracking-tighter leading-[0.85] mb-5"
-              style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
-            >
+            <h1 className="text-5xl font-bold leading-tight mb-4 text-gray-900">
               {product.name}
             </h1>
 
-            <p className="text-white/45 text-[15px] leading-[1.8] font-light">
+            <p className="text-gray-600 text-lg leading-relaxed">
               {product.description}
             </p>
           </div>
 
-          <div className="h-px bg-white/5" />
-
-          {/* Specifications */}
+          {/* SPECIFICATIONS */}
           <div>
-            <div className="flex items-center gap-2 mb-5">
-              <Layers size={14} className="text-[#C36A4D]" />
-              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">
-                Specifications
-              </h2>
-            </div>
+            <h2 className="flex items-center gap-2 text-sm uppercase tracking-widest text-[#C36A4D] mb-5">
+              <Layers size={18} /> Specifications
+            </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid sm:grid-cols-2 gap-5">
               {specs.map((spec, i) => (
-                <div
+                <motion.div
                   key={i}
-                  className="flex items-start justify-between gap-4 bg-white/3 border border-white/5 rounded-xl px-4 py-3"
+                  whileHover={{ y: -4 }}
+                  className="bg-white shadow-md hover:shadow-xl transition rounded-2xl p-5 border border-gray-100"
                 >
-                  <span className="text-[9px] font-black uppercase tracking-[0.25em] text-white/25">
+                  <p className="text-xs text-gray-400 uppercase tracking-wide">
                     {spec.key}
-                  </span>
-                  <span className="text-[11px] font-mono text-white/65 text-right">
+                  </p>
+                  <p className="text-sm text-gray-800 font-medium mt-1">
                     {spec.value}
-                  </span>
-                </div>
+                  </p>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          <div className="h-px bg-white/5" />
-
-          {/* Meta */}
-          <div className="flex flex-wrap gap-5">
+          {/* META INFO */}
+          <div className="flex gap-12 text-sm text-gray-500">
             <div>
-              <p className="text-[8px] font-black uppercase tracking-[0.35em] text-white/20 mb-1">
-                Listed
-              </p>
-              <p className="text-[11px] font-mono text-white/40">
-                {formatDate(product.createdAt)}
-              </p>
+              <p>Listed</p>
+              <p>{formatDate(product.createdAt)}</p>
             </div>
-
             <div>
-              <p className="text-[8px] font-black uppercase tracking-[0.35em] text-white/20 mb-1">
-                Updated
-              </p>
-              <p className="text-[11px] font-mono text-white/40">
-                {formatDate(product.updatedAt)}
-              </p>
+              <p>Updated</p>
+              <p>{formatDate(product.updatedAt)}</p>
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-3 pt-2"
+          {/* CTA BUTTON */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => {
+              if (!user) return navigate("/login");
+              setShowInquiry(true);
+            }}
+            className="mt-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#C36A4D] to-[#e28b6f] text-white font-semibold tracking-wider shadow-lg hover:shadow-xl transition"
           >
-            <button
-              onClick={() => {
-                if (!user) {
-                  navigate("/login");
-                }
-                setShowInquiry(true);
-              }}
-              className="flex-1 px-6 py-4 rounded-2xl bg-[#C36A4D] text-white text-[11px] font-black uppercase tracking-[0.35em] hover:bg-[#d4785a] transition-all duration-300 hover:shadow-[0_15px_40px_rgba(195,106,77,0.35)]"
-            >
-              Send Inquiry
-            </button>
+            Send Inquiry
+          </motion.button>
 
-            {/* <button className="flex-1 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white/60 text-[11px] font-black uppercase tracking-[0.35em] hover:bg-white/10 hover:text-white transition-all duration-300">
-              Download Spec Sheet
-            </button> */}
-          </motion.div>
-
-          {showInquiry && (
-            <InquiryForm
-              productName={product.name}
-              show={showInquiry}
-              onClose={() => setShowInquiry(false)}
-            />
-          )}
-        </div>
+          <AnimatePresence>
+            {showInquiry && (
+              <InquiryForm
+                productName={product.name}
+                show={showInquiry}
+                onClose={() => setShowInquiry(false)}
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   );
