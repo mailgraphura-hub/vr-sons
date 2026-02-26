@@ -35,7 +35,7 @@ export default function Signup() {
       const apiResponse = await postService("/customer/auth/google", { token });
       if (!apiResponse.ok) { toast.error(apiResponse.message || "Google Signup Failed"); return; }
       toast.success("Signup Successful");
-      setTimeout(() => navigate("/"), 1500);
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
       console.error("Google Signup Error:", error);
       toast.error("Google Signup Failed");
