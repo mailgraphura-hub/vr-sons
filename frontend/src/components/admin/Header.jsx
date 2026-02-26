@@ -118,7 +118,7 @@ export default function Header() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await getService("/myprofile");
+        const response = await getService("/admin/auth/myprofile");
         // Backend handle: new ApiResponse(200, userDetail, "Successful")
         if (response.status === 200) {
           setAdmin(response.data);
