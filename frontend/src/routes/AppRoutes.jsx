@@ -79,7 +79,7 @@ export default function AppRoutes() {
         <Route path="/settings/website" element={<WebsiteSettings />} />
 
         <Route path="/promotion/blogs" element={<Blogs />} />
-        <Route path="/promotion/managePromotion" element={<Promotion />} />
+        <Route path="/promotion/managPromotion" element={<Promotion />} />
       </Route>
 
     </Routes>
