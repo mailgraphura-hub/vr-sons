@@ -4,7 +4,9 @@ import { useAuth } from "./AuthContext";
 export default function ProtectedRoute({ children }) {
   const { user } = useAuth();
 
-  if (!user) return <Navigate to="/admin/login" />;
+  const access = localStorage.getItem("admin");
+
+  if (!access) return <Navigate to="/admin/login" />;
 
   return children;
 }

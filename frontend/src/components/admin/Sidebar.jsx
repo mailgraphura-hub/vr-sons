@@ -879,7 +879,7 @@ export default function Sidebar() {
               <Link to="/admin/promotion/blogs" className={subButtonClass(isActive("/admin/promotion/blogs"))}>
                 <BookOpen size={16} /> Blogs
               </Link>
-              <Link to="/admin/promotion/managPromotion" className={subButtonClass(isActive("/admin/promotion/managPromotion"))}>
+              <Link to="/admin/promotion/managePromotion" className={subButtonClass(isActive("/admin/promotion/managePromotion"))}>
                 <Sparkles size={16} /> Promotion Manager
               </Link>
             </div>
