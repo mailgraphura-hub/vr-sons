@@ -3,16 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getService } from "../../service/axios";
 import { useNavigate } from "react-router-dom";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ██████  DATA — Replace with API response mapped to this shape
-// Fields match productSchema: name, categoryId(label), status, productImage[0]
-// ─────────────────────────────────────────────────────────────────────────────
-
 const SECTION_HEADING = "Discover Our\nProduct Categories";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PRODUCT CARD
-// ─────────────────────────────────────────────────────────────────────────────
 
 const ProductCard = ({ product, delay }) => {
   const [hovered, setHovered] = useState(false);
@@ -48,13 +39,13 @@ const ProductCard = ({ product, delay }) => {
         transition={{ duration: 0.3 }}
       />
 
-      {/* ── Status badge ── */}
       <div className="absolute top-3 left-3 z-10">
         <span
-          className={`text-[9px] tracking-widest uppercase px-2 py-1 rounded-full
-            ${product.status === "Available"
-              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-              : "bg-red-500/20 text-red-300 border border-red-500/30"
+          className={`text-[11px] font-bold tracking-wider uppercase px-4 py-1.5 rounded-full shadow-lg
+      transition-all duration-300
+      ${product.status === "Available"
+              ? "bg-gradient-to-r from-green-600 to-emerald-500 text-white shadow-green-900/40"
+              : "bg-gradient-to-r from-red-600 to-rose-500 text-white shadow-red-900/40"
             }`}
           style={{ fontFamily: "'DM Sans', sans-serif" }}
         >
@@ -74,15 +65,19 @@ const ProductCard = ({ product, delay }) => {
       </motion.button>
 
       {/* ── Bottom info — always shown ── */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 p-4">
+      <div className="absolute bottom-0 left-0 right-0 z-10 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+
+        {/* SKU + Category */}
         <p
-          className="text-white/40 text-[9px] tracking-widest uppercase mb-0.5"
+          className="text-white/70 text-[10px] font-semibold tracking-widest uppercase mb-1"
           style={{ fontFamily: "'DM Sans', sans-serif" }}
         >
           {product.skuId} · {product.category.name}
         </p>
+
+        {/* Product Name */}
         <p
-          className="text-white text-sm font-light leading-tight"
+          className="text-white text-base font-semibold leading-tight"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
         >
           {product.name}
@@ -96,7 +91,7 @@ const ProductCard = ({ product, delay }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 4 }}
               transition={{ duration: 0.25 }}
-              className="text-white/55 text-[10px] mt-1 leading-snug"
+              className="text-white/80 text-[11px] font-medium mt-1 leading-snug"
               style={{ fontFamily: "'DM Sans', sans-serif" }}
             >
               {/* {product.specifications} */}
@@ -108,19 +103,16 @@ const ProductCard = ({ product, delay }) => {
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MAIN COMPONENT
-// ─────────────────────────────────────────────────────────────────────────────
-
 const ProductsSection = () => {
+   const navigate = useNavigate();
 
   const [Product, setProduct] = useState([])
   useEffect(() => {
-    ;(
+    ; (
       async () => {
         const apiResponse = await getService("/customer/product/product?page=1&limit=16");
 
-        if(!apiResponse.ok){
+        if (!apiResponse.ok) {
           console.log(apiResponse.message);
           return
         }
@@ -128,9 +120,9 @@ const ProductsSection = () => {
         setProduct(apiResponse.data.data.productList)
       }
     )()
-  },[])
+  }, [])
 
- return <section
+  return <section
     className="bg-[#f0ede8] pt-6 px-3 md:px-6 pb-6"
     style={{ fontFamily: "'DM Sans', sans-serif" }}
   >
@@ -155,12 +147,13 @@ const ProductsSection = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
+          onClick={() => navigate("/MainCategory")}
           className="flex items-center gap-2 text-xs text-neutral-400 hover:text-neutral-900 transition-colors group self-start md:self-end"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 group-hover:bg-neutral-700 transition-colors" />
+          <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 group-hover:bg-neutral-700 transition-colors"/>
           View All Products
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
           </svg>
         </motion.a>
       </div>
