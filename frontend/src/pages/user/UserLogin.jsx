@@ -5,8 +5,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { postService } from "../../service/axios";
 import { GoogleLogin } from "@react-oauth/google";
 import logo from "../../assets/logo/TextLogo.png";
+import bgImage from "../../assets/Image-Groundnut.webp";
 
-const bgImage = "./src/assets/Image-Groundnut.webp";
+// const bgImage = "./src/assets/Image-Groundnut.webp";
 
 export default function Login() {
     const navigate = useNavigate();
