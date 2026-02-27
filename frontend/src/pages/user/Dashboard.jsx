@@ -82,7 +82,7 @@ export default function Dashboard() {
   };
 
   // if (!user) return <div className="p-10">Loading...</div>;
-  if (loading) return <div className="p-10">Loading...</div>;
+  // if (loading) return <div className="p-10">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-gray-100 flex">

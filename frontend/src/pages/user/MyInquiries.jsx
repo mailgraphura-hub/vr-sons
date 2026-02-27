@@ -92,9 +92,9 @@ export default function MyInquiries() {
     item.company?.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) {
-    return <div className="p-10">Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div className="p-10">Loading...</div>;
+  // }
 
   // if (!user) {
   //   return <div className="p-10">Loading...</div>;
