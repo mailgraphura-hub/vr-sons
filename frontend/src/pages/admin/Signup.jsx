@@ -61,7 +61,7 @@ export default function Signup() {
                 securityKey: form.securityKey
             });
             if (result === "SUCCESS") {
-                navigate("/dashboard");
+                navigate("/admin/login");
             } else {
                 setServerError(result);
             }

@@ -23,6 +23,7 @@ export function AuthProvider({ children }) {
     if (res.ok) {
         setUser(res.data?.data);
         localStorage.setItem("admin_session", JSON.stringify(res.data?.data));
+        localStorage.setItem("admin", "true");
         return "SUCCESS";
     }
 
@@ -36,6 +37,7 @@ export function AuthProvider({ children }) {
     if (res.ok && res.data?.data) {
       setUser(res.data.data);
       localStorage.setItem("admin_session", JSON.stringify(res.data.data));
+      localStorage.setItem("admin", "true");
       return "SUCCESS";
     } else if (res.message === "Admin not found") {
       return "NO_ACCOUNT";
