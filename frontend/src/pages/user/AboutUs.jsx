@@ -173,44 +173,56 @@ export default function AboutPage() {
 
       {/*  WHY CHOOSE US  */}
       <section className="py-16 md:py-20 px-6 bg-white">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-black mb-12">
-            Why Choose <span className="text-[#C36A4D]">Us</span>
-          </h2>
+  <div className="max-w-7xl mx-auto text-center">
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { icon: Shield, title: "Premium Quality" },
-              { icon: Truck, title: "Reliable Logistics" },
-              { icon: Handshake, title: "Trusted Partnerships" },
-              { icon: Package, title: "Secure Packaging" },
-              { icon: Globe, title: "Global Reach" },
-              { icon: FileCheck, title: "Full Compliance" },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="group bg-white p-8 rounded-3xl border border-neutral-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-2 hover:border-[#C36A4D]/40"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-[#C36A4D]/10 flex items-center justify-center mb-6 group-hover:bg-[#C36A4D] transition">
-                  <item.icon
-                    size={22}
-                    className="text-[#C36A4D] group-hover:text-white transition"
-                  />
-                </div>
+    {/* HEADING */}
+    <h2 className="text-3xl md:text-4xl font-black mb-12">
+      Why Choose <span className="text-[#C36A4D]">Us</span>
+    </h2>
 
-                <h3 className="font-black text-lg mb-3 group-hover:text-[#C36A4D] transition">
-                  {item.title}
-                </h3>
+    {/* GRID */}
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                <p className="text-neutral-600 text-sm leading-relaxed">
-                  Structured supply chains and international standards ensure
-                  seamless export operations.
-                </p>
-              </div>
-            ))}
+      {[
+        { icon: Shield, title: "Premium Quality" },
+        { icon: Truck, title: "Reliable Logistics" },
+        { icon: Handshake, title: "Trusted Partnerships" },
+        { icon: Package, title: "Secure Packaging" },
+        { icon: Globe, title: "Global Reach" },
+        { icon: FileCheck, title: "Full Compliance" },
+      ].map((item, i) => {
+        const Icon = item.icon;
+
+        return (
+          <div
+            key={i}
+            className="group bg-white p-8 rounded-3xl border border-neutral-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-2 hover:border-[#C36A4D]/40 flex flex-col items-center text-center"
+          >
+            {/* ICON */}
+            <div className="w-16 h-16 rounded-2xl bg-[#C36A4D]/10 flex items-center justify-center mb-6 transition-all duration-300 group-hover:bg-[#C36A4D] group-hover:scale-110">
+              <Icon
+                size={26}
+                className="text-[#C36A4D] transition group-hover:text-white"
+              />
+            </div>
+
+            {/* TITLE */}
+            <h3 className="font-black text-lg mb-3 transition group-hover:text-[#C36A4D]">
+              {item.title}
+            </h3>
+
+            {/* DESCRIPTION */}
+            <p className="text-neutral-600 text-sm leading-relaxed">
+              Structured supply chains and international standards ensure
+              seamless export operations.
+            </p>
           </div>
-        </div>
-      </section>
+        );
+      })}
+
+    </div>
+  </div>
+</section>
 
       {/*  READY TO TRADE  */}
       <section className="relative py-20 px-6 overflow-hidden">
