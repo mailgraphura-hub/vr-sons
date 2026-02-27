@@ -9,28 +9,28 @@ import { toast } from "react-hot-toast";
 
 /* ── Brand tokens ───────────────────────────────────────────────────────── */
 const T = {
-  primary: "#c36a4d",
-  primaryHov: "#ad5d42",
+  primary:     "#c36a4d",
+  primaryHov:  "#ad5d42",
   primaryDark: "#8f4c35",
-  tint10: "#fdf3f0",
-  tint20: "#fae4dc",
-  tint40: "#f0bfb0",
-  border: "#f2e0da",
+  tint10:      "#fdf3f0",
+  tint20:      "#fae4dc",
+  tint40:      "#f0bfb0",
+  border:      "#f2e0da",
 };
 
 /* ── Status helpers ─────────────────────────────────────────────────────── */
 const statusCfg = {
-  Open: { bg: "#eff6ff", text: "#3b82f6", border: "#bfdbfe" },
+  Open:       { bg: "#eff6ff", text: "#3b82f6", border: "#bfdbfe" },
   Processing: { bg: "#fffbeb", text: "#d97706", border: "#fde68a" },
-  Close: { bg: "#ecfdf5", text: "#059669", border: "#a7f3d0" },
+  Close:      { bg: "#ecfdf5", text: "#059669", border: "#a7f3d0" },
 };
 const getStatusStyle = (s) => statusCfg[s] || { bg: "#f9fafb", text: "#6b7280", border: "#e5e7eb" };
 
 function DetailRow({ label, value }) {
   return (
-    <div className="flex items-center justify-between gap-4">
-      <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#a17060" }}>{label}</span>
-      <span style={{ fontSize: 13, fontWeight: 600, color: "#1f2937" }}>{value || "—"}</span>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+      <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#a17060", flexShrink: 0 }}>{label}</span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: "#1f2937", wordBreak: "break-word", textAlign: "right" }}>{value || "—"}</span>
     </div>
   );
 }
@@ -62,7 +62,7 @@ const STYLES = `
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
   .iq-date-label   { }
-  .iq-date-divider { width: 1px; height: 20px; background: ${T.border}; }
+  .iq-date-divider { width: 1px; height: 20px; background: ${T.border}; flex-shrink: 0; }
   .iq-date-summary {
     margin-left: auto;
     display: flex;
@@ -145,77 +145,14 @@ const STYLES = `
   }
   .iq-overlay { display: none; }
 
-  /* ── Table cells ── */
+  /* ── Desktop table columns ── */
   .iq-col-qty      { }
   .iq-col-location { }
   .iq-col-date     { }
 
-  /* ── Tablet: ≤ 960px ── */
-  @media (max-width: 960px) {
-    .iq-layout { flex-direction: column; }
-    .iq-table-card { width: 100%; }
-
-    /* Bottom sheet */
-    .iq-detail-panel {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      width: 100%;
-      max-height: 75vh;
-      overflow-y: auto;
-      border-radius: 20px 20px 0 0;
-      z-index: 50;
-      box-shadow: 0 -8px 40px rgba(195,106,77,0.20);
-      -webkit-overflow-scrolling: touch;
-    }
-    .iq-overlay {
-      display: block !important;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.35);
-      z-index: 49;
-    }
-    /* drag handle hint */
-    .iq-detail-panel::before {
-      content: "";
-      display: block;
-      width: 36px; height: 4px;
-      background: ${T.tint40};
-      border-radius: 4px;
-      margin: 10px auto -6px;
-    }
-  }
-
-  /* ── Small tablet: ≤ 768px ── */
-  @media (max-width: 768px) {
-    .iq-stat-grid { grid-template-columns: repeat(2, 1fr); }
-    .iq-col-date  { display: none; }
-  }
-
-  /* ── Mobile: ≤ 600px ── */
-  @media (max-width: 600px) {
-    .iq-shell { padding: 0 12px 80px; gap: 14px; }
-    .iq-date-label   { display: none; }
-    .iq-date-divider { display: none; }
-    .iq-date-summary { display: none; }
-    .iq-col-qty      { display: none; }
-    .iq-col-location { display: none; }
-    .iq-date-bar     { padding: 10px 14px; gap: 8px; }
-  }
-
-  /* ── Tiny: ≤ 400px ── */
-  @media (max-width: 400px) {
-    .iq-stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .iq-from-label, .iq-to-label { display: none; }
-    .iq-date-input { font-size: 12px; }
-    .iq-stat-value { font-size: 20px !important; }
-    .iq-stat-icon  { height: 38px !important; width: 38px !important; }
-  }
-
-  /* ── Ultra-wide: ≥ 1400px ── */
-  @media (min-width: 1400px) {
-    .iq-shell { max-width: 1400px; }
-    .iq-detail-panel { width: 340px; }
-    .iq-stat-grid { gap: 20px; }
-  }
+  /* ── Desktop: show table, hide mobile cards ── */
+  .iq-desktop-table { display: block; }
+  .iq-mobile-cards  { display: none; }
 
   /* ── Scrollable table container ── */
   .iq-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -280,29 +217,150 @@ const STYLES = `
 
   /* ── Scroll lock when bottom sheet is open ── */
   body.iq-locked { overflow: hidden; }
+
+  /* ══════════════════════════
+     TABLET: ≤ 960px
+  ══════════════════════════ */
+  @media (max-width: 960px) {
+    .iq-layout { flex-direction: column; }
+    .iq-table-card { width: 100%; }
+
+    /* Bottom sheet */
+    .iq-detail-panel {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      width: 100%;
+      max-height: 78vh;
+      overflow-y: auto;
+      border-radius: 20px 20px 0 0 !important;
+      z-index: 50;
+      box-shadow: 0 -8px 40px rgba(195,106,77,0.20);
+      -webkit-overflow-scrolling: touch;
+    }
+    .iq-overlay {
+      display: block !important;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 49;
+    }
+    .iq-detail-handle {
+      display: flex !important;
+    }
+  }
+
+  /* ══════════════════════════
+     SMALL TABLET: ≤ 768px
+  ══════════════════════════ */
+  @media (max-width: 768px) {
+    .iq-stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .iq-col-date  { display: none; }
+  }
+
+  /* ══════════════════════════
+     MOBILE: ≤ 600px
+  ══════════════════════════ */
+  @media (max-width: 600px) {
+    .iq-shell { padding: 0 10px 80px; gap: 12px; }
+
+    /* Date bar: compact 2-row layout */
+    .iq-date-bar { padding: 10px 14px; gap: 8px; }
+    .iq-date-label   { display: none; }
+    .iq-date-divider { display: none; }
+    .iq-date-summary { display: none; }
+    .iq-from-label   { display: none; }
+    .iq-to-label     { display: none; }
+    .iq-date-pill    { padding: 6px 10px; flex: 1; justify-content: center; }
+    .iq-date-input   { font-size: 12px; width: 100%; text-align: center; }
+    .iq-date-inputs-row {
+      display: flex !important;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    /* Switch to card list on mobile */
+    .iq-desktop-table { display: none; }
+    .iq-mobile-cards  { display: block; }
+
+    /* Detail bottom sheet taller on mobile */
+    .iq-detail-panel { max-height: 85vh; }
+
+    /* Stat grid full 2-col always */
+    .iq-stat-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .iq-stat-value { font-size: 20px !important; }
+    .iq-stat-icon  { height: 36px !important; width: 36px !important; }
+
+    /* Pagination stack */
+    .iq-pagination { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .iq-page-btns  { width: 100%; justify-content: space-between; }
+  }
+
+  /* ══════════════════════════
+     TINY: ≤ 380px
+  ══════════════════════════ */
+  @media (max-width: 380px) {
+    .iq-stat-grid { gap: 6px; }
+    .iq-stat-card-inner { padding: 10px 12px !important; gap: 10px !important; }
+    .iq-stat-value { font-size: 18px !important; }
+  }
+
+  /* ══════════════════════════
+     ULTRA-WIDE: ≥ 1400px
+  ══════════════════════════ */
+  @media (min-width: 1400px) {
+    .iq-shell { max-width: 1400px; }
+    .iq-detail-panel { width: 340px; }
+  }
+
+  /* ── Mobile card styles ── */
+  .iq-card-item {
+    padding: 14px 16px;
+    border-bottom: 1px solid ${T.tint10};
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .iq-card-item:last-child { border-bottom: none; }
+  .iq-card-item:hover { background: ${T.tint10}; }
+  .iq-card-item.selected { background: ${T.tint10}; }
+
+  .iq-card-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .iq-card-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .iq-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
 `;
-
-
 
 /* ════════════════════════════════════════════════════════════════════════════
    Main component
    ════════════════════════════════════════════════════════════════════════════ */
 export default function InquiryManagement() {
-  const [inquiries, setInquiries] = useState([]);
-  const [selectedIdx, setSelectedIdx] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [inquiries, setInquiries]                           = useState([]);
+  const [selectedIdx, setSelectedIdx]                       = useState(null);
+  const [loading, setLoading]                               = useState(false);
 
   const today = new Date();
-  const yest = new Date(); yest.setDate(today.getDate() - 1);
-  const fmt = (d) => d.toISOString().split("T")[0];
+  const yest  = new Date(); yest.setDate(today.getDate() - 1);
+  const fmt   = (d) => d.toISOString().split("T")[0];
 
-  const [startDate, setStartDate] = useState(fmt(yest));
-  const [endDate, setEndDate] = useState(fmt(today));
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [totalInquiry, setTotalInquiry] = useState(0);
-  const [totalOpenInquiry, setTotalOpenInquiry] = useState(0);
-  const [totalCloseInquiry, setTotalCloseInquiry] = useState(0);
+  const [startDate, setStartDate]                           = useState(fmt(yest));
+  const [endDate, setEndDate]                               = useState(fmt(today));
+  const [currentPage, setCurrentPage]                       = useState(1);
+  const [totalPage, setTotalPage]                           = useState(1);
+  const [totalInquiry, setTotalInquiry]                     = useState(0);
+  const [totalOpenInquiry, setTotalOpenInquiry]             = useState(0);
+  const [totalCloseInquiry, setTotalCloseInquiry]           = useState(0);
   const [totalProcessingInquiry, setTotalProcessingInquiry] = useState(0);
 
   const fetchInquiries = async (page = 1) => {
@@ -329,7 +387,7 @@ export default function InquiryManagement() {
 
   useEffect(() => { fetchInquiries(currentPage); }, [currentPage, startDate, endDate]);
 
-  /* Lock body scroll when bottom sheet is open on mobile */
+  /* Lock body scroll when bottom sheet open on mobile */
   useEffect(() => {
     const isMobile = window.innerWidth <= 960;
     if (selectedIdx !== null && isMobile) {
@@ -349,10 +407,10 @@ export default function InquiryManagement() {
         return;
       }
       await postService("/notification", {
-        userId: selectedInquiry.customerId,
-        title: `Inquiry ${status}`,
+        userId:  selectedInquiry.customerId,
+        title:   `Inquiry ${status}`,
         message: `Hello ${selectedInquiry.customerName}, your inquiry has been marked as ${status}.`,
-        type: status === "Close" ? "success" : "info",
+        type:    status === "Close" ? "success" : "info",
       });
       toast.success("Status Updated & Notification Sent");
       fetchInquiries(currentPage);
@@ -372,8 +430,8 @@ export default function InquiryManagement() {
 
         {/* ── Heading ── */}
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1a1a1a", margin: 0 }}>Inquiries</h1>
-          <p style={{ fontSize: 13, color: "#a0887e", marginTop: 4 }}>Filter by date range to view inquiries</p>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#1a1a1a", margin: 0 }}>Inquiries</h1>
+          <p style={{ fontSize: 12, color: "#a0887e", marginTop: 3, margin: "3px 0 0" }}>Filter by date range to view inquiries</p>
         </div>
 
         {/* ── Date bar ── */}
@@ -386,27 +444,40 @@ export default function InquiryManagement() {
 
           <div className="iq-date-divider" />
 
-          {/* From */}
-          <div className="iq-date-input-wrap">
-            <span className="iq-from-label" style={{ fontSize: 11.5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#b09080", flexShrink: 0 }}>From</span>
-            <label className="iq-date-pill">
-              <input type="date" value={startDate} onChange={e => { setCurrentPage(1); setStartDate(e.target.value); }} className="iq-date-input" />
-            </label>
-          </div>
+          {/* Inputs row (becomes full-width on mobile) */}
+          <div className="iq-date-inputs-row" style={{ display: "contents" }}>
+            {/* From */}
+            <div className="iq-date-input-wrap">
+              <span className="iq-from-label" style={{ fontSize: 11.5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#b09080", flexShrink: 0 }}>From</span>
+              <label className="iq-date-pill">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={e => { setCurrentPage(1); setStartDate(e.target.value); }}
+                  className="iq-date-input"
+                />
+              </label>
+            </div>
 
-          {/* Arrow */}
-          <div className="iq-arrow">
-            <div style={{ width: 12, height: 1, background: T.tint40 }} />
-            <ChevronRight size={12} style={{ color: T.primary }} />
-            <div style={{ width: 12, height: 1, background: T.tint40 }} />
-          </div>
+            {/* Arrow */}
+            <div className="iq-arrow">
+              <div style={{ width: 10, height: 1, background: T.tint40 }} />
+              <ChevronRight size={12} style={{ color: T.primary }} />
+              <div style={{ width: 10, height: 1, background: T.tint40 }} />
+            </div>
 
-          {/* To */}
-          <div className="iq-date-input-wrap">
-            <span className="iq-to-label" style={{ fontSize: 11.5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#b09080", flexShrink: 0 }}>To</span>
-            <label className="iq-date-pill">
-              <input type="date" value={endDate} onChange={e => { setCurrentPage(1); setEndDate(e.target.value); }} className="iq-date-input" />
-            </label>
+            {/* To */}
+            <div className="iq-date-input-wrap">
+              <span className="iq-to-label" style={{ fontSize: 11.5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#b09080", flexShrink: 0 }}>To</span>
+              <label className="iq-date-pill">
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={e => { setCurrentPage(1); setEndDate(e.target.value); }}
+                  className="iq-date-input"
+                />
+              </label>
+            </div>
           </div>
 
           {/* Summary chip */}
@@ -419,102 +490,158 @@ export default function InquiryManagement() {
 
         {/* ── Stat cards ── */}
         <div className="iq-stat-grid">
-          <StatCard icon={<Inbox size={17} />} title="Total" value={totalInquiry} primary />
-          <StatCard icon={<Clock size={17} />} title="Open" value={totalOpenInquiry} accent="#3b82f6" bg="#eff6ff" ring="#bfdbfe" />
-          <StatCard icon={<Reply size={17} />} title="Processing" value={totalProcessingInquiry} accent="#d97706" bg="#fffbeb" ring="#fde68a" />
-          <StatCard icon={<CheckCircle size={17} />} title="Closed" value={totalCloseInquiry} accent="#059669" bg="#ecfdf5" ring="#a7f3d0" />
+          <StatCard icon={<Inbox size={16} />}         title="Total"      value={totalInquiry}             primary />
+          <StatCard icon={<Clock size={16} />}         title="Open"       value={totalOpenInquiry}         accent="#3b82f6" bg="#eff6ff" ring="#bfdbfe" />
+          <StatCard icon={<Reply size={16} />}         title="Processing" value={totalProcessingInquiry}   accent="#d97706" bg="#fffbeb" ring="#fde68a" />
+          <StatCard icon={<CheckCircle size={16} />}   title="Closed"     value={totalCloseInquiry}        accent="#059669" bg="#ecfdf5" ring="#a7f3d0" />
         </div>
 
         {/* ── Table + Detail panel ── */}
         <div className="iq-layout">
 
-          {/* Table */}
+          {/* ── Table card ── */}
           <div className="iq-table-card">
-            <div className="iq-table-scroll">
-              <table className="iq-table">
-                <thead>
-                  <tr>
-                    <th className="iq-th">Customer</th>
-                    <th className="iq-th iq-col-qty">Qty</th>
-                    <th className="iq-th iq-col-location">Location</th>
-                    <th className="iq-th iq-col-date">Date</th>
-                    <th className="iq-th">Status</th>
-                    <th className="iq-th">View</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading
-                    ? Array.from({ length: 6 }).map((_, i) => (
-                      <tr key={i}><td colSpan="6" className="iq-td"><div className="iq-skeleton" style={{ width: `${55 + (i % 3) * 15}%` }} /></td></tr>
-                    ))
-                    : inquiries.length === 0
-                      ? <tr><td colSpan="6" className="iq-td" style={{ textAlign: "center", padding: "56px 20px", color: "#b09080", fontSize: 13 }}>No inquiries found for this date range</td></tr>
-                      : inquiries.map((item, index) => {
-                        const isSelected = selectedIdx === index;
-                        const sc = getStatusStyle(item.status);
-                        return (
-                          <tr
-                            key={item._id}
-                            onClick={() => setSelectedIdx(isSelected ? null : index)}
-                            style={{ background: isSelected ? T.tint10 : "white", cursor: "pointer", transition: "background 0.12s" }}
-                            onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "#fdf8f6"; }}
-                            onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "white"; }}
+
+            {/* DESKTOP: table */}
+            <div className="iq-desktop-table">
+              <div className="iq-table-scroll">
+                <table className="iq-table">
+                  <thead>
+                    <tr>
+                      <th className="iq-th">Customer</th>
+                      <th className="iq-th iq-col-qty">Qty</th>
+                      <th className="iq-th iq-col-location">Location</th>
+                      <th className="iq-th iq-col-date">Date</th>
+                      <th className="iq-th">Status</th>
+                      <th className="iq-th">View</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading
+                      ? Array.from({ length: 6 }).map((_, i) => (
+                        <tr key={i}><td colSpan="6" className="iq-td"><div className="iq-skeleton" style={{ width: `${55 + (i % 3) * 15}%` }} /></td></tr>
+                      ))
+                      : inquiries.length === 0
+                        ? <tr><td colSpan="6" className="iq-td" style={{ textAlign: "center", padding: "56px 20px", color: "#b09080", fontSize: 13 }}>No inquiries found for this date range</td></tr>
+                        : inquiries.map((item, index) => {
+                          const isSelected = selectedIdx === index;
+                          const sc = getStatusStyle(item.status);
+                          return (
+                            <tr
+                              key={item._id}
+                              onClick={() => setSelectedIdx(isSelected ? null : index)}
+                              style={{ background: isSelected ? T.tint10 : "white", cursor: "pointer", transition: "background 0.12s" }}
+                              onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "#fdf8f6"; }}
+                              onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "white"; }}
+                            >
+                              {/* Customer */}
+                              <td className="iq-td">
+                                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                  <div style={{ height: 32, width: 32, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: T.tint20, border: `1px solid ${T.border}`, color: T.primary, fontSize: 12, fontWeight: 700 }}>
+                                    {item.customerName?.charAt(0)?.toUpperCase() || "?"}
+                                  </div>
+                                  <div style={{ minWidth: 0 }}>
+                                    <p style={{ margin: 0, fontWeight: 600, color: "#111827", fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 140 }}>{item.customerName}</p>
+                                    <p style={{ margin: 0, fontSize: 11.5, color: "#a0887e", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 140 }}>{item.email}</p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="iq-td iq-col-qty" style={{ fontWeight: 600, color: "#374151" }}>{item.quantity}</td>
+                              <td className="iq-td iq-col-location" style={{ color: "#7a6058", fontSize: 13, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                {item.country}{item.state ? `, ${item.state}` : ""}
+                              </td>
+                              <td className="iq-td iq-col-date" style={{ color: "#9ca3af", fontSize: 12, whiteSpace: "nowrap" }}>
+                                {new Date().toLocaleDateString("en-GB")}
+                              </td>
+                              <td className="iq-td">
+                                <span style={{ padding: "4px 10px", fontSize: 11.5, fontWeight: 600, borderRadius: 8, border: `1px solid ${sc.border}`, background: sc.bg, color: sc.text, whiteSpace: "nowrap" }}>
+                                  {item.status}
+                                </span>
+                              </td>
+                              <td className="iq-td">
+                                <button
+                                  onClick={e => { e.stopPropagation(); setSelectedIdx(isSelected ? null : index); }}
+                                  style={{ padding: 8, borderRadius: 10, border: `1px solid ${isSelected ? T.primary : T.border}`, background: isSelected ? T.tint20 : T.tint10, color: isSelected ? T.primary : T.primaryDark, cursor: "pointer", display: "flex", alignItems: "center", transition: "all 0.12s" }}
+                                  onMouseEnter={e => { e.currentTarget.style.background = T.tint20; e.currentTarget.style.borderColor = T.primary; e.currentTarget.style.color = T.primary; }}
+                                  onMouseLeave={e => { e.currentTarget.style.background = isSelected ? T.tint20 : T.tint10; e.currentTarget.style.borderColor = isSelected ? T.primary : T.border; e.currentTarget.style.color = isSelected ? T.primary : T.primaryDark; }}
+                                >
+                                  <Eye size={14} />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* MOBILE: card list */}
+            <div className="iq-mobile-cards">
+              {loading
+                ? Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} style={{ padding: "14px 16px", borderBottom: `1px solid ${T.tint10}` }}>
+                    <div className="iq-skeleton" style={{ width: "60%", marginBottom: 8 }} />
+                    <div className="iq-skeleton" style={{ width: "40%" }} />
+                  </div>
+                ))
+                : inquiries.length === 0
+                  ? <div style={{ textAlign: "center", padding: "48px 20px", color: "#b09080", fontSize: 13 }}>No inquiries found for this date range</div>
+                  : inquiries.map((item, index) => {
+                    const isSelected = selectedIdx === index;
+                    const sc = getStatusStyle(item.status);
+                    return (
+                      <div
+                        key={item._id}
+                        className={`iq-card-item${isSelected ? " selected" : ""}`}
+                        onClick={() => setSelectedIdx(isSelected ? null : index)}
+                      >
+                        {/* Top row */}
+                        <div className="iq-card-top">
+                          <div style={{ height: 36, width: 36, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: T.tint20, border: `1px solid ${T.border}`, color: T.primary, fontSize: 13, fontWeight: 700 }}>
+                            {item.customerName?.charAt(0)?.toUpperCase() || "?"}
+                          </div>
+                          <div className="iq-card-info">
+                            <p style={{ margin: 0, fontWeight: 700, fontSize: 13, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.customerName}</p>
+                            <p style={{ margin: "2px 0 0", fontSize: 11.5, color: "#a0887e", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.email}</p>
+                          </div>
+                          <span style={{ flexShrink: 0, padding: "3px 9px", fontSize: 10.5, fontWeight: 700, borderRadius: 8, border: `1px solid ${sc.border}`, background: sc.bg, color: sc.text }}>
+                            {item.status}
+                          </span>
+                        </div>
+
+                        {/* Meta row */}
+                        <div className="iq-card-meta">
+                          {(item.country || item.state) && (
+                            <span style={{ fontSize: 11.5, color: "#7a6058", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "60%" }}>
+                              📍 {item.country}{item.state ? `, ${item.state}` : ""}
+                            </span>
+                          )}
+                          {item.quantity && (
+                            <span style={{ fontSize: 11.5, color: "#a0887e", fontWeight: 600 }}>Qty: {item.quantity}</span>
+                          )}
+                          <button
+                            onClick={e => { e.stopPropagation(); setSelectedIdx(isSelected ? null : index); }}
+                            style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 5, padding: "5px 12px", fontSize: 12, fontWeight: 600, borderRadius: 9, border: `1px solid ${isSelected ? T.primary : T.border}`, background: isSelected ? T.tint20 : T.tint10, color: isSelected ? T.primary : T.primaryDark, cursor: "pointer" }}
                           >
-                            {/* Customer */}
-                            <td className="iq-td">
-                              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                                <div style={{ height: 32, width: 32, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: T.tint20, border: `1px solid ${T.border}`, color: T.primary, fontSize: 12, fontWeight: 700 }}>
-                                  {item.customerName?.charAt(0)?.toUpperCase() || "?"}
-                                </div>
-                                <div style={{ minWidth: 0 }}>
-                                  <p style={{ margin: 0, fontWeight: 600, color: "#111827", fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.customerName}</p>
-                                  <p style={{ margin: 0, fontSize: 11.5, color: "#a0887e", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.email}</p>
-                                </div>
-                              </div>
-                            </td>
-
-                            <td className="iq-td iq-col-qty" style={{ fontWeight: 600, color: "#374151" }}>{item.quantity}</td>
-
-                            <td className="iq-td iq-col-location" style={{ color: "#7a6058", fontSize: 13 }}>
-                              {item.country}{item.state ? `, ${item.state}` : ""}
-                            </td>
-
-                            <td className="iq-td iq-col-date" style={{ color: "#9ca3af", fontSize: 12, whiteSpace: "nowrap" }}>
-                              {new Date().toLocaleDateString("en-GB")}
-                            </td>
-
-                            <td className="iq-td">
-                              <span style={{ padding: "4px 10px", fontSize: 11.5, fontWeight: 600, borderRadius: 8, border: `1px solid ${sc.border}`, background: sc.bg, color: sc.text, whiteSpace: "nowrap" }}>
-                                {item.status}
-                              </span>
-                            </td>
-
-                            <td className="iq-td">
-                              <button
-                                onClick={e => { e.stopPropagation(); setSelectedIdx(isSelected ? null : index); }}
-                                style={{ padding: 8, borderRadius: 10, border: `1px solid ${isSelected ? T.primary : T.border}`, background: isSelected ? T.tint20 : T.tint10, color: isSelected ? T.primary : T.primaryDark, cursor: "pointer", display: "flex", alignItems: "center", transition: "all 0.12s" }}
-                                onMouseEnter={e => { e.currentTarget.style.background = T.tint20; e.currentTarget.style.borderColor = T.primary; e.currentTarget.style.color = T.primary; }}
-                                onMouseLeave={e => { e.currentTarget.style.background = isSelected ? T.tint20 : T.tint10; e.currentTarget.style.borderColor = isSelected ? T.primary : T.border; e.currentTarget.style.color = isSelected ? T.primary : T.primaryDark; }}
-                              >
-                                <Eye size={14} />
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })
-                  }
-                </tbody>
-              </table>
+                            <Eye size={13} /> {isSelected ? "Close" : "View"}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+              }
             </div>
 
             {/* Pagination */}
             <div className="iq-pagination">
               <span style={{ fontSize: 12.5, fontWeight: 500, color: "#a0887e" }}>
                 Page <strong style={{ color: T.primaryDark }}>{currentPage}</strong> of <strong style={{ color: T.primaryDark }}>{totalPage}</strong>
-                &nbsp;·&nbsp; <strong style={{ color: T.primaryDark }}>{inquiries.length}</strong> records
+                &nbsp;·&nbsp;<strong style={{ color: T.primaryDark }}>{inquiries.length}</strong> records
               </span>
-              <div style={{ display: "flex", gap: 8 }}>
-                <PaginationBtn disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}><ChevronLeft size={13} /> Prev</PaginationBtn>
+              <div className="iq-page-btns" style={{ display: "flex", gap: 8 }}>
+                <PaginationBtn disabled={currentPage === 1}         onClick={() => setCurrentPage(p => p - 1)}><ChevronLeft size={13} /> Prev</PaginationBtn>
                 <PaginationBtn disabled={currentPage === totalPage} onClick={() => setCurrentPage(p => p + 1)}>Next <ChevronRight size={13} /></PaginationBtn>
               </div>
             </div>
@@ -527,24 +654,24 @@ export default function InquiryManagement() {
               <>
                 <div className="iq-overlay" onClick={() => setSelectedIdx(null)} />
 
-                <div className="iq-detail-panel"
-                  style={{
-                    borderBottomLeftRadius: "28px",
-                    borderBottomRightRadius: "28px",
-                    borderTopLeftRadius: "28px",
-                    borderTopRightRadius: "28px",
-                    overflow: "hidden",
-                    background: "#fff"
-                  }}>
+                <div className="iq-detail-panel" style={{ borderRadius: 16, overflow: "hidden", background: "#fff" }}>
+                  {/* Drag handle (mobile only) */}
+                  <div
+                    className="iq-detail-handle"
+                    style={{ display: "none", justifyContent: "center", paddingTop: 10, paddingBottom: 4 }}
+                  >
+                    <div style={{ width: 36, height: 4, borderRadius: 99, background: T.tint40 }} />
+                  </div>
+
                   {/* Header */}
-                  <div style={{ padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", background: T.tint10, borderBottom: `1px solid ${T.border}` }}>
-                    <div>
+                  <div style={{ padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", background: T.tint10, borderBottom: `1px solid ${T.border}` }}>
+                    <div style={{ minWidth: 0 }}>
                       <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: T.primaryDark }}>Inquiry Details</h3>
                       <p style={{ margin: "2px 0 0", fontSize: 11.5, color: "#b09080" }}>Full inquiry info</p>
                     </div>
                     <button
                       onClick={() => setSelectedIdx(null)}
-                      style={{ height: 28, width: 28, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, border: "none", background: "transparent", color: "#b09080", cursor: "pointer", transition: "all 0.12s" }}
+                      style={{ height: 28, width: 28, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, border: "none", background: "transparent", color: "#b09080", cursor: "pointer", transition: "all 0.12s" }}
                       onMouseEnter={e => { e.currentTarget.style.background = T.tint20; e.currentTarget.style.color = T.primary; }}
                       onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#b09080"; }}
                     >
@@ -553,22 +680,22 @@ export default function InquiryManagement() {
                   </div>
 
                   {/* Customer */}
-                  <div style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #f5f0ee" }}>
+                  <div style={{ padding: "14px 18px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #f5f0ee" }}>
                     <div style={{ height: 40, width: 40, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: T.tint20, border: `1.5px solid ${T.border}`, color: T.primary, fontSize: 14, fontWeight: 700 }}>
                       {selected.customerName?.charAt(0)?.toUpperCase() || "?"}
                     </div>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ margin: 0, fontSize: 13.5, fontWeight: 700, color: "#111827" }}>{selected.customerName}</p>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <p style={{ margin: 0, fontSize: 13.5, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selected.customerName}</p>
                       <p style={{ margin: "2px 0 0", fontSize: 11.5, color: "#a0887e", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selected.email}</p>
                     </div>
                   </div>
 
                   {/* Info rows */}
-                  <div style={{ padding: "14px 20px", display: "flex", flexDirection: "column", gap: 10, borderBottom: "1px solid #f5f0ee" }}>
-                    <DetailRow label="Country" value={selected.country} />
-                    <DetailRow label="State" value={selected.state} />
+                  <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: 10, borderBottom: "1px solid #f5f0ee" }}>
+                    <DetailRow label="Country"  value={selected.country} />
+                    <DetailRow label="State"    value={selected.state} />
                     <DetailRow label="Quantity" value={selected.quantity} />
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
                       <span style={{ fontSize: 11.5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#a17060" }}>Status</span>
                       <span style={{ padding: "3px 10px", fontSize: 11, fontWeight: 600, borderRadius: 8, border: `1px solid ${sc.border}`, background: sc.bg, color: sc.text }}>
                         {selected.status}
@@ -577,24 +704,32 @@ export default function InquiryManagement() {
                   </div>
 
                   {/* Message */}
-                  <div style={{ padding: "14px 20px", borderBottom: "1px solid #f5f0ee" }}>
+                  <div style={{ padding: "14px 18px", borderBottom: "1px solid #f5f0ee" }}>
                     <p style={{ margin: "0 0 8px", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#b09080" }}>Message</p>
-                    <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "#5a4540", background: T.tint10, border: `1px solid ${T.border}`, borderRadius: 12, padding: "10px 14px" }}>
+                    <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "#5a4540", background: T.tint10, border: `1px solid ${T.border}`, borderRadius: 12, padding: "10px 14px", wordBreak: "break-word" }}>
                       {selected.message || "No message provided."}
                     </p>
                   </div>
 
                   {/* Actions */}
-                  <div style={{ padding: "14px 20px", display: "flex", flexDirection: "column", gap: 10 }}>
-                    {(selected.status !== "Processing" && selected.status !== "Close")  && (
-                      <button className="iq-action-btn" onClick={() => updateStatus(selected._id, "Processing")} style={{ background: "#fffbeb", color: "#d97706", borderColor: "#fde68a" }}
-                        onMouseEnter={e => e.currentTarget.style.background = "#fef3c7"} onMouseLeave={e => e.currentTarget.style.background = "#fffbeb"}>
+                  <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
+                    {(selected.status !== "Processing" && selected.status !== "Close") && (
+                      <button className="iq-action-btn"
+                        onClick={() => updateStatus(selected._id, "Processing")}
+                        style={{ background: "#fffbeb", color: "#d97706", borderColor: "#fde68a" }}
+                        onMouseEnter={e => e.currentTarget.style.background = "#fef3c7"}
+                        onMouseLeave={e => e.currentTarget.style.background = "#fffbeb"}
+                      >
                         <Reply size={14} /> Mark as Processing
                       </button>
                     )}
                     {selected.status !== "Close" && (
-                      <button className="iq-action-btn" onClick={() => updateStatus(selected._id, "Close")} style={{ background: "#ecfdf5", color: "#059669", borderColor: "#a7f3d0" }}
-                        onMouseEnter={e => e.currentTarget.style.background = "#d1fae5"} onMouseLeave={e => e.currentTarget.style.background = "#ecfdf5"}>
+                      <button className="iq-action-btn"
+                        onClick={() => updateStatus(selected._id, "Close")}
+                        style={{ background: "#ecfdf5", color: "#059669", borderColor: "#a7f3d0" }}
+                        onMouseEnter={e => e.currentTarget.style.background = "#d1fae5"}
+                        onMouseLeave={e => e.currentTarget.style.background = "#ecfdf5"}
+                      >
                         <CheckCircle2 size={14} /> Mark as Closed
                       </button>
                     )}
@@ -606,30 +741,30 @@ export default function InquiryManagement() {
               </>
             );
           })()}
-
         </div>
       </div>
     </AdminLayout>
   );
 }
 
-/* ── Stat card ─────────────────────────────────────────────────────────── */
+/* ── Stat card ──────────────────────────────────────────────────────────── */
 function StatCard({ icon, title, value, primary, accent, bg, ring }) {
   const a = primary ? T.primary : accent;
-  const b = primary ? T.tint20 : bg;
-  const r = primary ? T.border : ring;
+  const b = primary ? T.tint20  : bg;
+  const r = primary ? T.border  : ring;
   return (
     <div
-      style={{ background: "white", borderRadius: 16, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14, border: `1px solid ${primary ? T.border : "#ebebeb"}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "box-shadow 0.2s", cursor: "default" }}
+      className="iq-stat-card-inner"
+      style={{ background: "white", borderRadius: 14, padding: "12px 16px", display: "flex", alignItems: "center", gap: 12, border: `1px solid ${primary ? T.border : "#ebebeb"}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "box-shadow 0.2s", cursor: "default" }}
       onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(195,106,77,0.12)"}
       onMouseLeave={e => e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"}
     >
-      <div className="iq-stat-icon" style={{ height: 42, width: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, background: b, border: `1px solid ${r}`, color: a }}>
+      <div className="iq-stat-icon" style={{ height: 40, width: 40, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, background: b, border: `1px solid ${r}`, color: a }}>
         {icon}
       </div>
       <div style={{ minWidth: 0 }}>
-        <p style={{ margin: 0, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#a0887e" }}>{title}</p>
-        <p className="iq-stat-value" style={{ margin: "2px 0 0", fontSize: 24, fontWeight: 700, color: "#111827", lineHeight: 1.2 }}>{value ?? "—"}</p>
+        <p style={{ margin: 0, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#a0887e", whiteSpace: "nowrap" }}>{title}</p>
+        <p className="iq-stat-value" style={{ margin: "1px 0 0", fontSize: 22, fontWeight: 700, color: "#111827", lineHeight: 1.2 }}>{value ?? "—"}</p>
       </div>
     </div>
   );
@@ -641,7 +776,7 @@ function PaginationBtn({ children, disabled, onClick }) {
     <button
       disabled={disabled}
       onClick={onClick}
-      style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", fontSize: 12.5, fontWeight: 600, borderRadius: 8, border: `1px solid ${T.border}`, background: "white", color: T.primaryDark, cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.4 : 1, transition: "all 0.15s" }}
+      style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", fontSize: 12.5, fontWeight: 600, borderRadius: 8, border: `1px solid ${T.border}`, background: "white", color: T.primaryDark, cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.4 : 1, transition: "all 0.15s", flex: 1, justifyContent: "center" }}
       onMouseEnter={e => { if (!disabled) { e.currentTarget.style.background = T.tint20; e.currentTarget.style.borderColor = T.primary; } }}
       onMouseLeave={e => { e.currentTarget.style.background = "white"; e.currentTarget.style.borderColor = T.border; }}
     >
