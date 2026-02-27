@@ -168,9 +168,57 @@ const VennDiagram = () => {
     <div ref={ref} className="flex flex-col items-center justify-center py-10 md:py-20 relative px-4">
       <div className="w-full overflow-x-auto flex justify-center relative">
         <svg width="720" height="400" viewBox="0 0 720 400" className="overflow-visible max-w-full" style={{ maxWidth: "100%", height: "auto" }}>
-          <motion.circle cx={cx} cy={topY} r={r} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
-          <motion.circle cx={leftX} cy={bottomY} r={r} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
-          <motion.circle cx={rightX} cy={bottomY} r={r} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+
+          <motion.circle
+            cx={cx}
+            cy={topY}
+            r={r}
+            fill="none"
+            stroke="rgba(255,255,255,0.25)"
+            strokeWidth="1"
+            initial={{ y: -140, opacity: 0, scale: 0.85 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            transition={{
+              delay: 0.3,
+              type: "spring",
+              stiffness: 80,
+              damping: 18,
+            }}
+          />
+
+          <motion.circle
+            cx={leftX}
+            cy={bottomY}
+            r={r}
+            fill="none"
+            stroke="rgba(255,255,255,0.25)"
+            strokeWidth="1"
+            initial={{ x: -180, opacity: 0, scale: 0.85 }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            transition={{
+              delay: 0.6,
+              type: "spring",
+              stiffness: 80,
+              damping: 18,
+            }}
+          />
+
+          <motion.circle
+            cx={rightX}
+            cy={bottomY}
+            r={r}
+            fill="none"
+            stroke="rgba(255,255,255,0.25)"
+            strokeWidth="1"
+            initial={{ x: 180, opacity: 0, scale: 0.85 }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            transition={{
+              delay: 0.9,
+              type: "spring",
+              stiffness: 80,
+              damping: 18,
+            }}
+          />
           {showLabels && (
             <>
               <text x={cx} y={topY - 10} textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.circle1.line1}</text>

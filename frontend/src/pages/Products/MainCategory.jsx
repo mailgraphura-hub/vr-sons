@@ -273,7 +273,7 @@ const GlobalPortal = () => {
         </section>
 
         {/* ── STATS ── */}
-        <section className="bg-black py-20">
+        <section className="bg-black py-20 mt-16 md:mt-24">
           <div className="max-w-6xl mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-neutral-800">
               {[
