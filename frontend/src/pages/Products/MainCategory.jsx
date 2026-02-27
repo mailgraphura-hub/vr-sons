@@ -272,8 +272,9 @@ const GlobalPortal = () => {
           </motion.div>
         </section>
 
-        {/* ── STATS ── */}
-        <section className="bg-black py-20">
+      
+         {/* ── STATS ── */}
+        <section className="bg-black py-12 mt-12 md:mt-16">
           <div className="max-w-6xl mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-neutral-800">
               {[
@@ -288,7 +289,7 @@ const GlobalPortal = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.6 }}
-                  className="flex flex-col items-center justify-center py-10"
+                  className="flex flex-col items-center justify-center py-6"
                 >
                   <h3
                     className="text-4xl md:text-5xl font-extrabold tracking-tight 
@@ -308,7 +309,7 @@ const GlobalPortal = () => {
               ))}
             </div>
           </div>
-        </section>c
+        </section>
         {/* ── CATEGORIES ── */}
         <section className="gp-cats">
           <div className="gp-cats__inner">
