@@ -7,14 +7,13 @@ import Navbar from "../../components/homePageComp/Navbar";
 import Footer from "../../components/homePageComp/Footer";
 
 export default function Blog() {
-
   useEffect(() => {
     document.title = "Import Export Insights & Guides";
   }, []);
 
   const getOnlineImage = (title) => {
     return `https://source.unsplash.com/600x400/?export,shipping,logistics,${encodeURIComponent(
-      title
+      title,
     )}`;
   };
 
@@ -23,33 +22,29 @@ export default function Blog() {
   //   image: blog.image ? blog.image : getOnlineImage(blog.title),
   // }));
 
-  const [allBlogs, setBlogs] = useState([])
+  const [allBlogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    ; (
-      async () => {
-        const apiResponse = await getService("/customer/blog");
+    (async () => {
+      const apiResponse = await getService("/customer/blog");
 
-        if (!apiResponse.ok) {
-          console.log(apiResponse.message);
-          return
-        }
-
-        console.log(apiResponse.data.data.blogList)
-
-        setBlogs(apiResponse.data.data.blogList)
-
+      if (!apiResponse.ok) {
+        console.log(apiResponse.message);
+        return;
       }
-    )()
-  }, [])
+
+      console.log(apiResponse.data.data.blogList);
+
+      setBlogs(apiResponse.data.data.blogList);
+    })();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <Navbar/>
+      <Navbar />
 
       {/* HERO SECTION */}
       <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden">
-
         {/* Keyframe styles */}
         <style>{`
           @keyframes kenBurns {
@@ -122,7 +117,6 @@ export default function Blog() {
       {/* Blog Layout */}
       <div className="container px-4 py-12 mx-auto">
         <div className="grid gap-10 lg:grid-cols-4">
-
           {/* Blog Grid */}
           <div className="grid items-start gap-8 lg:col-span-3 md:grid-cols-2 xl:grid-cols-3">
             {allBlogs.map((blog) => (
@@ -150,13 +144,16 @@ export default function Blog() {
                       {blog.title}
                     </h2>
 
-                    <p className="mb-2 text-sm text-gray-500">
-                      {blog.author || "Admin"} <span className="mx-1">•</span>{" "}
-                      {new Date(blog.createdAt).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
+                    <p className="text-xs leading-tight text-gray-500">
+                      <span>{blog.author || "Admin"}</span>
+                      <span className="ml-1">
+                        •{" "}
+                        {new Date(blog.createdAt).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
                     </p>
                   </div>
 
@@ -177,7 +174,7 @@ export default function Blog() {
           <Sidebar />
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
