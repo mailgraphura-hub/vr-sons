@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, CheckCircle, XCircle, Mail, Lock, Loader2 } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { postService } from "../../service/axios";
 import { GoogleLogin } from "@react-oauth/google";
 import logo from "../../assets/logo/TextLogo.png";
@@ -10,6 +10,9 @@ const bgImage = "./src/assets/Image-Groundnut.webp";
 
 export default function Login() {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const { data } = location.state || {}
 
     const [form, setForm] = useState({ email: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +34,14 @@ export default function Login() {
             }
             toast.success("Login Successful");
             localStorage.setItem("access", "grant");
-            setTimeout(() => navigate("/user/dashboard"), 1500);
+            setTimeout(() => {
+                if (!data) {
+                    navigate("/user/dashboard")
+                }
+                else {
+                    navigate(`/productsDetail/${data}`)
+                }
+            }, 1500);
         } catch (error) {
             console.error("Google Login Error:", error);
             toast.error("Google Login Failed");
@@ -56,9 +66,16 @@ export default function Login() {
             setLoading(false); return;
         }
         toast.success("Login Successful");
-        localStorage.setItem("access", "Successful");
+        localStorage.setItem("access", "grant");
         setLoading(false);
-        setTimeout(() => navigate("/user/dashboard"), 1000);
+        setTimeout(() => {
+            if (!data) {
+                navigate("/user/dashboard")
+            }
+            else {
+                navigate(`/productsDetail/${data}`)
+            }
+        }, 1500);
     };
 
     return (
