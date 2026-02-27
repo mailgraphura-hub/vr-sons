@@ -5,6 +5,8 @@ import {
   Mail,
   MapPin,
   Globe,
+  Ship,
+  Building2,
   ArrowUpRight,
 } from "lucide-react";
 
@@ -13,170 +15,149 @@ import Footer from "../../components/homePageComp/Footer";
 
 export default function ContactPage() {
   return (
-    <div className="overflow-x-hidden font-sans bg-white text-neutral-900">
+    <div className="bg-white text-neutral-900 font-sans overflow-x-hidden">
 
       <Navbar />
 
       {/* ================= HERO ================= */}
-      <section className="relative h-[80vh] flex items-center justify-center text-center overflow-hidden">
+      <section className="relative h-[75vh] flex items-center justify-center text-center overflow-hidden">
 
-        {/* Animated Background Image */}
-        <motion.img
-          initial={{ scale: 1.2 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 6 }}
+        <img
           src="https://images.pexels.com/photos/906494/pexels-photo-906494.jpeg"
-          className="absolute inset-0 object-cover w-full h-full"
-          style={{ filter: "brightness(0.3)" }}
           alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "brightness(0.35)" }}
         />
 
-        {/* Floating Gradient Blobs */}
-        <div className="absolute top-10 left-10 w-72 h-72 bg-[#C36A4D]/20 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-10 right-10 w-72 h-72 bg-white-500/20 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-        <div className="relative z-10 max-w-4xl px-6">
+        <div className="relative z-10 px-6 max-w-4xl">
           <motion.h1
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="text-5xl font-black leading-tight md:text-7xl"
+            transition={{ duration: 0.9 }}
+            className="text-4xl md:text-6xl font-black text-white leading-tight"
           >
-            Let’s Build <span className="text-[#C36A4D]">Global Trade</span>
+            Contact <span className="text-[#C36A4D]">VR & Sons</span>
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="max-w-2xl mx-auto mt-6 text-white/70"
-          >
-            Connect with VR & Sons for secure, compliant and premium
-            international export partnerships.
-          </motion.p>
+          <p className="mt-6 text-white/80 max-w-2xl mx-auto">
+            Connect with our export team for structured global trade
+            partnerships and seamless logistics solutions.
+          </p>
         </div>
       </section>
 
-      {/* ================= GLASS CONTACT CARDS ================= */}
-      <section className="px-6 py-20">
-        <div className="grid gap-10 mx-auto max-w-7xl md:grid-cols-3">
+      {/* ================= CONTACT INFO ================= */}
+      <section className="px-6 py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
+
           {[
             { icon: Phone, title: "Call Us", desc: "+91 98765 43210" },
-            { icon: Mail, title: "Email Us", desc: "info@vrsons.com" },
-            { icon: MapPin, title: "Visit Office", desc: "Nashik, India" },
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -10 }}
-              className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl text-center shadow-2xl hover:border-[#C36A4D]/40 transition"
-            >
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-[#C36A4D]/20 flex items-center justify-center mb-6">
-                <item.icon size={26} className="text-[#C36A4D]" />
-              </div>
+            { icon: Mail, title: "Email Address", desc: "info@vrsons.com" },
+            { icon: MapPin, title: "Head Office", desc: "Nashik, India" },
+          ].map((item, i) => {
+            const Icon = item.icon;
 
-              <h3 className="mb-3 text-lg font-bold">{item.title}</h3>
-              <p className="text-sm text-black/60">{item.desc}</p>
-            </motion.div>
-          ))}
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.2 }}
+                whileHover={{ y: -8 }}
+                className="group bg-white p-10 rounded-3xl border border-neutral-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-[#C36A4D]/40 text-center"
+              >
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-[#C36A4D]/10 flex items-center justify-center mb-6 group-hover:bg-[#C36A4D] transition">
+                  <Icon size={26} className="text-[#C36A4D] group-hover:text-white transition" />
+                </div>
+
+                <h3 className="text-lg font-black mb-3">
+                  {item.title}
+                </h3>
+
+                <p className="text-neutral-600 text-sm">
+                  {item.desc}
+                </p>
+              </motion.div>
+            );
+          })}
+
         </div>
       </section>
 
-      {/* ================= CONTACT FORM ================= */}
-      <section className="px-6 py-24 bg-gradient-to-b from-[#C36A4D]/10 to-blue-500/10">
-        <div className="grid items-center max-w-6xl gap-16 mx-auto md:grid-cols-2">
+      {/* ================= COMPANY DETAILS ================= */}
+      <section className="py-16 md:py-20 px-6 bg-neutral-50">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
 
-          {/* LEFT CONTENT */}
-          <div>
-            <h2 className="mb-6 text-4xl font-black">
-              Send Us <span className="text-[#C36A4D]">Message</span>
-            </h2>
-
-            <p className="mb-8 leading-relaxed text-black/60">
-              Our export team responds within 24 hours.
-              Let’s discuss pricing, logistics and global supply.
-            </p>
-
-            <motion.img
-              whileHover={{ scale: 1.05 }}
-              src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg"
-              className="shadow-2xl rounded-3xl"
-              alt=""
-            />
-          </div>
-
-          {/* RIGHT FORM */}
-          <motion.form
-            initial={{ opacity: 0, x: 50 }}
+          <motion.div
+            initial={{ opacity: 0, x: -60 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="p-10 space-y-8 border shadow-2xl bg-black/5 backdrop-blur-xl border-black/10 rounded-3xl"
           >
-            <div className="relative">
-              <input
-                type="text"
-                required
-                className="peer w-full bg-transparent border-b border-black/30 py-3 focus:border-[#C36A4D] outline-none"
-              />
-              <label className="absolute left-0 top-3 text-black/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
-                Full Name
-              </label>
-            </div>
+            <h2 className="text-3xl md:text-4xl font-black mb-6">
+              Our <span className="text-[#C36A4D]">Global Presence</span>
+            </h2>
 
-            <div className="relative">
-              <input
-                type="email"
-                required
-                className="peer w-full bg-transparent border-b border-black/30 py-3 focus:border-[#C36A4D] outline-none"
-              />
-              <label className="absolute left-0 top-3 text-black/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
-                Email Address
-              </label>
-            </div>
+            <p className="text-neutral-600 leading-relaxed mb-6">
+              VR & Sons operates with structured international logistics,
+              premium quality standards and strategic trade partnerships.
+            </p>
 
-            <div className="relative">
-              <textarea
-                rows="4"
-                required
-                className="peer w-full bg-transparent border-b border-black/30 py-3 focus:border-[#C36A4D] outline-none"
-              />
-              <label className="absolute left-0 top-3 text-black/50 text-sm peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#C36A4D] transition-all">
-                Your Message
-              </label>
-            </div>
+            <p className="text-neutral-600 leading-relaxed">
+              We ensure compliance, transparency and efficient coordination
+              across borders for seamless export-import operations.
+            </p>
+          </motion.div>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full py-4 rounded-2xl bg-[#C36A4D] text-black font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:shadow-[0_15px_40px_rgba(195,106,77,0.4)] transition"
-            >
-              Send Inquiry
-              <ArrowUpRight size={16} />
-            </motion.button>
-          </motion.form>
+          <motion.div
+            initial={{ opacity: 0, x: 60 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="grid grid-cols-2 gap-8"
+          >
+            {[
+              { icon: Ship, label: "Global Shipping" },
+              { icon: Building2, label: "Corporate Trade" },
+              { icon: Globe, label: "International Markets" },
+              { icon: MapPin, label: "Strategic Locations" },
+            ].map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={i}
+                  className="bg-white p-8 rounded-2xl shadow-md border border-neutral-200 text-center hover:shadow-xl transition"
+                >
+                  <Icon className="mx-auto mb-4 text-[#C36A4D]" size={32} />
+                  <p className="text-neutral-600 text-sm">
+                    {item.label}
+                  </p>
+                </div>
+              );
+            })}
+          </motion.div>
+
         </div>
       </section>
 
-      {/* ================= GLOBAL CTA ================= */}
-      <section className="relative overflow-hidden text-center py-28">
-        <div className="overflow-x-hidden font-sans bg-white text-neutral-900" />
-
-        <div className="relative z-10 max-w-4xl px-6 mx-auto">
-          <Globe className="mx-auto mb-6 text-[#C36A4D]" size={45} />
-
-          <h2 className="mb-6 text-4xl font-black md:text-6xl">
-            Trade Beyond Borders
+      {/* ================= CTA (MATCH ABOUT STYLE) ================= */}
+      <section className="bg-black text-white py-16 md:py-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-black mb-6">
+            Ready To Trade <span className="text-[#C36A4D]">Globally?</span>
           </h2>
 
-          <p className="max-w-2xl mx-auto mb-8 text-black/60">
-            VR & Sons ensures structured global supply chains
-            and long-term business partnerships.
+          <p className="text-white/80 max-w-2xl mx-auto mb-8">
+            Partner with us to explore reliable export opportunities and
+            expand your international business network.
           </p>
 
           <a
             href="/MainCategory"
-            className="px-12 py-4 text-xs font-bold tracking-widest text-white transition bg-black upperwhitecase rounded-2xl hover:scale-105"
+            className="inline-flex items-center gap-3 px-10 py-4 rounded-2xl bg-[#C36A4D] text-white font-black uppercase tracking-[0.3em] text-xs hover:shadow-[0_15px_40px_rgba(195,106,77,0.5)] transition-all duration-300"
           >
             Explore Products
+            <ArrowUpRight size={16} />
           </a>
         </div>
       </section>
