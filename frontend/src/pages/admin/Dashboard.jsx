@@ -72,7 +72,6 @@ const GLOBAL_CSS = `
     opacity: 1;
   }
 
-  /* KPI icon pulse on hover */
   .dash-kpi-icon {
     height: 52px; width: 52px;
     border-radius: 16px;
@@ -90,7 +89,7 @@ const GLOBAL_CSS = `
     padding: 14px 24px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 0;
     transition: background 150ms ease;
     position: relative;
   }
@@ -130,8 +129,9 @@ const GLOBAL_CSS = `
     border-radius: 8px;
     border-width: 1.5px; border-style: solid;
     white-space: nowrap;
-    flex-shrink: 0;
     transition: transform 180ms cubic-bezier(.34,1.56,.64,1), box-shadow 150ms ease;
+    display: inline-block;
+    text-align: center;
   }
   .dash-badge:hover {
     transform: scale(1.07);
@@ -348,8 +348,8 @@ export default function Dashboard() {
                     className="dash-inquiry-row"
                     style={{ borderTop: i === 0 ? "none" : `1px solid ${C.tint10}` }}
                   >
-                    {/* Customer */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+                    {/* Customer — flex:1 takes remaining space */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
                       <div className="dash-avatar">
                         <span style={{ fontSize: 12, fontWeight: 800, color: C.primary }}>
                           {item.customerName?.charAt(0)?.toUpperCase() || "?"}
@@ -371,15 +371,20 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    {/* Badge */}
-                    <span className={badgeClass(item.status)}>{item.status}</span>
+                    {/* Badge — fixed 110px column, centered */}
+                    <div style={{ width: 110, display: "flex", justifyContent: "center", flexShrink: 0 }}>
+                      <span className={badgeClass(item.status)}>{item.status}</span>
+                    </div>
 
-                    {/* Date */}
-                    <span style={{ fontSize: 12, color: C.subtle, flexShrink: 0 }}>
-                      {new Date(item.createdAt).toLocaleDateString("en-GB", {
-                        day: "2-digit", month: "short",
-                      })}
-                    </span>
+                    {/* Date — fixed 70px column, right-aligned */}
+                    <div style={{ width: 70, display: "flex", justifyContent: "flex-end", flexShrink: 0 }}>
+                      <span style={{ fontSize: 12, color: C.subtle, fontWeight: 500 }}>
+                        {new Date(item.createdAt).toLocaleDateString("en-GB", {
+                          day: "2-digit", month: "short",
+                        })}
+                      </span>
+                    </div>
+
                   </div>
                 ))}
               </div>
