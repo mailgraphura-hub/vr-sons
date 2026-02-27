@@ -1,562 +1,34 @@
-// import React, { useState } from "react";
-// import AdminLayout from "../../layout/AdminLayout";
-// import { User } from "lucide-react";
-
-// export default function ProfileSettings() {
-//   const [profile, setProfile] = useState({
-//     name: "Alex Rivera",
-//     email: "alex@company.com",
-//     role: "Administrator",
-//   });
-
-//   return (
-//     <AdminLayout>
-//       <div className="p-8 bg-gray-50 min-h-screen">
-//         <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
-
-//         <div className="bg-white rounded-xl border p-6 space-y-6">
-//           <div className="flex items-center gap-3">
-//             <User className="text-blue-600" />
-//             <h2 className="font-semibold text-lg">Personal Information</h2>
-//           </div>
-
-//           <div>
-//             <label className="text-sm font-medium">Full Name</label>
-//             <input
-//               type="text"
-//               value={profile.name}
-//               onChange={(e) =>
-//                 setProfile({ ...profile, name: e.target.value })
-//               }
-//               className="w-full border rounded-lg px-4 py-2 mt-1"
-//             />
-//           </div>
-
-//           <div>
-//             <label className="text-sm font-medium">Email</label>
-//             <input
-//               type="email"
-//               value={profile.email}
-//               onChange={(e) =>
-//                 setProfile({ ...profile, email: e.target.value })
-//               }
-//               className="w-full border rounded-lg px-4 py-2 mt-1"
-//             />
-//           </div>
-
-//           <div>
-//             <label className="text-sm font-medium">Role</label>
-//             <input
-//               type="text"
-//               value={profile.role}
-//               disabled
-//               className="w-full border rounded-lg px-4 py-2 mt-1 bg-gray-100"
-//             />
-//           </div>
-
-//           <button className="bg-blue-600 text-white px-6 py-2 rounded-lg">
-//             Update Profile
-//           </button>
-//         </div>
-//       </div>
-//     </AdminLayout>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState, useEffect } from "react";
-// import AdminLayout from "../../layout/AdminLayout";
-// import { User, Loader2 } from "lucide-react";
-// import { getService, putService } from "../../service/axios"; // putService update ke liye
-// import { toast, Toaster } from "react-hot-toast";
-
-// export default function ProfileSettings() {
-//   const [profile, setProfile] = useState({
-//     name: "",
-//     email: "",
-//     role: "",
-//   });
-//   const [loading, setLoading] = useState(true);
-//   const [updating, setUpdating] = useState(false);
-
-//   // 1. API se data fetch karna (Get Profile)
-//   useEffect(() => {
-//     const fetchProfile = async () => {
-//       try {
-//         const response = await getService("/admin/auth/myprofile");
-//         if (response.ok) {
-//           // Aapki requirement ke hisaab se data set kar rahe hain
-//           const userData = response.data.data;
-//           setProfile({
-//             name: userData.name || "",
-//             email: userData.email || "",
-//             role: userData.role || "Administrator",
-//           });
-//         }
-//       } catch (error) {
-//         console.error("Profile Fetch Error:", error);
-//         toast.error("Failed to load profile");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchProfile();
-//   }, []);
-
-//   // 2. Data update karne ka function (Handle Submit)
-//   const handleUpdate = async () => {
-//     setUpdating(true);
-//     try {
-//       // Sirf name aur email bhej rahe hain
-//       const response = await putService("/admin/auth/updateProfile", {
-//         name: profile.name,
-//         email: profile.email,
-//       });
-
-//       if (response.ok) {
-//         toast.success("Profile Updated Successfully!");
-//       } else {
-//         toast.error(response.message || "Update failed");
-//       }
-//     } catch (error) {
-//       console.error("Update Error:", error);
-//       toast.error("Something went wrong");
-//     } finally {
-//       setUpdating(false);
-//     }
-//   };
-
-//   if (loading) {
-//     return (
-//       <AdminLayout>
-//         <div className="flex h-screen items-center justify-center">
-//           <Loader2 className="animate-spin text-blue-600" size={40} />
-//         </div>
-//       </AdminLayout>
-//     );
-//   }
-
-//   return (
-//     <AdminLayout>
-//       <Toaster />
-//       <div className="p-8 bg-gray-50 min-h-screen">
-//         <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
-
-//         <div className="bg-white rounded-xl border p-6 space-y-6 max-w-2xl">
-//           <div className="flex items-center gap-3 border-b pb-4">
-//             <User className="text-blue-600" />
-//             <h2 className="font-semibold text-lg">Personal Information</h2>
-//           </div>
-
-//           {/* Full Name Input */}
-//           <div>
-//             <label className="text-sm font-medium text-gray-700">Full Name</label>
-//             <input
-//               type="text"
-//               value={profile.name}
-//               onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-//               placeholder="Enter your name"
-//               className="w-full border rounded-lg px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-//             />
-//           </div>
-
-//           {/* Email Input */}
-//           <div>
-//             <label className="text-sm font-medium text-gray-700">Email Address</label>
-//             <input
-//               type="email"
-//               value={profile.email}
-//               onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-//               placeholder="Enter your email"
-//               className="w-full border rounded-lg px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-//             />
-//           </div>
-
-//           {/* Role (Read Only) */}
-//           {/* <div>
-//             <label className="text-sm font-medium text-gray-500">Role (Cannot be changed)</label>
-//             <input
-//               type="text"
-//               value={profile.role}
-//               disabled
-//               className="w-full border rounded-lg px-4 py-2 mt-1 bg-gray-100 text-gray-500 cursor-not-allowed"
-//             />
-//           </div> */}
-
-//           {/* Update Button */}
-//           <button
-//             onClick={handleUpdate}
-//             disabled={updating}
-//             className={`w-full md:w-auto bg-blue-600 text-white px-8 py-2.5 rounded-lg font-medium transition-all
-//               ${updating ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-700"}`}
-//           >
-//             {updating ? "Updating..." : "Update Profile"}
-//           </button>
-//         </div>
-//       </div>
-//     </AdminLayout>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState, useEffect, useRef } from "react";
-// import AdminLayout from "../../layout/AdminLayout";
-// import { 
-//   User, Loader2, Mail, Camera, ShieldCheck, 
-//   Phone, Globe, MapPin, Calendar, ChevronDown 
-// } from "lucide-react";
-// import { getService, putService } from "../../service/axios"; 
-// import { toast, Toaster } from "react-hot-toast";
-
-// export default function ProfileSettings() {
-//   const fileInputRef = useRef(null);
-//   const [profile, setProfile] = useState({
-//     name: "",
-//     email: "",
-//     contact: "",
-//     gender: "",
-//     dob: "",
-//     country: "",
-//     state: "",
-//     profileImage: "",
-//     role: "Administrator"
-//   });
-
-//   const [selectedFile, setSelectedFile] = useState(null);
-//   const [previewUrl, setPreviewUrl] = useState("");
-//   const [loading, setLoading] = useState(true);
-//   const [updating, setUpdating] = useState(false);
-
-//   // 1. Fetch Profile on Mount
-//   useEffect(() => {
-//     const fetchProfile = async () => {
-//       try {
-//         const response = await getService("/admin/auth/myprofile");
-//         if (response?.data?.data) {
-//           const userData = response.data.data;
-//           setProfile(userData);
-//           setPreviewUrl(userData.profileImage || "");
-//         }
-//       } catch (error) {
-//         toast.error("Failed to load profile");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchProfile();
-//   }, []);
-
-//   // 2. Handle Image Selection
-//   const handleFileChange = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       if (file.size > 2 * 1024 * 1024) { // 2MB Limit
-//         return toast.error("File size should be less than 2MB");
-//       }
-//       setSelectedFile(file);
-//       setPreviewUrl(URL.createObjectURL(file));
-//     }
-//   };
-
-//   // 3. Update Profile (FormData Integration)
-//   const handleUpdate = async () => {
-//     setUpdating(true);
-//     try {
-//       const formData = new FormData();
-//       formData.append("name", profile.name);
-//       formData.append("email", profile.email);
-//       formData.append("contact", profile.contact || "");
-//       formData.append("gender", profile.gender || "");
-//       formData.append("dob", profile.dob || "");
-//       formData.append("country", profile.country || "");
-//       formData.append("state", profile.state || "");
-      
-//       if (selectedFile) {
-//         formData.append("profileImage", selectedFile);
-//       }
-
-//       const response = await putService("/admin/auth/updateProfile", formData);
-
-//       if (response.ok) {
-//         toast.success("Profile Updated Successfully!");
-//         setSelectedFile(null);
-//       } else {
-//         toast.error(response.message || "Update failed");
-//       }
-//     } catch (error) {
-//       toast.error("Something went wrong");
-//     } finally {
-//       setUpdating(false);
-//     }
-//   };
-
-//   if (loading) return (
-//     <AdminLayout>
-//       <div className="h-[80vh] flex flex-col items-center justify-center gap-4">
-//         <Loader2 className="animate-spin text-blue-600" size={40} />
-//         <p className="text-gray-500 animate-pulse">Fetching Admin Details...</p>
-//       </div>
-//     </AdminLayout>
-//   );
-
-//   return (
-//     <AdminLayout>
-//       <Toaster position="top-right" />
-//       <div className="p-4 md:p-8 bg-[#f8fafc] min-h-screen">
-        
-//         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-//           {/* LEFT: Profile Card */}
-//           <div className="lg:col-span-4 space-y-6">
-//             <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm text-center relative overflow-hidden">
-//               <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-10"></div>
-              
-//               <div className="relative z-10">
-//                 <div className="relative inline-block group">
-//                   <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl ring-1 ring-gray-100">
-//                     {previewUrl ? (
-//                       <img src={previewUrl} alt="Profile" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-//                     ) : (
-//                       <div className="w-full h-full flex items-center justify-center bg-blue-50 text-blue-500 font-bold text-3xl">
-//                         {profile.name?.charAt(0)}
-//                       </div>
-//                     )}
-//                   </div>
-//                   <button 
-//                     onClick={() => fileInputRef.current.click()}
-//                     className="absolute bottom-1 right-1 p-2.5 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all border-2 border-white scale-90 hover:scale-100"
-//                   >
-//                     <Camera size={18} />
-//                   </button>
-//                   <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-//                 </div>
-                
-//                 <div className="mt-4">
-//                   <h3 className="font-bold text-xl text-gray-800">{profile.name}</h3>
-//                   <div className="flex items-center justify-center gap-1.5 mt-2">
-//                     <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold uppercase rounded-full tracking-wider border border-green-100">
-//                       {profile.role || "Administrator"}
-//                     </span>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* RIGHT: Detailed Form */}
-//           <div className="lg:col-span-8">
-//             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-//               <div className="px-8 py-6 border-b border-gray-50 flex items-center justify-between">
-//                 <h2 className="font-bold text-gray-800 text-lg">Personal Details</h2>
-//                 <ShieldCheck className="text-blue-500" size={20} />
-//               </div>
-              
-//               <div className="p-8">
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
-//                   {/* Name */}
-//                   <div className="space-y-1">
-//                     <label className="text-xs font-bold text-gray-500 uppercase ml-1">Full Name</label>
-//                     <div className="relative group">
-//                       <User className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-//                       <input 
-//                         type="text" 
-//                         value={profile.name} 
-//                         onChange={(e) => setProfile({...profile, name: e.target.value})}
-//                         className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-//                       />
-//                     </div>
-//                   </div>
-
-//                   {/* Email */}
-//                   <div className="space-y-1">
-//                     <label className="text-xs font-bold text-gray-500 uppercase ml-1">Email Address</label>
-//                     <div className="relative group">
-//                       <Mail className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-//                       <input 
-//                         type="email" 
-//                         value={profile.email} 
-//                         onChange={(e) => setProfile({...profile, email: e.target.value})}
-//                         className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-//                       />
-//                     </div>
-//                   </div>
-
-//                   {/* Contact */}
-//                   <div className="space-y-1">
-//                     <label className="text-xs font-bold text-gray-500 uppercase ml-1">Phone Number</label>
-//                     <div className="relative group">
-//                       <Phone className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-//                       <input 
-//                         type="number" 
-//                         value={profile.contact} 
-//                         onChange={(e) => setProfile({...profile, contact: e.target.value})}
-//                         className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-//                       />
-//                     </div>
-//                   </div>
-
-//                   {/* Gender */}
-//                   <div className="space-y-1">
-//                     <label className="text-xs font-bold text-gray-500 uppercase ml-1">Gender</label>
-//                     <div className="relative group">
-//                       <select 
-//                         value={profile.gender}
-//                         onChange={(e) => setProfile({...profile, gender: e.target.value})}
-//                         className="w-full border border-gray-200 rounded-xl px-4 py-3 appearance-none focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-//                       >
-//                         <option value="">Select Gender</option>
-//                         <option value="Male">Male</option>
-//                         <option value="Female">Female</option>
-//                         <option value="Other">Other</option>
-//                       </select>
-//                       <ChevronDown className="absolute right-3 top-3.5 text-gray-400 pointer-events-none" size={16} />
-//                     </div>
-//                   </div>
-
-//                   {/* DOB */}
-//                   <div className="space-y-1">
-//                     <label className="text-xs font-bold text-gray-500 uppercase ml-1">Date of Birth</label>
-//                     <div className="relative group">
-//                       <Calendar className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-//                       <input 
-//                         type="date" 
-//                         value={profile.dob} 
-//                         onChange={(e) => setProfile({...profile, dob: e.target.value})}
-//                         className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-//                       />
-//                     </div>
-//                   </div>
-
-//                   {/* Country */}
-//                   <div className="space-y-1">
-//                     <label className="text-xs font-bold text-gray-500 uppercase ml-1">Country</label>
-//                     <div className="relative group">
-//                       <Globe className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-//                       <input 
-//                         type="text" 
-//                         value={profile.country} 
-//                         onChange={(e) => setProfile({...profile, country: e.target.value})}
-//                         className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-//                         placeholder="e.g. India"
-//                       />
-//                     </div>
-//                   </div>
-
-//                 </div>
-
-//                 <div className="mt-10 flex items-center justify-between border-t pt-8">
-//                   <p className="text-xs text-gray-400 italic">Last updated: {new Date(profile.updatedAt).toLocaleDateString()}</p>
-//                   <button
-//                     onClick={handleUpdate}
-//                     disabled={updating}
-//                     className="flex items-center gap-2 bg-blue-600 text-white px-10 py-3.5 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-95 transition-all disabled:opacity-50"
-//                   >
-//                     {updating ? <Loader2 className="animate-spin" size={20} /> : "Save Changes"}
-//                   </button>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//         </div>
-//       </div>
-//     </AdminLayout>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useEffect, useRef } from "react";
 import AdminLayout from "../../layout/AdminLayout";
 import { User, Loader2, Mail, Camera, ShieldCheck } from "lucide-react";
-import { getService, putService } from "../../service/axios"; 
+import { getService, putService } from "../../service/axios";
 import { toast, Toaster } from "react-hot-toast";
+
+/* ── Brand tokens — same as Inquiries page ──────────────────────────────── */
+const T = {
+  primary:     "#c36a4d",
+  primaryHov:  "#ad5d42",
+  primaryDark: "#8f4c35",
+  tint10:      "#fdf3f0",
+  tint20:      "#fae4dc",
+  tint40:      "#f0bfb0",
+  border:      "#f2e0da",
+  muted:       "#a17060",
+  mutedLight:  "#b09080",
+};
 
 export default function ProfileSettings() {
   const fileInputRef = useRef(null);
+
   const [profile, setProfile] = useState({
-    name: "",
-    email: "",
-    profileImage: "",
-    role: "Administrator"
+    name: "", email: "", profileImage: "", role: "Administrator",
   });
-
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
+  const [previewUrl, setPreviewUrl]     = useState("");
+  const [loading, setLoading]           = useState(true);
+  const [updating, setUpdating]         = useState(false);
 
-  // 1. Fetch Profile
+  /* ── API — completely untouched ─────────────────────────────────────── */
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -566,16 +38,12 @@ export default function ProfileSettings() {
           setProfile(userData);
           setPreviewUrl(userData.profileImage || "");
         }
-      } catch (error) {
-        toast.error("Failed to load profile");
-      } finally {
-        setLoading(false);
-      }
+      } catch { toast.error("Failed to load profile"); }
+      finally { setLoading(false); }
     };
     fetchProfile();
   }, []);
 
-  // 2. Image Selection logic
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -585,124 +53,313 @@ export default function ProfileSettings() {
     }
   };
 
-  // 3. Update Function
   const handleUpdate = async () => {
     setUpdating(true);
     try {
       const formData = new FormData();
-      formData.append("name", profile.name);
+      formData.append("name",  profile.name);
       formData.append("email", profile.email);
-      
-      if (selectedFile) {
-        formData.append("profileImage", selectedFile);
-      }
-
+      if (selectedFile) formData.append("profileImage", selectedFile);
       const response = await putService("/admin/auth/updateProfile", formData);
-
-      if (response.ok) {
-        toast.success("Profile Updated Successfully!");
-        setSelectedFile(null);
-      } else {
-        toast.error(response.message || "Update failed");
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    } finally {
-      setUpdating(false);
-    }
+      if (response.ok) { toast.success("Profile Updated Successfully!"); setSelectedFile(null); }
+      else toast.error(response.message || "Update failed");
+    } catch { toast.error("Something went wrong"); }
+    finally { setUpdating(false); }
   };
+  /* ─────────────────────────────────────────────────────────────────── */
 
   if (loading) return (
     <AdminLayout>
-      <div className="h-[80vh] flex items-center justify-center">
-        <Loader2 className="animate-spin text-blue-600" size={40} />
+      <div className="h-[70vh] flex flex-col items-center justify-center gap-3">
+        <Loader2 className="animate-spin" size={26} style={{ color: T.primary }} />
+        <p className="text-[13px] font-medium" style={{ color: T.mutedLight }}>Loading profile...</p>
       </div>
     </AdminLayout>
   );
 
+  const initials = profile.name?.charAt(0)?.toUpperCase() || "A";
+
   return (
     <AdminLayout>
       <Toaster position="top-right" />
-      <div className="p-4 md:p-8 bg-[#f8fafc] min-h-screen">
-        
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-900 mb-8">Profile Settings</h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Left: Photo Card */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm flex flex-col items-center h-fit">
-              <div className="relative group">
-                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg ring-1 ring-gray-100">
-                  {previewUrl ? (
-                    <img src={previewUrl} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-blue-50 text-blue-500 font-bold text-3xl">
-                      {profile.name?.charAt(0)}
-                    </div>
-                  )}
-                </div>
-                <button 
-                  onClick={() => fileInputRef.current.click()}
-                  className="absolute bottom-1 right-1 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all border-2 border-white"
-                >
-                  <Camera size={16} />
-                </button>
-                <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-              </div>
-              <p className="mt-4 font-bold text-gray-800">{profile.name}</p>
-              <span className="text-xs font-bold text-blue-600 uppercase mt-1 tracking-wider">{profile.role}</span>
-            </div>
+      <div className="max-w-[860px] mx-auto space-y-5">
 
-            {/* Right: Info Form */}
-            <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
-                <h2 className="font-bold text-gray-800">Personal Information</h2>
-                <ShieldCheck className="text-blue-500" size={18} />
-              </div>
-              
-              <div className="p-6 space-y-6">
-                <div>
-                  <label className="text-sm font-semibold text-gray-700 ml-1">Full Name</label>
-                  <div className="relative mt-1.5 group">
-                    <User className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-                    <input 
-                      type="text" 
-                      value={profile.name} 
-                      onChange={(e) => setProfile({...profile, name: e.target.value})}
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-                    />
-                  </div>
-                </div>
+        {/* ── Heading ──────────────────────────────────────────────────── */}
+        <div>
+          <h1 className="text-[22px] font-bold tracking-tight" style={{ color: "#1a1a1a" }}>
+            Profile Settings
+          </h1>
+          <p className="text-[13px] mt-0.5" style={{ color: T.mutedLight }}>
+            Manage your account information
+          </p>
+        </div>
 
-                <div>
-                  <label className="text-sm font-semibold text-gray-700 ml-1">Email Address</label>
-                  <div className="relative mt-1.5 group">
-                    <Mail className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-                    <input 
-                      type="email" 
-                      value={profile.email} 
-                      onChange={(e) => setProfile({...profile, email: e.target.value})}
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-                    />
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-                <div className="pt-4">
-                  <button
-                    onClick={handleUpdate}
-                    disabled={updating}
-                    className="flex items-center justify-center gap-2 w-full md:w-auto bg-blue-600 text-white px-10 py-3.5 rounded-xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all disabled:opacity-50"
+          {/* ── Left: Avatar card ──────────────────────────────────────── */}
+          <div
+            className="rounded-2xl flex flex-col items-center gap-5 p-7 h-fit transition-shadow duration-200"
+            style={{
+              background: "white",
+              border: `1px solid ${T.border}`,
+              boxShadow: "0 1px 4px rgba(195,106,77,0.07)",
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 6px 24px rgba(195,106,77,0.13)`}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 4px rgba(195,106,77,0.07)"}
+          >
+            {/* Avatar */}
+            <div className="relative group">
+              <div
+                className="w-28 h-28 rounded-full overflow-hidden"
+                style={{
+                  border: `3px solid ${T.tint40}`,
+                  boxShadow: `0 0 0 4px white, 0 0 0 6px ${T.border}`,
+                }}
+              >
+                {previewUrl ? (
+                  <img src={previewUrl} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <div
+                    className="w-full h-full flex items-center justify-center text-[32px] font-bold"
+                    style={{ background: T.tint20, color: T.primary }}
                   >
-                    {updating ? <Loader2 className="animate-spin" size={18} /> : "Update Profile"}
-                  </button>
-                </div>
+                    {initials}
+                  </div>
+                )}
+              </div>
+
+              {/* Camera button */}
+              <button
+                onClick={() => fileInputRef.current.click()}
+                className="absolute bottom-0.5 right-0.5 h-8 w-8 rounded-full flex items-center justify-center
+                           transition-all duration-150"
+                style={{
+                  background: T.primary,
+                  border: "2.5px solid white",
+                  boxShadow: `0 2px 8px rgba(195,106,77,0.35)`,
+                  color: "white",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background   = T.primaryHov;
+                  e.currentTarget.style.transform    = "scale(1.12)";
+                  e.currentTarget.style.boxShadow    = `0 4px 14px rgba(195,106,77,0.5)`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background  = T.primary;
+                  e.currentTarget.style.transform   = "scale(1)";
+                  e.currentTarget.style.boxShadow   = `0 2px 8px rgba(195,106,77,0.35)`;
+                }}
+              >
+                <Camera size={14} />
+              </button>
+
+              <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+            </div>
+
+            {/* Name + role badge */}
+            <div className="text-center">
+              <p className="text-[15px] font-bold text-gray-900 capitalize leading-tight">
+                {profile.name || "Admin"}
+              </p>
+              <span
+                className="inline-block mt-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest rounded-lg"
+                style={{ background: T.tint20, color: T.primaryDark, border: `1px solid ${T.border}` }}
+              >
+                {profile.role || "Administrator"}
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div className="w-full h-px" style={{ background: T.border }} />
+
+            {/* Meta rows */}
+            <div className="w-full space-y-2.5">
+              <MetaRow icon={<Mail size={12} />} text={profile.email || "—"} accent={T.primary} bg={T.tint20} border={T.border} />
+              <MetaRow icon={<ShieldCheck size={12} />} text="Verified Account" accent="#059669" bg="#ecfdf5" border="#a7f3d0" />
+            </div>
+
+            {/* Selected file hint */}
+            {selectedFile && (
+              <div
+                className="w-full px-3 py-2 rounded-xl text-[12px] font-medium text-center truncate"
+                style={{ background: T.tint10, border: `1px solid ${T.border}`, color: T.primaryDark }}
+              >
+                📎 {selectedFile.name}
+              </div>
+            )}
+          </div>
+
+          {/* ── Right: Form card ───────────────────────────────────────── */}
+          <div
+            className="lg:col-span-2 rounded-2xl overflow-hidden transition-shadow duration-200"
+            style={{
+              background: "white",
+              border: `1px solid ${T.border}`,
+              boxShadow: "0 1px 4px rgba(195,106,77,0.07)",
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 6px 24px rgba(195,106,77,0.13)`}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 4px rgba(195,106,77,0.07)"}
+          >
+            {/* Card header */}
+            <div
+              className="flex items-center justify-between px-6 py-4"
+              style={{ background: T.tint10, borderBottom: `1px solid ${T.border}` }}
+            >
+              <div>
+                <h2 className="text-[14px] font-bold" style={{ color: T.primaryDark }}>Personal Information</h2>
+                <p className="text-[12px] mt-0.5" style={{ color: T.mutedLight }}>Update your name and email address</p>
+              </div>
+              <div
+                className="h-8 w-8 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: T.tint20, border: `1px solid ${T.border}`, color: T.primary }}
+              >
+                <ShieldCheck size={15} />
               </div>
             </div>
 
+            {/* Fields */}
+            <div className="px-6 py-6 space-y-5">
+
+              {/* Full name */}
+              <FormField
+                label="Full Name"
+                icon={<User size={14} />}
+                value={profile.name}
+                onChange={(v) => setProfile({ ...profile, name: v })}
+                placeholder="Your full name"
+                type="text"
+              />
+
+              {/* Email */}
+              <FormField
+                label="Email Address"
+                icon={<Mail size={14} />}
+                value={profile.email}
+                onChange={(v) => setProfile({ ...profile, email: v })}
+                placeholder="your@email.com"
+                type="email"
+              />
+
+              {/* Role — read only */}
+              <div>
+                <label
+                  className="block text-[11px] font-bold uppercase tracking-widest mb-1.5"
+                  style={{ color: T.muted }}
+                >
+                  Role
+                </label>
+                <div
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+                  style={{ background: T.tint10, border: `1px solid ${T.border}` }}
+                >
+                  <ShieldCheck size={14} style={{ color: T.primary }} className="shrink-0" />
+                  <span className="text-[13.5px] font-semibold" style={{ color: T.primaryDark }}>
+                    {profile.role || "Administrator"}
+                  </span>
+                  <span
+                    className="ml-auto text-[10.5px] font-semibold px-2 py-0.5 rounded-md"
+                    style={{ background: T.tint40, color: T.primaryDark }}
+                  >
+                    Read-only
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Card footer */}
+            <div
+              className="flex items-center justify-between px-6 py-4"
+              style={{ borderTop: `1px solid ${T.border}`, background: T.tint10 }}
+            >
+              <p className="text-[12px]" style={{ color: T.mutedLight }}>
+                Changes reflect immediately after saving
+              </p>
+
+              <SaveButton updating={updating} onClick={handleUpdate} />
+            </div>
           </div>
+
         </div>
       </div>
     </AdminLayout>
+  );
+}
+
+/* ── Meta row ──────────────────────────────────────────────────────────── */
+function MetaRow({ icon, text, accent, bg, border }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <div
+        className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0"
+        style={{ background: bg, border: `1px solid ${border}`, color: accent }}
+      >
+        {icon}
+      </div>
+      <span className="text-[12.5px] text-gray-500 truncate">{text}</span>
+    </div>
+  );
+}
+
+/* ── Form field with icon ──────────────────────────────────────────────── */
+function FormField({ label, icon, value, onChange, placeholder, type }) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div>
+      <label
+        className="block text-[11px] font-bold uppercase tracking-widest mb-1.5"
+        style={{ color: T.muted }}
+      >
+        {label}
+      </label>
+      <div className="relative">
+        <div
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-150"
+          style={{ color: focused ? T.primary : "#9ca3af" }}
+        >
+          {icon}
+        </div>
+        <input
+          type={type}
+          value={value}
+          placeholder={placeholder}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full pl-10 pr-4 py-2.5 text-[13.5px] text-gray-900 bg-white rounded-xl
+                     placeholder-gray-400 outline-none transition-all duration-150"
+          style={{
+            border: focused ? `1.5px solid ${T.primary}` : "1.5px solid #e5e7eb",
+            boxShadow: focused ? `0 0 0 3px ${T.tint20}` : "none",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ── Save button ───────────────────────────────────────────────────────── */
+function SaveButton({ updating, onClick }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      disabled={updating}
+      className="flex items-center gap-2 px-5 py-2.5 text-[13px] font-semibold text-white
+                 rounded-xl transition-all duration-150 disabled:opacity-60"
+      style={{
+        background: updating ? T.tint40 : hov ? T.primaryHov : T.primary,
+        boxShadow: hov && !updating ? `0 4px 14px rgba(195,106,77,0.38)` : `0 1px 4px rgba(195,106,77,0.18)`,
+        color: updating ? T.primaryDark : "white",
+      }}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+    >
+      {updating
+        ? <><Loader2 size={14} className="animate-spin" /> Updating...</>
+        : "Save Changes"
+      }
+    </button>
   );
 }
