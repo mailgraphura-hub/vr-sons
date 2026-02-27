@@ -7,20 +7,41 @@ const HERO_DATA = {
 };
 
 const SLIDE_IMAGES = [
+  
   {
-    img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=600&fit=crop",
+    label: "Banana Powder",
+    img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&h=600&fit=crop",
   },
   {
+    label: "Onion Powder",
+    img: "https://images.unsplash.com/photo-1695653422259-8a74ffe90401?w=400&h=600&fit=crop",
+  },
+  {
+    label: "Onions",
+    img: "https://images.unsplash.com/photo-1508747703725-719777637510?w=400&h=600&fit=crop",
+  },
+  {
+    label: "Banana",
+    img: "https://images.unsplash.com/photo-1528825871115-3581a5387919?w=400&h=600&fit=crop",
+  },
+  {
+    label: "Jaggery",
+    img: "https://images.unsplash.com/photo-1618897996318-5a901fa6ca71?w=400&h=600&fit=crop",
+  },
+  
+ 
+  
+  {
+    label: "Cumin",
     img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=600&fit=crop",
   },
   {
-    img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=400&h=600&fit=crop",
+    label: "Bagasse Composite Dishes & Bowls",
+    img: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&h=600&fit=crop",
   },
-  {
-    img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=600&fit=crop",
-  },
+ 
+  
 ];
-
 const VerticalColumn = ({ direction = "up" }) => {
   return (
     <div className="overflow-hidden h-full w-full">
