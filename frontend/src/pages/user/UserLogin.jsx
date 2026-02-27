@@ -6,7 +6,7 @@ import { postService } from "../../service/axios";
 import { GoogleLogin } from "@react-oauth/google";
 import logo from "../../assets/logo/TextLogo.png";
 
-const bgImage = "https://plus.unsplash.com/premium_photo-1663040001568-f07cab70d71f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGltcG9ydCUyMGV4cG9ydHxlbnwwfHwwfHx8MA%3D%3D";
+const bgImage = "https://www.protectourlivelihood.in/wp-content/uploads/2025/04/Image-Groundnut.jpg";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -108,10 +108,10 @@ export default function Login() {
                 .cl-card {
                     position: relative; z-index: 10;
                     width: 100%; max-width: 410px; margin: 1.5rem;
-                    background: rgba(245,250,255,0.05);
+                    background: rgba(245,250,255, 0.01);
                     border: 1px solid rgba(255,255,255,0.88);
                     border-radius: 28px; padding: 2.4rem 2.2rem 2rem;
-                    backdrop-filter: blur(10px) saturate(1.3);
+                    backdrop-filter: blur(2px) saturate(1.3);
                     -webkit-backdrop-filter: blur(10px) saturate(1.3);
                     box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 60px rgba(80,140,200,0.13), 0 1px 0px rgba(255,255,255,0.8) inset;
                     animation: cardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
