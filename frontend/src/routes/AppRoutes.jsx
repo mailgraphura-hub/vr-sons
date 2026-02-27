@@ -1,5 +1,4 @@
 import { Routes, Route, Outlet } from "react-router-dom";
-import Sidebar from "../components/admin/Sidebar";
 import ProtectedRoute from "../auth/ProtectedRoute";
 
 import AdminDashboard from "../pages/admin/Dashboard";
@@ -31,7 +30,7 @@ import ResetPassword from "../pages/admin/ResetPassword";
 function AdminLayout() {
   return (
     <div className="flex">
-      <Sidebar />
+
       <div className="flex-1 p-6">
         <Outlet />
       </div>
