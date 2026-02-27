@@ -15,19 +15,25 @@ import { userProfile } from "../../context/profileContext";
 /* ---------- UTIL ---------- */
 
 const parseSpecifications = (specStr = "") => {
-  return specStr.split("|").map((item) => {
-    const [key, ...rest] = item.split(":");
-    return { key: key?.trim(), value: rest.join(":").trim() };
-  });
+  return specStr
+    .split(/[|,]/)
+    .map((item) => {
+      const [key, ...rest] = item.split(":");
+      return {
+        key: key?.trim(),
+        value: rest.join(":").trim(),
+      };
+    })
+    .filter((item) => item.key); // remove empty items
 };
 
 const formatDate = (iso) =>
   iso
     ? new Date(iso).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })
     : "";
 
 /* ---------- COMPONENT ---------- */
@@ -124,11 +130,10 @@ export default function ProductDetail() {
                 whileHover={{ y: -5 }}
                 key={i}
                 onClick={() => setActiveImage(i)}
-                className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition ${
-                  activeImage === i
-                    ? "border-[#C36A4D]"
-                    : "border-gray-200"
-                }`}
+                className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition ${activeImage === i
+                  ? "border-[#C36A4D]"
+                  : "border-gray-200"
+                  }`}
               >
                 <img
                   src={img}
@@ -170,10 +175,10 @@ export default function ProductDetail() {
                   whileHover={{ y: -4 }}
                   className="bg-white shadow-md hover:shadow-xl transition rounded-2xl p-5 border border-gray-100"
                 >
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide font-bold">
                     {spec.key}
                   </p>
-                  <p className="text-sm text-gray-800 font-medium mt-1">
+                  <p className="text-sm text-gray-900 font-bold mt-1">
                     {spec.value}
                   </p>
                 </motion.div>
@@ -208,11 +213,33 @@ export default function ProductDetail() {
 
           <AnimatePresence>
             {showInquiry && (
-              <InquiryForm
-                productName={product.name}
-                show={showInquiry}
-                onClose={() => setShowInquiry(false)}
-              />
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto py-16"
+                onClick={() => setShowInquiry(false)}
+              >
+                {/* Blurred backdrop */}
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+
+                {/* Modal content — centered */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92, y: 30 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.92, y: 30 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  className="relative z-10 w-full max-w-lg mx-4"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <InquiryForm
+                    productName={product.name}
+                    show={showInquiry}
+                    onClose={() => setShowInquiry(false)}
+                  />
+                </motion.div>
+              </motion.div>
             )}
           </AnimatePresence>
         </motion.div>
