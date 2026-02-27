@@ -89,24 +89,29 @@ const updateProfile = async (req, res) => {
     const { contact, gender, dob, country, state } = req.body;
 
     const userDetail = await customerAuth_Model.findById(_id);
-
-    if (userDetail.profileImage) {
-      deleteFromCloudinary(userDetail.profileImage)
+    if (!userDetail) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    let profileImage = null;
+    let profileImage = userDetail.profileImage;
 
     if (req.file) {
-      profileImage = await new Promise((resolve, reject) => {
+      const uploadedImage = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           { folder: "image" },
           (err, result) => {
             if (err) reject(err);
-            else resolve(result.secure_url);
+            else resolve(result);
           }
         );
         stream.end(req.file.buffer);
-      })
+      });
+
+      profileImage = uploadedImage.secure_url;
+
+      if (userDetail.profileImage) {
+        await deleteFromCloudinary(userDetail.profileImage);
+      }
     }
 
     const updatedCustomerDetail = await customerAuth_Model.findByIdAndUpdate(
@@ -117,17 +122,20 @@ const updateProfile = async (req, res) => {
         dob,
         country,
         state,
-        profileImage
-      }
-    )
+        profileImage,
+      },
+      { returnDocument: "after" }
+    );
 
-    return res.status(200).json(new ApiResponse(200, updatedCustomerDetail, "Profile Update Successfully."));
-
+    return res.status(200).json(
+      new ApiResponse(200, updatedCustomerDetail, "Profile Updated Successfully.")
+    );
+  } catch (err) {
+    return res.status(500).json(
+      new ApiError(500, err.message, [{ message: err.message, name: err.name }])
+    );
   }
-  catch (err) {
-    return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name }]));
-  }
-}
+};
 
 
 const getMyProfile = async (req, res) => {
@@ -347,52 +355,52 @@ const forgetPasswordOtp = async (req, res) => {
 }
 
 const GoogleAuth = async (req, res) => {
-    try {
-        const { token } = req.body;
+  try {
+    const { token } = req.body;
 
-        const client = new OAuth2Client(process.env.Google_ClientId)
+    const client = new OAuth2Client(process.env.Google_ClientId)
 
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.Google_ClientId
-        });
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.Google_ClientId
+    });
 
-        const payload = ticket.getPayload();
-        const { email, name, picture } = payload;
-
-
-        let user = await customerAuth_Model.findOne({ email });
-
-        if (!user) {
-            user = customerAuth_Model({
-                email: email,
-                name,
-                profileImage: picture
-            })
-
-            await user.save();
-        }
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
 
 
-        await cookiesForUser(res, user);
+    let user = await customerAuth_Model.findOne({ email });
 
-        return res.status(200).json(new ApiResponse(200, { userEmail: email }, "Successful"));
+    if (!user) {
+      user = customerAuth_Model({
+        email: email,
+        name,
+        profileImage: picture
+      })
+
+      await user.save();
     }
-    catch (err) {
-        return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name, GoogleAuth }]));
-    }
+
+
+    await cookiesForUser(res, user);
+
+    return res.status(200).json(new ApiResponse(200, { userEmail: email }, "Successful"));
+  }
+  catch (err) {
+    return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name, GoogleAuth }]));
+  }
 }
 
 const Signout = async (req, res) => {
-    try {
-        res.clearCookie("AccessToken");
-        res.clearCookie("RefreshToken");
+  try {
+    res.clearCookie("AccessToken");
+    res.clearCookie("RefreshToken");
 
-        return res.status(200).json(new ApiResponse(200, null, "Signout Successfully"))
-    }
-    catch (err) {
-        return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name }]))
-    }
+    return res.status(200).json(new ApiResponse(200, null, "Signout Successfully"))
+  }
+  catch (err) {
+    return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name }]))
+  }
 }
 
 
