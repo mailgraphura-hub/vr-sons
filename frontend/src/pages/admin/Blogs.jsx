@@ -3,6 +3,7 @@ import AdminLayout from "../../layout/AdminLayout";
 import {
   Trash2, ToggleLeft, ToggleRight, Search,
   X, Eye, Edit, Upload, BookOpen, Plus, ChevronDown, ChevronUp,
+  List,
 } from "lucide-react";
 import {
   getService, postService, putService, deleteService,
@@ -28,6 +29,11 @@ const emptyForm = {
 
 const labelCls = `block text-[11px] font-bold uppercase tracking-widest mb-1.5`;
 
+/* ── View states for mobile ──────────────────────────────────────────────*/
+// "form" = show the create/edit form
+// "list" = show the blog list full screen
+const MOBILE_VIEW = { FORM: "form", LIST: "list" };
+
 export default function Blogs() {
   const [blogs, setBlogs]             = useState([]);
   const [form, setForm]               = useState(emptyForm);
@@ -36,7 +42,7 @@ export default function Blogs() {
   const [errors, setErrors]           = useState({});
   const [selectedId, setSelectedId]   = useState(null);
   const [loading, setLoading]         = useState(false);
-  const [showList, setShowList]       = useState(false); // mobile toggle for blog list
+  const [mobileView, setMobileView]   = useState(MOBILE_VIEW.FORM); // mobile tab state
 
   /* ── API — completely untouched ─────────────────────────────────────── */
   const fetchBlogs = async () => {
@@ -100,8 +106,8 @@ export default function Blogs() {
   const handleEdit = (blog) => {
     setForm({ title: blog.title, author: blog.author, description: blog.description, status: blog.status, blogMedia: [] });
     setSelectedId(blog._id);
+    setMobileView(MOBILE_VIEW.FORM); // switch to form on mobile
     window.scrollTo({ top: 0, behavior: "smooth" });
-    setShowList(false); // collapse list on mobile when editing
   };
 
   const handleImageUpload = (e) => {
@@ -122,155 +128,57 @@ export default function Blogs() {
 
   return (
     <AdminLayout>
-      <div className="max-w-[1200px] mx-auto space-y-4 sm:space-y-5 px-0">
+      <div className="max-w-[1200px] mx-auto space-y-0 px-0 pb-20 xl:pb-0">
 
         {/* ── Page heading ──────────────────────────────────────────────── */}
-        <div>
+        <div className="mb-4 sm:mb-5">
           <h1 className="text-[18px] sm:text-[22px] font-bold tracking-tight" style={{ color: "#1a1a1a" }}>Blog Management</h1>
           <p className="text-[12px] sm:text-[13px] mt-0.5" style={{ color: T.mutedLight }}>Create, edit and manage your blog posts</p>
         </div>
 
-        {/* ── Mobile: Blog list toggle button ───────────────────────────── */}
-        <div className="xl:hidden">
+        {/* ── MOBILE: Tab switcher ──────────────────────────────────────── */}
+        <div className="xl:hidden flex mb-4 rounded-2xl overflow-hidden" style={{ border: `1px solid ${T.border}` }}>
           <button
-            className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[13px] font-semibold transition-all duration-150"
-            style={{ background: T.tint10, border: `1px solid ${T.border}`, color: T.primaryDark }}
-            onClick={() => setShowList((v) => !v)}
+            className="flex-1 flex items-center justify-center gap-2 py-3 text-[13px] font-semibold transition-all duration-150"
+            style={{
+              background: mobileView === MOBILE_VIEW.FORM ? T.primary : "white",
+              color: mobileView === MOBILE_VIEW.FORM ? "white" : T.muted,
+            }}
+            onClick={() => setMobileView(MOBILE_VIEW.FORM)}
           >
-            <span className="flex items-center gap-2">
-              <BookOpen size={14} style={{ color: T.primary }} />
-              View All Blogs ({blogs.length})
-            </span>
-            {showList ? <ChevronUp size={16} style={{ color: T.muted }} /> : <ChevronDown size={16} style={{ color: T.muted }} />}
+            <Plus size={14} />
+            {selectedId ? "Edit Blog" : "Create Blog"}
+          </button>
+          <button
+            className="flex-1 flex items-center justify-center gap-2 py-3 text-[13px] font-semibold transition-all duration-150"
+            style={{
+              background: mobileView === MOBILE_VIEW.LIST ? T.primary : "white",
+              color: mobileView === MOBILE_VIEW.LIST ? "white" : T.muted,
+              borderLeft: `1px solid ${T.border}`,
+            }}
+            onClick={() => setMobileView(MOBILE_VIEW.LIST)}
+          >
+            <List size={14} />
+            All Blogs
+            {blogs.length > 0 && (
+              <span
+                className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                style={{
+                  background: mobileView === MOBILE_VIEW.LIST ? "rgba(255,255,255,0.3)" : T.tint20,
+                  color: mobileView === MOBILE_VIEW.LIST ? "white" : T.primary,
+                }}
+              >
+                {blogs.length}
+              </span>
+            )}
           </button>
         </div>
 
         <div className="grid xl:grid-cols-3 gap-4 sm:gap-5">
 
-          {/* ── Mobile: Blog list (collapsible) ─────────────────────────── */}
-          {showList && (
-            <div
-              className="xl:hidden rounded-2xl overflow-hidden flex flex-col"
-              style={{
-                background: "white",
-                border: `1px solid ${T.border}`,
-                boxShadow: "0 1px 4px rgba(195,106,77,0.07)",
-                maxHeight: "420px",
-              }}
-            >
-              {/* Search */}
-              <div
-                className="flex items-center gap-2.5 px-4 py-3 shrink-0"
-                style={{ borderBottom: `1px solid ${T.border}`, background: T.tint10 }}
-              >
-                <Search size={13} style={{ color: T.muted }} className="shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Search by title or author..."
-                  className="flex-1 text-[12px] placeholder-gray-400 outline-none bg-transparent"
-                  style={{ color: T.primaryDark }}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                {search && (
-                  <button onClick={() => setSearch("")} style={{ color: T.muted }}>
-                    <X size={12} />
-                  </button>
-                )}
-              </div>
-
-              {/* Count */}
-              <div className="px-4 py-2 shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
-                <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: T.muted }}>
-                  {filtered.length} Post{filtered.length !== 1 ? "s" : ""}
-                </span>
-              </div>
-
-              {/* Blog cards */}
-              <div className="flex-1 overflow-y-auto">
-                {filtered.length === 0 ? (
-                  <div className="py-10 text-center text-[12px]" style={{ color: T.mutedLight }}>No blogs found</div>
-                ) : filtered.map((blog) => {
-                  const isSelected = selectedId === blog._id;
-                  return (
-                    <div
-                      key={blog._id}
-                      className="p-3 transition-colors duration-150"
-                      style={{
-                        background: isSelected ? T.tint20 : "white",
-                        borderBottom: `1px solid ${T.tint10}`,
-                      }}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2 min-w-0">
-                          <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 mt-0.5"
-                            style={{ background: T.tint20, border: `1px solid ${T.border}` }}>
-                            {blog.blogMedia?.[0] ? (
-                              <img src={blog.blogMedia[0]} alt="" className="w-full h-full object-cover" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <BookOpen size={12} style={{ color: T.primary }} />
-                              </div>
-                            )}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-[12px] font-semibold leading-tight line-clamp-1" style={{ color: "#1a1a1a" }}>
-                              {blog.title}
-                            </p>
-                            <p className="text-[11px] mt-0.5" style={{ color: T.mutedLight }}>{blog.author}</p>
-                          </div>
-                        </div>
-                        <span
-                          className="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded-lg border"
-                          style={blog.status
-                            ? { background: "#ecfdf5", color: "#059669", borderColor: "#a7f3d0" }
-                            : { background: "#f9fafb", color: "#6b7280", borderColor: "#e5e7eb" }
-                          }
-                        >
-                          {blog.status ? "Live" : "Draft"}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 mt-2.5">
-                        <IconBtn onClick={() => toggleStatus(blog)} title={blog.status ? "Unpublish" : "Publish"}
-                          active={blog.status}
-                          activeStyle={{ background: "#ecfdf5", color: "#059669", borderColor: "#a7f3d0" }}
-                          hoverStyle={{ background: "#d1fae5", color: "#059669", borderColor: "#6ee7b7" }}
-                          inactiveStyle={{ background: "#f9fafb", color: "#9ca3af", borderColor: "#e5e7eb" }}
-                          inactiveHover={{ background: "#f3f4f6", color: "#6b7280", borderColor: "#d1d5db" }}
-                        >
-                          {blog.status ? <ToggleRight size={13} /> : <ToggleLeft size={13} />}
-                        </IconBtn>
-                        <IconBtn onClick={() => handleEdit(blog)}
-                          inactiveStyle={{ background: T.tint10, color: T.muted, borderColor: T.border }}
-                          inactiveHover={{ background: T.tint20, color: T.primary, borderColor: T.primary }}
-                        >
-                          <Edit size={12} />
-                        </IconBtn>
-                        <IconBtn onClick={() => setPreviewBlog(blog)}
-                          inactiveStyle={{ background: "#eff6ff", color: "#3b82f6", borderColor: "#bfdbfe" }}
-                          inactiveHover={{ background: "#dbeafe", color: "#2563eb", borderColor: "#93c5fd" }}
-                        >
-                          <Eye size={12} />
-                        </IconBtn>
-                        <IconBtn onClick={() => handleDelete(blog._id)}
-                          inactiveStyle={{ background: "#f9fafb", color: "#9ca3af", borderColor: "#e5e7eb" }}
-                          inactiveHover={{ background: "#fef2f2", color: "#ef4444", borderColor: "#fecaca" }}
-                          className="ml-auto"
-                        >
-                          <Trash2 size={12} />
-                        </IconBtn>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* ── LEFT: Form ───────────────────────────────────────────────── */}
+          {/* ── LEFT: Form (hidden on mobile when list tab active) ────────── */}
           <div
-            className="xl:col-span-2 rounded-2xl overflow-hidden transition-shadow duration-200"
+            className={`xl:col-span-2 xl:block rounded-2xl overflow-hidden transition-shadow duration-200 ${mobileView === MOBILE_VIEW.LIST ? "hidden xl:block" : "block"}`}
             style={{
               background: "white",
               border: `1px solid ${T.border}`,
@@ -292,7 +200,7 @@ export default function Blogs() {
                 <h2 className="text-[13px] sm:text-[14px] font-bold truncate" style={{ color: T.primaryDark }}>
                   {selectedId ? "Update Blog Post" : "Create New Blog Post"}
                 </h2>
-                <p className="text-[11px] sm:text-[12px] hidden xs:block" style={{ color: T.mutedLight }}>
+                <p className="text-[11px] sm:text-[12px]" style={{ color: T.mutedLight }}>
                   {selectedId ? "Edit the details below" : "Fill in all the details below"}
                 </p>
               </div>
@@ -310,7 +218,7 @@ export default function Blogs() {
                   placeholder="Enter blog title..."
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="brand-input w-full"
+                  className="w-full"
                   style={inputStyle()}
                   onFocus={(e) => applyFocus(e)}
                   onBlur={(e) => removeFocus(e)}
@@ -356,7 +264,7 @@ export default function Blogs() {
                   >
                     <Upload size={13} />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-[12px] sm:text-[13px] font-semibold truncate" style={{ color: T.primaryDark }}>
                       {form.blogMedia.length > 0 ? `${form.blogMedia.length} file(s) selected` : "Click to upload images"}
                     </p>
@@ -425,27 +333,30 @@ export default function Blogs() {
             </div>
           </div>
 
-          {/* ── RIGHT: Blog list (desktop only) ──────────────────────────── */}
+          {/* ── RIGHT: Blog list ──────────────────────────────────────────── */}
+          {/* On mobile: shown when mobileView === LIST. On desktop: always shown */}
           <div
-            className="hidden xl:flex rounded-2xl overflow-hidden flex-col transition-shadow duration-200"
+            className={`xl:flex rounded-2xl overflow-hidden flex-col transition-shadow duration-200 ${mobileView === MOBILE_VIEW.LIST ? "flex" : "hidden xl:flex"}`}
             style={{
               background: "white",
               border: `1px solid ${T.border}`,
               boxShadow: "0 1px 4px rgba(195,106,77,0.07)",
+              /* On mobile list view, let it be as tall as needed */
+              minHeight: mobileView === MOBILE_VIEW.LIST ? "auto" : undefined,
             }}
             onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 6px 24px rgba(195,106,77,0.11)`}
             onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 4px rgba(195,106,77,0.07)"}
           >
             {/* Search */}
             <div
-              className="flex items-center gap-2.5 px-4 py-3.5 shrink-0"
+              className="flex items-center gap-2.5 px-4 py-3 sm:py-3.5 shrink-0"
               style={{ borderBottom: `1px solid ${T.border}`, background: T.tint10 }}
             >
-              <Search size={14} style={{ color: T.muted }} className="shrink-0" />
+              <Search size={13} style={{ color: T.muted }} className="shrink-0" />
               <input
                 type="text"
                 placeholder="Search by title or author..."
-                className="flex-1 text-[13px] placeholder-gray-400 outline-none bg-transparent"
+                className="flex-1 text-[12px] sm:text-[13px] placeholder-gray-400 outline-none bg-transparent"
                 style={{ color: T.primaryDark }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -462,23 +373,49 @@ export default function Blogs() {
               )}
             </div>
 
-            {/* Count */}
-            <div className="px-4 py-2.5 shrink-0" style={{ borderBottom: `1px solid ${T.border}` }}>
+            {/* Count bar */}
+            <div className="px-4 py-2 shrink-0 flex items-center justify-between" style={{ borderBottom: `1px solid ${T.border}` }}>
               <span className="text-[10.5px] font-bold uppercase tracking-widest" style={{ color: T.muted }}>
                 {filtered.length} Post{filtered.length !== 1 ? "s" : ""}
+                {search && ` for "${search}"`}
               </span>
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="text-[11px] font-semibold"
+                  style={{ color: T.primary }}
+                >
+                  Clear filter
+                </button>
+              )}
             </div>
 
-            {/* Blog cards */}
-            <div className="flex-1 overflow-y-auto" style={{ divideColor: T.tint10 }}>
+            {/* Blog cards — scrollable on desktop, full height on mobile */}
+            <div
+              className="overflow-y-auto"
+              style={{
+                /* Desktop: fixed height to keep sidebar scrollable */
+                maxHeight: "calc(100vh - 260px)",
+              }}
+            >
               {filtered.length === 0 ? (
-                <div className="py-12 text-center text-[13px]" style={{ color: T.mutedLight }}>No blogs found</div>
+                <div className="py-12 text-center" style={{ color: T.mutedLight }}>
+                  <BookOpen size={28} className="mx-auto mb-2 opacity-30" style={{ color: T.muted }} />
+                  <p className="text-[13px] font-medium">
+                    {search ? `No results for "${search}"` : "No blogs yet"}
+                  </p>
+                  {search && (
+                    <button onClick={() => setSearch("")} className="mt-2 text-[12px] font-semibold" style={{ color: T.primary }}>
+                      Clear search
+                    </button>
+                  )}
+                </div>
               ) : filtered.map((blog) => {
                 const isSelected = selectedId === blog._id;
                 return (
                   <div
                     key={blog._id}
-                    className="p-4 transition-colors duration-150 cursor-default"
+                    className="p-3 sm:p-4 transition-colors duration-150 cursor-default"
                     style={{
                       background: isSelected ? T.tint20 : "white",
                       borderBottom: `1px solid ${T.tint10}`,
@@ -490,26 +427,28 @@ export default function Blogs() {
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2.5 min-w-0">
                         <div
-                          className="w-9 h-9 rounded-lg overflow-hidden shrink-0 mt-0.5"
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg overflow-hidden shrink-0 mt-0.5"
                           style={{ background: T.tint20, border: `1px solid ${T.border}` }}
                         >
                           {blog.blogMedia?.[0] ? (
                             <img src={blog.blogMedia[0]} alt="" className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <BookOpen size={13} style={{ color: T.primary }} />
+                              <BookOpen size={12} style={{ color: T.primary }} />
                             </div>
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[13px] font-semibold leading-tight line-clamp-1" style={{ color: "#1a1a1a" }}>
+                          <p className="text-[12px] sm:text-[13px] font-semibold leading-tight line-clamp-1" style={{ color: "#1a1a1a" }}>
                             {blog.title}
                           </p>
-                          <p className="text-[11.5px] mt-0.5" style={{ color: T.mutedLight }}>{blog.author}</p>
+                          <p className="text-[11px] sm:text-[11.5px] mt-0.5 truncate" style={{ color: T.mutedLight }}>
+                            {blog.author}
+                          </p>
                         </div>
                       </div>
                       <span
-                        className="shrink-0 px-2 py-0.5 text-[10.5px] font-semibold rounded-lg border"
+                        className="shrink-0 px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-[10.5px] font-semibold rounded-lg border"
                         style={blog.status
                           ? { background: "#ecfdf5", color: "#059669", borderColor: "#a7f3d0" }
                           : { background: "#f9fafb", color: "#6b7280", borderColor: "#e5e7eb" }
@@ -519,11 +458,13 @@ export default function Blogs() {
                       </span>
                     </div>
 
-                    <p className="text-[12px] mt-2 line-clamp-2 leading-relaxed" style={{ color: T.muted }}>
+                    {/* Description preview */}
+                    <p className="text-[11px] sm:text-[12px] mt-1.5 line-clamp-2 leading-relaxed" style={{ color: T.muted }}>
                       {blog.description}
                     </p>
 
-                    <div className="flex items-center gap-1.5 mt-3">
+                    {/* Actions */}
+                    <div className="flex items-center gap-1.5 mt-2.5">
                       <IconBtn
                         onClick={() => toggleStatus(blog)}
                         title={blog.status ? "Unpublish" : "Publish"}
@@ -533,33 +474,43 @@ export default function Blogs() {
                         inactiveStyle={{ background: "#f9fafb", color: "#9ca3af", borderColor: "#e5e7eb" }}
                         inactiveHover={{ background: "#f3f4f6", color: "#6b7280", borderColor: "#d1d5db" }}
                       >
-                        {blog.status ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
+                        {blog.status ? <ToggleRight size={13} /> : <ToggleLeft size={13} />}
                       </IconBtn>
                       <IconBtn onClick={() => handleEdit(blog)}
                         inactiveStyle={{ background: T.tint10, color: T.muted, borderColor: T.border }}
                         inactiveHover={{ background: T.tint20, color: T.primary, borderColor: T.primary }}
                       >
-                        <Edit size={13} />
+                        <Edit size={12} />
                       </IconBtn>
                       <IconBtn onClick={() => setPreviewBlog(blog)}
                         inactiveStyle={{ background: "#eff6ff", color: "#3b82f6", borderColor: "#bfdbfe" }}
                         inactiveHover={{ background: "#dbeafe", color: "#2563eb", borderColor: "#93c5fd" }}
                       >
-                        <Eye size={13} />
+                        <Eye size={12} />
                       </IconBtn>
                       <IconBtn onClick={() => handleDelete(blog._id)}
                         inactiveStyle={{ background: "#f9fafb", color: "#9ca3af", borderColor: "#e5e7eb" }}
                         inactiveHover={{ background: "#fef2f2", color: "#ef4444", borderColor: "#fecaca" }}
                         className="ml-auto"
                       >
-                        <Trash2 size={13} />
+                        <Trash2 size={12} />
                       </IconBtn>
                     </div>
                   </div>
                 );
               })}
             </div>
+
+            {/* Footer: total count when many blogs */}
+            {filtered.length > 5 && (
+              <div className="px-4 py-2.5 shrink-0 text-center" style={{ borderTop: `1px solid ${T.border}`, background: T.tint10 }}>
+                <span className="text-[11px] font-semibold" style={{ color: T.muted }}>
+                  Showing all {filtered.length} posts · Scroll to see more
+                </span>
+              </div>
+            )}
           </div>
+
         </div>
       </div>
 
@@ -572,7 +523,7 @@ export default function Blogs() {
         >
           <div
             className="bg-white w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden
-                        max-h-[90vh] sm:max-h-[85vh] flex flex-col"
+                        max-h-[92vh] sm:max-h-[85vh] flex flex-col"
             style={{ border: `1px solid ${T.border}`, boxShadow: `0 24px 60px rgba(195,106,77,0.18)` }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -586,12 +537,14 @@ export default function Blogs() {
               className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 shrink-0"
               style={{ borderBottom: `1px solid ${T.border}`, background: T.tint10 }}
             >
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-[13px] sm:text-[14px] font-bold" style={{ color: T.primaryDark }}>Blog Preview</h3>
-                <p className="text-[11px] sm:text-[12px] mt-0.5" style={{ color: T.mutedLight }}>Read-only view</p>
+                <p className="text-[11px] sm:text-[12px] mt-0.5 truncate" style={{ color: T.mutedLight }}>
+                  {previewBlog.title}
+                </p>
               </div>
               <button
-                className="h-8 w-8 flex items-center justify-center rounded-lg transition-all duration-150"
+                className="h-8 w-8 flex items-center justify-center rounded-lg transition-all duration-150 shrink-0 ml-3"
                 style={{ color: T.muted }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = T.tint20; e.currentTarget.style.color = T.primary; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = T.muted; }}
@@ -611,7 +564,9 @@ export default function Blogs() {
 
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-[15px] sm:text-[17px] font-bold leading-snug" style={{ color: "#1a1a1a" }}>{previewBlog.title}</h2>
+                  <h2 className="text-[15px] sm:text-[17px] font-bold leading-snug" style={{ color: "#1a1a1a" }}>
+                    {previewBlog.title}
+                  </h2>
                   <p className="text-[12px] sm:text-[12.5px] mt-1" style={{ color: T.mutedLight }}>
                     By <span className="font-semibold" style={{ color: T.primaryDark }}>{previewBlog.author}</span>
                   </p>
@@ -632,13 +587,18 @@ export default function Blogs() {
               </p>
 
               {previewBlog.blogMedia?.length > 1 && (
-                <div className="flex gap-2 flex-wrap">
-                  {previewBlog.blogMedia.slice(1).map((src, i) => (
-                    <div key={i} className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden"
-                      style={{ border: `1px solid ${T.border}` }}>
-                      <img src={src} alt="" className="w-full h-full object-cover" />
-                    </div>
-                  ))}
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: T.muted }}>
+                    More Images ({previewBlog.blogMedia.length - 1})
+                  </p>
+                  <div className="flex gap-2 flex-wrap">
+                    {previewBlog.blogMedia.slice(1).map((src, i) => (
+                      <div key={i} className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden"
+                        style={{ border: `1px solid ${T.border}` }}>
+                        <img src={src} alt="" className="w-full h-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
