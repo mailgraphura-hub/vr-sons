@@ -42,6 +42,7 @@ export default function ProductDetail() {
   const { id } = useParams();
   const { user } = userProfile();
   const navigate = useNavigate();
+  
 
   const [product, setProduct] = useState(null);
   const [activeImage, setActiveImage] = useState(0);

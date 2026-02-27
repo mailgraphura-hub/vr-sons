@@ -1,10 +1,11 @@
 import { Bell, CheckCheck, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getService, patchService, deleteService } from "../../service/axios";
 
 export default function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [userName, setUserName] = useState("User");
   const [openNotification, setOpenNotification] = useState(false);
@@ -225,6 +226,7 @@ export default function Header() {
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-sm"
             style={{ backgroundColor: "#c97b5a", color: "#fff" }}
+            onClick={() => navigate("/user/profile")}
           >
             {avatarInitial}
           </div>

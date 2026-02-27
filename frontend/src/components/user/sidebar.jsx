@@ -89,9 +89,9 @@ export default function Sidebar() {
 
         {/* Section Label */}
         <div className="px-5 pt-5 pb-1">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+          {/* <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
             Main Menu
-          </p>
+          </p> */}
         </div>
 
         {/* Nav Links */}
