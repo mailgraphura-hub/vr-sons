@@ -115,14 +115,24 @@ export default function Profile() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#ede8e3]">
+    // FIX: Root layout uses flex row so sidebar + content sit side by side properly
+    <div className="flex min-h-screen bg-[#f5f1ed]">
       <Toaster />
+
+      {/* Sidebar — fixed width, always visible on md+ */}
       <Sidebar />
-      <div className="flex flex-col flex-1 min-w-0 min-h-screen md:ml-5 overflow-hidden">
+
+      {/* Main content area — offset by sidebar width on md+ */}
+      {/*
+        On mobile (< md): sidebar is typically hidden/overlay, so no offset needed.
+        On tablet/desktop (>= md): sidebar is ~240px wide, so we add md:ml-60 (240px).
+        Adjust md:ml-60 to match your actual Sidebar width (e.g. ml-56, ml-64, etc.)
+      */}
+      <div className="flex flex-col flex-1 min-w-0 md:ml-60">
         <Header />
 
         <main className="flex flex-col flex-1 overflow-y-auto pt-16 w-full">
-          <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="w-full px-4 md:px-6 lg:px-8 py-6 md:py-8">
 
             {/* ── Page heading ── */}
             <div className="mb-6 sm:mb-8">
@@ -134,37 +144,47 @@ export default function Profile() {
               </p>
             </div>
 
-            {/* ── Two-column grid — stacks on mobile ── */}
-            <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-5 sm:gap-6 items-start">
+            {/*
+              FIX: Layout grid
+              - Mobile (< md):   single column
+              - Tablet (md–lg):  single column (form stacked), identity card on top
+              - Desktop (>= lg): two columns side by side
+            */}
+            <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] xl:grid-cols-[300px_1fr] gap-6 md:gap-6 items-start">
 
               {/* ══════════ LEFT: Identity Card ══════════ */}
-              <div className="rounded-2xl sm:rounded-3xl border border-[#e2d5cc] shadow-md overflow-hidden"
-                style={{ background: "linear-gradient(160deg, #fff8f5 0%, #fdf0ea 100%)" }}>
-
+              <div
+                className="rounded-2xl sm:rounded-3xl border border-[#e2d5cc] shadow-md overflow-hidden "
+                style={{ background: "linear-gradient(160deg, #fff8f5 0%, #fdf0ea 100%)" }}
+              >
                 {/* Gradient banner */}
-                <div className="relative h-24 sm:h-28 overflow-hidden"
-                  style={{ background: "linear-gradient(135deg, #e8c5b0 0%, #d4916a 50%, #c97b5a 100%)" }}>
-                  {/* Decorative circles */}
+                <div
+                  className="relative h-16 md:h-20 lg:h-24 overflow-hidden"
+                  style={{ background: "linear-gradient(135deg, #e8c5b0 0%, #d4916a 50%, #c97b5a 100%)" }}
+                >
                   <div className="absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-20 bg-white" />
                   <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full opacity-10 bg-white" />
                 </div>
 
-                <div className="px-6 sm:px-8 pb-8 sm:pb-10 -mt-12 sm:-mt-14 flex flex-col items-center text-center">
+                {/* FIX: On tablet the card goes full-width so use horizontal layout (row) on md, vertical on lg+ */}
+                <div className="px-5 md:px-6 pb-6 -mt-10 md:-mt-12 lg:-mt-14 flex flex-col items-center text-center">
                   {/* Avatar */}
                   <div className="relative mb-4">
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-[5px] border-white shadow-xl ring-4 ring-[#f3dfd4]">
+                    <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border-[5px] border-white shadow-xl ring-4 ring-[#f3dfd4]">
                       {user?.profileImage ? (
                         <img src={user.profileImage} alt="avatar" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-white text-2xl sm:text-3xl font-bold"
-                          style={{ background: "linear-gradient(135deg, #c97b5a, #a85a3a)" }}>
+                        <div
+                          className="w-full h-full flex items-center justify-center text-white text-2xl sm:text-3xl font-bold"
+                          style={{ background: "linear-gradient(135deg, #c97b5a, #a85a3a)" }}
+                        >
                           {user?.name?.charAt(0)?.toUpperCase() || "U"}
                         </div>
                       )}
                     </div>
                     <button
                       onClick={() => fileInputRef.current.click()}
-                      className="absolute bottom-1 right-1 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shadow-lg transition-all duration-150 active:scale-95"
+                      className="absolute bottom-1 right-1 w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-all duration-150 active:scale-95"
                       style={{ background: "linear-gradient(135deg, #d4895e, #c97b5a)" }}
                       title="Change photo"
                     >
@@ -173,27 +193,28 @@ export default function Profile() {
                     <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   </div>
 
-                  {/* Name */}
                   <h2 className="text-base sm:text-lg font-bold text-gray-900 leading-tight">
                     {user?.name}
                   </h2>
 
-                  {/* Role badge */}
-                  <span className="mt-2 inline-flex items-center text-[9px] sm:text-[10px] font-bold tracking-widest uppercase px-3 sm:px-4 py-1 rounded-full border"
-                    style={{ background: "linear-gradient(135deg, #fdf0ea, #fae5d8)", color: "#b5613e", borderColor: "#f0c8b0" }}>
+                  <span
+                    className="mt-2 inline-flex items-center text-[9px] sm:text-[10px] font-bold tracking-widest uppercase px-3 sm:px-4 py-1 rounded-full border"
+                    style={{ background: "linear-gradient(135deg, #fdf0ea, #fae5d8)", color: "#b5613e", borderColor: "#f0c8b0" }}
+                  >
                     {user?.role || "Customer"}
                   </span>
 
-                  {/* Divider */}
-                  <div className="w-full mt-6 pt-5 border-t border-[#f0ddd5] space-y-3">
+                  <div className="w-full mt-5 pt-5 border-t border-[#f0ddd5] space-y-3">
                     {[
                       { icon: <MailIcon className="w-3.5 h-3.5 text-[#c97b5a]" />, bg: "#fff4ef", text: user?.email },
                       { icon: <ShieldIcon className="w-3.5 h-3.5 text-emerald-500" />, bg: "#f0fdf4", text: "Verified Account" },
                       { icon: <CalendarIcon className="w-3.5 h-3.5 text-[#c97b5a]" />, bg: "#fff4ef", text: `Since ${formattedDate}` },
                     ].map(({ icon, bg, text }, i) => (
                       <div key={i} className="flex items-center gap-3 text-left">
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm border border-white/80"
-                          style={{ background: bg }}>
+                        <div
+                          className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm border border-white/80"
+                          style={{ background: bg }}
+                        >
                           {icon}
                         </div>
                         <span className="text-xs sm:text-sm text-gray-500 truncate">{text}</span>
@@ -204,31 +225,44 @@ export default function Profile() {
               </div>
 
               {/* ══════════ RIGHT: Form Card ══════════ */}
-              <div className="rounded-2xl sm:rounded-3xl border border-[#e2d5cc] shadow-md overflow-hidden bg-white">
+              <div className="rounded-2xl sm:rounded-3xl border border-[#e2d5cc] shadow-md overflow-hidden bg-white min-w-0">
 
                 {/* Card header */}
-                <div className="flex items-center justify-between px-5 sm:px-7 py-4 sm:py-5 border-b border-[#f0e5de]"
-                  style={{ background: "linear-gradient(135deg, #fdf8f5 0%, #faf0eb 100%)" }}>
+                <div
+                  className="flex items-center justify-between px-5 sm:px-7 py-4 sm:py-5 border-b border-[#f0e5de]"
+                  style={{ background: "linear-gradient(135deg, #fdf8f5 0%, #faf0eb 100%)" }}
+                >
                   <div>
                     <h3 className="text-sm sm:text-base font-bold text-gray-900">Personal Information</h3>
                     <p className="text-xs text-gray-400 mt-0.5">Update your name and personal details</p>
                   </div>
-                  <div className="w-9 h-9 rounded-full border border-[#f0c8b0] flex items-center justify-center flex-shrink-0 shadow-sm"
-                    style={{ background: "linear-gradient(135deg, #fdf0ea, #fae5d8)" }}>
+                  <div
+                    className="w-9 h-9 rounded-full border border-[#f0c8b0] flex items-center justify-center flex-shrink-0 shadow-sm"
+                    style={{ background: "linear-gradient(135deg, #fdf0ea, #fae5d8)" }}
+                  >
                     <ShieldIcon className="w-4 h-4 text-[#c97b5a]" />
                   </div>
                 </div>
 
-                {/* Fields grid */}
-                <div className="px-5 sm:px-7 py-5 sm:py-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                {/*
+                  FIX: Fields grid
+                  - Single column on mobile & tablet (< lg)
+                  - Two columns on desktop (>= lg)
+                  This prevents fields from being too squished on tablet.
+                */}
+                <div className="px-4 sm:px-6 py-4 sm:py-5 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
 
-                  <Field icon={<UserIcon className="w-4 h-4 text-gray-400" />}
+                  <Field
+                    icon={<UserIcon className="w-4 h-4 text-gray-400" />}
                     label="Full Name" name="name" value={user?.name}
-                    onChange={handleChange} isEditing={isEditing} placeholder="Full name" />
+                    onChange={handleChange} isEditing={isEditing} placeholder="Full name"
+                  />
 
-                  <Field icon={<MailIcon className="w-4 h-4 text-gray-400" />}
+                  <Field
+                    icon={<MailIcon className="w-4 h-4 text-gray-400" />}
                     label="Email Address" value={user?.email}
-                    isEditing={false} readOnly />
+                    isEditing={false} readOnly
+                  />
 
                   {/* Mobile — +91 prefix */}
                   <div className="flex flex-col gap-1.5">
@@ -237,9 +271,11 @@ export default function Profile() {
                       <div className="flex items-center gap-2 bg-white border border-[#e0cdc4] rounded-xl px-3.5 py-2.5 focus-within:ring-2 focus-within:ring-[#c97b5a]/40 focus-within:border-[#c97b5a] transition-all shadow-sm">
                         <PhoneIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
                         <span className="text-sm font-semibold text-gray-300 flex-shrink-0">+91</span>
-                        <input type="tel" name="contact" value={user?.contact || ""} onChange={handleChange}
+                        <input
+                          type="tel" name="contact" value={user?.contact || ""} onChange={handleChange}
                           placeholder="10-digit number"
-                          className="flex-1 min-w-0 text-sm text-gray-800 bg-transparent outline-none placeholder-gray-300" />
+                          className="flex-1 min-w-0 text-sm text-gray-800 bg-transparent outline-none placeholder-gray-300"
+                        />
                       </div>
                     ) : (
                       <div className="flex items-center gap-2.5 bg-white/80 border border-[#ede0d8] rounded-xl px-3.5 py-2.5 shadow-sm hover:border-[#d9c4b8] transition-colors">
@@ -255,8 +291,10 @@ export default function Profile() {
                     {isEditing ? (
                       <div className="flex items-center gap-2 bg-white border border-[#e0cdc4] rounded-xl px-3.5 py-2.5 focus-within:ring-2 focus-within:ring-[#c97b5a]/40 focus-within:border-[#c97b5a] transition-all shadow-sm">
                         <UserIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                        <select name="gender" value={user?.gender || ""} onChange={handleChange}
-                          className="flex-1 min-w-0 text-sm text-gray-800 bg-transparent outline-none appearance-none cursor-pointer">
+                        <select
+                          name="gender" value={user?.gender || ""} onChange={handleChange}
+                          className="flex-1 min-w-0 text-sm text-gray-800 bg-transparent outline-none appearance-none cursor-pointer"
+                        >
                           <option value="">Select Gender</option>
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
@@ -271,46 +309,62 @@ export default function Profile() {
                     )}
                   </div>
 
-                  <Field icon={<CalendarIcon className="w-4 h-4 text-gray-400" />}
+                  <Field
+                    icon={<CalendarIcon className="w-4 h-4 text-gray-400" />}
                     label="Date of Birth" name="dob" type="date"
-                    value={user?.dob} onChange={handleChange} isEditing={isEditing} />
+                    value={user?.dob} onChange={handleChange} isEditing={isEditing}
+                  />
 
-                  <Field icon={<MapPinIcon className="w-4 h-4 text-gray-400" />}
+                  <Field
+                    icon={<MapPinIcon className="w-4 h-4 text-gray-400" />}
                     label="State" name="state" value={user?.state}
-                    onChange={handleChange} isEditing={isEditing} placeholder="State" />
+                    onChange={handleChange} isEditing={isEditing} placeholder="State"
+                  />
 
-                  <Field icon={<GlobeIcon className="w-4 h-4 text-gray-400" />}
+                  <Field
+                    icon={<GlobeIcon className="w-4 h-4 text-gray-400" />}
                     label="Country" name="country" value={user?.country}
-                    onChange={handleChange} isEditing={isEditing} placeholder="Country" />
+                    onChange={handleChange} isEditing={isEditing} placeholder="Country"
+                  />
 
-                  <Field icon={<ShieldIcon className="w-4 h-4 text-gray-400" />}
+                  <Field
+                    icon={<ShieldIcon className="w-4 h-4 text-gray-400" />}
                     label="Role" value={user?.role || "Customer"}
-                    isEditing={false} readOnly />
+                    isEditing={false} readOnly
+                  />
                 </div>
 
                 {/* Footer */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-5 sm:px-7 py-4 sm:py-5 border-t border-[#f0e5de]"
-                  style={{ background: "linear-gradient(135deg, #fdf8f5 0%, #faf0eb 100%)" }}>
+                <div
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-5 sm:px-7 py-4 sm:py-5 border-t border-[#f0e5de]"
+                  style={{ background: "linear-gradient(135deg, #fdf8f5 0%, #faf0eb 100%)" }}
+                >
                   <p className="text-xs text-gray-400">
                     {isEditing ? "Changes reflect immediately after saving." : "Click Edit Profile to update your information."}
                   </p>
 
                   <div className="flex gap-2.5 w-full sm:w-auto">
                     {!isEditing ? (
-                      <button onClick={() => setIsEditing(true)}
+                      <button
+                        onClick={() => setIsEditing(true)}
                         className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-white text-sm font-semibold shadow-md active:scale-[.97] transition-all duration-150"
-                        style={{ background: "linear-gradient(135deg, #d4895e, #c97b5a)" }}>
+                        style={{ background: "linear-gradient(135deg, #d4895e, #c97b5a)" }}
+                      >
                         Edit Profile
                       </button>
                     ) : (
                       <>
-                        <button onClick={() => setIsEditing(false)}
-                          className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl border border-[#e0cdc4] text-sm font-medium text-gray-500 bg-white hover:bg-gray-50 active:scale-[.97] transition-all duration-150 shadow-sm">
+                        <button
+                          onClick={() => setIsEditing(false)}
+                          className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl border border-[#e0cdc4] text-sm font-medium text-gray-500 bg-white hover:bg-gray-50 active:scale-[.97] transition-all duration-150 shadow-sm"
+                        >
                           Cancel
                         </button>
-                        <button onClick={updateProfile} disabled={loading}
+                        <button
+                          onClick={updateProfile} disabled={loading}
                           className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-white text-sm font-semibold shadow-md active:scale-[.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-                          style={{ background: "linear-gradient(135deg, #d4895e, #c97b5a)" }}>
+                          style={{ background: "linear-gradient(135deg, #d4895e, #c97b5a)" }}
+                        >
                           {loading ? (
                             <span className="flex items-center justify-center gap-2">
                               <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
