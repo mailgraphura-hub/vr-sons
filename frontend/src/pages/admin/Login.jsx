@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { Lock, Mail, Eye, EyeOff, Loader2 } from "lucide-react";
 import logo from "../../assets/logo/TextLogo.png";
@@ -71,7 +71,6 @@ export default function Login() {
                     );
                 }
 
-                /* Decorative rings */
                 .lr-ring {
                     position: absolute;
                     border-radius: 50%;
@@ -82,7 +81,6 @@ export default function Login() {
                 .lr-ring-1 { width: 580px; height: 580px; transform: translate(-50%, -50%); }
                 .lr-ring-2 { width: 420px; height: 420px; transform: translate(-50%, -50%); border-color: rgba(255,255,255,0.22); }
 
-                /* Card */
                 .lr-card {
                     position: relative;
                     z-index: 10;
@@ -106,7 +104,6 @@ export default function Login() {
                     to   { opacity:1; transform:translateY(0)     scale(1);    }
                 }
 
-                /* Logo */
                 .lr-logo-wrap {
                     display: flex;
                     align-items: center;
@@ -141,7 +138,6 @@ export default function Login() {
                     margin-bottom: 1.7rem;
                 }
 
-                /* Error */
                 .lr-error {
                     background: rgba(254,215,215,0.7);
                     border: 1px solid rgba(252,129,129,0.4);
@@ -153,7 +149,6 @@ export default function Login() {
                     text-align: center;
                 }
 
-                /* Fields */
                 .lr-field { margin-bottom: 0.8rem; }
                 .lr-wrap { position: relative; display: flex; align-items: center; }
                 .lr-icon {
@@ -190,7 +185,6 @@ export default function Login() {
                 }
                 .lr-eye:hover { color: #4A5568; }
 
-                /* Forgot */
                 .lr-forgot-row {
                     display: flex; justify-content: flex-end;
                     margin: -0.25rem 0 1.35rem;
@@ -204,7 +198,6 @@ export default function Login() {
                 }
                 .lr-forgot:hover { color: #2B6CB0; }
 
-                /* Submit */
                 .lr-btn {
                     width: 100%;
                     background: #1A202C;
@@ -230,12 +223,15 @@ export default function Login() {
                     display: flex; align-items: center; justify-content: center;
                     padding-top: 1.2rem;
                     border-top: 1px solid rgba(200,215,232,0.5);
+                    font-size: 0.82rem; color: #A0AEC0;
+                    gap: 0.35rem;
                 }
-                .lr-brand-tag {
-                    font-size: 0.78rem; font-weight: 600;
-                    color: #2D3748; letter-spacing: 0.08em;
-                    text-transform: uppercase;
+                .lr-footer a {
+                    color: #4A90D9; font-weight: 600;
+                    text-decoration: none;
+                    transition: color 0.2s;
                 }
+                .lr-footer a:hover { color: #2B6CB0; }
 
                 @keyframes spin { to { transform: rotate(360deg); } }
             `}</style>
@@ -313,9 +309,12 @@ export default function Login() {
 
                     </form>
 
+                    {/* Footer — create account link */}
                     <div className="lr-footer">
-                        <span className="lr-brand-tag">VR &amp; Sons Import Export</span>
+                        Don't have an account?
+                        <Link to="/admin/SignUp">Create Account</Link>
                     </div>
+
                 </div>
             </div>
         </>
