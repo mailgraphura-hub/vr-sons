@@ -10,10 +10,18 @@ import {
   Instagram,
   Facebook,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import logo from "../../assets/logo/NavLogo.svg";
 
 const Footer = () => {
+
+  const categories = [
+    { name: "Food Products", path: "/CategoryProducts/699b74ee545f793544e4f6fa" },
+    { name: "Spices", path: "/CategoryProducts/699b753e545f793544e4f6fc" },
+    { name: "Agricultural Goods", path: "/CategoryProducts/699b759a545f793544e4f700" },
+    { name: "Bricks", path: "/CategoryProducts/699b7571545f793544e4f6fe" },
+  ];
   return (
     <footer className="bg-gradient-to-b from-[#f4f1ec] to-[#e9e4dc] px-4 md:px-10 pt-16 pb-12">
       <div className="bg-white rounded-3xl shadow-lg border border-neutral-200 px-8 md:px-16 py-12">
@@ -82,18 +90,16 @@ const Footer = () => {
               Export Categories
             </h3>
             <ul className="space-y-3 text-sm text-neutral-700">
-              {["Food Products", "Spices", "Agricultural Goods", "Bricks"].map(
-                (item) => (
-                  <li key={item}>
-                    <a
-                      href="/MainCategory"
-                      className="hover:text-black hover:underline underline-offset-4 transition"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                ),
-              )}
+              {categories.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.path}
+                    className="hover:text-black hover:underline underline-offset-4 transition"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
