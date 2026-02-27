@@ -29,9 +29,9 @@ const HEADER_CSS = `
   /* Glassmorphism header */
   .hdr-bar {
     height: 64px;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 28px;
     background: rgba(255, 251, 249, 0.82);
     backdrop-filter: blur(18px) saturate(1.6);
@@ -136,7 +136,7 @@ const HEADER_CSS = `
   .hdr-center {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 6px;
   }
 
@@ -233,10 +233,7 @@ export default function Header() {
 
       <header className="hdr-root hdr-bar">
 
-        {/* ── Left: empty spacer to balance grid ─────────────────────── */}
-        <div className="hdr-left" />
-
-        {/* ── Center: breadcrumbs ─────────────────────────────────────── */}
+        {/* ── Left: breadcrumbs ──────────────────────────────────────── */}
         {renderBreadcrumbs()}
 
         {/* ── Right: admin info + avatar ──────────────────────────────── */}
