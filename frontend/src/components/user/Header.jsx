@@ -1,4 +1,4 @@
-import { Bell, LogOut, CheckCheck, Trash2 } from "lucide-react";
+import { Bell, CheckCheck, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { getService, patchService, deleteService } from "../../service/axios";
@@ -7,13 +7,17 @@ export default function Header() {
   const location = useLocation();
 
   const [userName, setUserName] = useState("User");
-  const [openUserMenu, setOpenUserMenu] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({
+    top: 0,
+    left: 0,
+    width: 320,
+  });
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
   const notificationRef = useRef(null);
-  const userMenuRef = useRef(null);
+  const bellButtonRef = useRef(null);
 
   const fetchNotifications = async () => {
     try {
@@ -45,38 +49,60 @@ export default function Header() {
 
   useEffect(() => {
     function handleClickOutside(e) {
-      if (notificationRef.current && !notificationRef.current.contains(e.target))
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(e.target)
+      )
         setOpenNotification(false);
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target))
-        setOpenUserMenu(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Calculate dropdown position so it never overflows screen
+  const handleBellClick = () => {
+    if (bellButtonRef.current) {
+      const rect = bellButtonRef.current.getBoundingClientRect();
+      const MARGIN = 8;
+      const dropWidth = Math.min(320, window.innerWidth - MARGIN * 2);
+      // Align right edge of dropdown to right edge of bell button
+      let leftPos = rect.right - dropWidth;
+      // Clamp so it doesn't go off left edge
+      if (leftPos < MARGIN) leftPos = MARGIN;
+      setDropdownPos({ top: rect.bottom + 8, left: leftPos, width: dropWidth });
+    }
+    setOpenNotification((prev) => !prev);
+  };
+
   const markAsRead = async (id) => {
     await patchService(`/notification/${id}/read`);
-    setNotifications((prev) => prev.map((n) => (n._id === id ? { ...n, isRead: true } : n)));
+    setNotifications((prev) =>
+      prev.map((n) => (n._id === id ? { ...n, isRead: true } : n)),
+    );
     setUnreadCount((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
   const markAllRead = async () => {
     await Promise.all(
-      notifications.filter((n) => !n.isRead).map((n) => patchService(`/notification/${n._id}/read`))
+      notifications
+        .filter((n) => !n.isRead)
+        .map((n) => patchService(`/notification/${n._id}/read`)),
     );
     setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
     setUnreadCount(0);
   };
 
   const clearAll = async () => {
-    await Promise.all(notifications.map((n) => deleteService(`/notification/${n._id}`)));
+    await Promise.all(
+      notifications.map((n) => deleteService(`/notification/${n._id}`)),
+    );
     setNotifications([]);
     setUnreadCount(0);
   };
 
-  const pageTitle = location.pathname.split("/").pop()?.replace(/-/g, " ") || "Dashboard";
+  const pageTitle =
+    location.pathname.split("/").pop()?.replace(/-/g, " ") || "Dashboard";
   const formattedTitle = pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
-
   const avatarInitial = userName.charAt(0).toUpperCase();
 
   return (
@@ -89,15 +115,15 @@ export default function Header() {
         {formattedTitle}
       </h1>
 
-      {/* Mobile spacer — keeps right-side icons pushed right */}
+      {/* Mobile spacer */}
       <div className="md:hidden" />
 
       <div className="flex items-center gap-3 md:gap-5">
-
         {/* 🔔 NOTIFICATIONS */}
-        <div className="relative" ref={notificationRef}>
+        <div ref={notificationRef}>
           <button
-            onClick={() => setOpenNotification(!openNotification)}
+            ref={bellButtonRef}
+            onClick={handleBellClick}
             className="relative w-9 h-9 flex items-center justify-center rounded-xl transition"
             style={{ backgroundColor: "#fde8df" }}
           >
@@ -112,17 +138,29 @@ export default function Header() {
             )}
           </button>
 
+          {/* Dropdown — fixed position, always inside viewport */}
           {openNotification && (
             <div
-              className="absolute right-0 mt-3 w-[calc(100vw-2rem)] sm:w-80 max-w-sm rounded-2xl shadow-xl overflow-hidden"
-              style={{ backgroundColor: "#fff", border: "1px solid #ede0d4" }}
+              className="fixed rounded-2xl shadow-xl overflow-hidden z-50"
+              style={{
+                top: dropdownPos.top,
+                left: dropdownPos.left,
+                width: dropdownPos.width,
+                backgroundColor: "#fff",
+                border: "1px solid #ede0d4",
+              }}
             >
               {/* Notif Header */}
               <div
                 className="flex justify-between items-center px-4 py-3"
-                style={{ backgroundColor: "#fde8df", borderBottom: "1px solid #f3d5c8" }}
+                style={{
+                  backgroundColor: "#fde8df",
+                  borderBottom: "1px solid #f3d5c8",
+                }}
               >
-                <h3 className="text-sm font-bold text-stone-700">Notifications</h3>
+                <h3 className="text-sm font-bold text-stone-700">
+                  Notifications
+                </h3>
                 {notifications.length > 0 && (
                   <div className="flex gap-3 text-xs">
                     <button
@@ -170,7 +208,9 @@ export default function Header() {
                             style={{ backgroundColor: "#c97b5a" }}
                           />
                         )}
-                        <span className={!item.isRead ? "ml-0" : "ml-4"}>{item.message}</span>
+                        <span className={!item.isRead ? "ml-0" : "ml-4"}>
+                          {item.message}
+                        </span>
                       </div>
                     </div>
                   ))
@@ -180,43 +220,23 @@ export default function Header() {
           )}
         </div>
 
-        {/* 👤 USER MENU */}
-        <div className="relative" ref={userMenuRef}>
-          <button
-            onClick={() => setOpenUserMenu(!openUserMenu)}
-            className="flex items-center gap-2.5"
+        {/* 👤 USER AVATAR */}
+        <div className="flex items-center gap-2.5">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-sm"
+            style={{ backgroundColor: "#c97b5a", color: "#fff" }}
           >
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-sm"
-              style={{ backgroundColor: "#c97b5a", color: "#fff" }}
-            >
-              {avatarInitial}
-            </div>
-            <div className="hidden sm:flex flex-col items-start leading-tight">
-              <span className="text-sm font-semibold text-stone-700 max-w-[120px] truncate">
-                {userName}
-              </span>
-              <span className="text-xs" style={{ color: "#c97b5a" }}>
-                My Account
-              </span>
-            </div>
-          </button>
-
-          {openUserMenu && (
-            <div
-              className="absolute right-0 mt-3 w-44 rounded-2xl shadow-lg overflow-hidden py-1"
-              style={{ backgroundColor: "#fff", border: "1px solid #ede0d4" }}
-            >
-              <button className="w-full text-left px-4 py-3 text-sm font-medium flex items-center gap-2 hover:bg-red-50 transition"
-                style={{ color: "#c0392b" }}
-              >
-                <LogOut size={15} />
-                Logout
-              </button>
-            </div>
-          )}
+            {avatarInitial}
+          </div>
+          <div className="hidden sm:flex flex-col items-start leading-tight">
+            <span className="text-sm font-semibold text-stone-700 max-w-[120px] truncate">
+              {userName}
+            </span>
+            <span className="text-xs" style={{ color: "#c97b5a" }}>
+              My Account
+            </span>
+          </div>
         </div>
-
       </div>
     </header>
   );
