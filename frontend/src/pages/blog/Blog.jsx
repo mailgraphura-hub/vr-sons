@@ -44,7 +44,7 @@ export default function Blog() {
   }, [])
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navbar/>
 
       {/* HERO SECTION */}
@@ -93,26 +93,26 @@ export default function Blog() {
         <img
           src="https://images.unsplash.com/photo-1578575437130-527eed3abbec"
           alt="Import Export Logistics"
-          className="hero-img w-full h-full object-cover"
+          className="object-cover w-full h-full hero-img"
         />
 
         {/* Dark Overlay with subtle pulse */}
-        <div className="hero-overlay absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 hero-overlay bg-black/60"></div>
 
         {/* Hero Content with fade-in */}
-        <div className="hero-content absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
-          <h1 className="text-3xl md:text-5xl font-bold max-w-4xl leading-tight">
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white hero-content">
+          <h1 className="max-w-4xl text-3xl font-bold leading-tight md:text-5xl">
             Import Export Insights & Guides
           </h1>
 
-          <p className="mt-4 max-w-2xl text-lg opacity-90">
+          <p className="max-w-2xl mt-4 text-lg text-danger pacity-90">
             Practical strategies, documentation help, global trade insights and
             step-by-step guides to grow your international business.
           </p>
 
           <Link
             to="/contact"
-            className="mt-6 inline-block bg-black/80 hover:bg-black px-6 py-3 rounded-xl font-semibold transition shadow-lg"
+            className="inline-block px-6 py-3 mt-6 font-semibold transition shadow-lg bg-black/80 hover:bg-black rounded-xl"
           >
             Get Expert Guidance →
           </Link>
@@ -120,18 +120,18 @@ export default function Blog() {
       </div>
 
       {/* Blog Layout */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container px-4 py-12 mx-auto">
         <div className="grid gap-10 lg:grid-cols-4">
 
           {/* Blog Grid */}
-          <div className="lg:col-span-3 grid gap-8 md:grid-cols-2 xl:grid-cols-3 items-start">
+          <div className="grid items-start gap-8 lg:col-span-3 md:grid-cols-2 xl:grid-cols-3">
             {allBlogs.map((blog) => (
               <div
                 key={blog._id}
                 className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden flex flex-col h-[380px]"
               >
                 {/* Image */}
-                <div className="h-48 w-full">
+                <div className="w-full h-48">
                   <img
                     src={
                       blog.blogMedia?.length
@@ -139,19 +139,19 @@ export default function Blog() {
                         : getOnlineImage(blog.title)
                     }
                     alt={blog.title}
-                    className="w-full h-full object-cover"
+                    className="object-cover w-full h-full"
                   />
                 </div>
 
                 {/* Content */}
-                <div className="p-5 flex flex-col justify-between flex-1">
+                <div className="flex flex-col justify-between flex-1 p-5">
                   <div>
-                    <h2 className="font-semibold text-lg mb-2 line-clamp-2">
+                    <h2 className="mb-2 text-lg font-semibold line-clamp-2">
                       {blog.title}
                     </h2>
 
-                    <p className="text-sm text-gray-500 mb-2">
-                      {blog.author || "Admin"} •{" "}
+                    <p className="mb-2 text-sm text-gray-500">
+                      {blog.author || "Admin"} <span className="mx-1">•</span>{" "}
                       {new Date(blog.createdAt).toLocaleDateString("en-GB", {
                         day: "numeric",
                         month: "long",
@@ -163,7 +163,7 @@ export default function Blog() {
                   <div className="mt-auto">
                     <Link
                       to={`/blog/${blog._id}`}
-                      className="inline-block px-4 py-2 bg-black/80 text-white rounded-lg text-sm font-medium hover:bg-black transition"
+                      className="inline-block px-4 py-2 text-sm font-medium text-white transition rounded-lg bg-black/80 hover:bg-black"
                     >
                       Read More →
                     </Link>

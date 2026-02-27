@@ -6,7 +6,7 @@ import { postService } from "../../service/axios";
 import { GoogleLogin } from "@react-oauth/google";
 import logo from "../../assets/logo/TextLogo.png";
 
-const bgImage = "https://images.unsplash.com/photo-1464817739973-0128fe77aaa1?q=80&w=2070&auto=format&fit=crop";
+const bgImage = "./src/assets/Image-Groundnut.webp";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -89,9 +89,9 @@ export default function Login() {
                 .cl-bg-wash {
                     position: absolute; inset: 0;
                     background: linear-gradient(180deg,
-                        rgba(200,230,255,0.55) 0%,
-                        rgba(180,215,245,0.30) 45%,
-                        rgba(220,235,250,0.50) 100%
+                    rgba(200,230,255,0.25) 0%,
+                    rgba(180,215,245,0.10) 45%,
+                    rgba(220,235,250,0.20) 100%
                     );
                 }
 
@@ -108,11 +108,11 @@ export default function Login() {
                 .cl-card {
                     position: relative; z-index: 10;
                     width: 100%; max-width: 410px; margin: 1.5rem;
-                    background: rgba(245,250,255,0.72);
+                    background: rgba(245,250,255, 0.01);
                     border: 1px solid rgba(255,255,255,0.88);
                     border-radius: 28px; padding: 2.4rem 2.2rem 2rem;
-                    backdrop-filter: blur(28px) saturate(1.5);
-                    -webkit-backdrop-filter: blur(28px) saturate(1.5);
+                    backdrop-filter: blur(2px) saturate(1.3);
+                    -webkit-backdrop-filter: blur(10px) saturate(1.3);
                     box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 60px rgba(80,140,200,0.13), 0 1px 0px rgba(255,255,255,0.8) inset;
                     animation: cardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
                 }
@@ -138,7 +138,7 @@ export default function Login() {
                     text-align: center; letter-spacing: -0.015em; margin-bottom: 0.4rem;
                 }
                 .cl-subtitle {
-                    font-size: 0.84rem; color: #718096;
+                    font-size: 0.84rem; color: white;
                     text-align: center; line-height: 1.55; margin-bottom: 1.7rem;
                 }
 
