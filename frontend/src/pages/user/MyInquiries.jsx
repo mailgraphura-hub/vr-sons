@@ -96,9 +96,9 @@ export default function MyInquiries() {
     return <div className="p-10">Loading...</div>;
   }
 
-  if (!user) {
-    return <div className="p-10">Loading...</div>;
-  }
+  // if (!user) {
+  //   return <div className="p-10">Loading...</div>;
+  // }
 
   return (
     <div className="flex bg-gray-50">
@@ -222,7 +222,7 @@ export default function MyInquiries() {
                         <td className="p-4 text-center">
                           <button
                             onClick={() =>
-                              navigate(`/user/inquiries/${item._id}`)
+                              navigate(`/user/inquiries/inquiry-Detial`, {state: {data: item}})
                             }
                             className="px-4 py-2 bg-black text-white rounded-lg"
                           >

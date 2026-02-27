@@ -62,7 +62,7 @@ function App() {
       {/* <Route path="/user/profile" element={<Profile />} /> */}
       <Route path="/user/profile" element={<Settings />} />
       <Route path="/user/myinquiries" element={<MyInquiries />} />
-      <Route path="/user/inquiries/:id" element={<InquiryDetail />} />
+      <Route path="/user/inquiries/inquiry-Detial" element={<InquiryDetail />} />
 
       {/* BLOG ROUTES */}
       <Route path="/blog" element={<Blog />} />

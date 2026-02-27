@@ -107,9 +107,9 @@ export default function Profile() {
       })
     : "";
 
-      if (!user) {
-    return <div className="p-10">Loading...</div>;
-  }
+  //     if (!user) {
+  //   return <div className="p-10">Loading...</div>;
+  // }
 
   return (
     <div className="flex bg-gray-50">

@@ -81,7 +81,7 @@ export default function Dashboard() {
     return "bg-gray-100 text-gray-600";
   };
 
-  if (!user) return <div className="p-10">Loading...</div>;
+  // if (!user) return <div className="p-10">Loading...</div>;
   if (loading) return <div className="p-10">Loading...</div>;
 
   return (

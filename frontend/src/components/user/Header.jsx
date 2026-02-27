@@ -105,7 +105,6 @@ export default function Header() {
     setUnreadCount(0);
   };
 
-  /* ================= DELETE ALL ================= */
 
   const clearAll = async () => {
     await Promise.all(
@@ -116,7 +115,7 @@ export default function Header() {
     setUnreadCount(0);
   };
 
-  /* ================= PAGE TITLE ================= */
+
 
   const pageTitle =
     location.pathname.split("/").pop()?.replace(/-/g, " ") || "Dashboard";
@@ -131,7 +130,7 @@ export default function Header() {
       </h1>
 
       <div className="flex items-center gap-6">
-        {/* 🔔 NOTIFICATION */}
+      
         <div className="relative" ref={notificationRef}>
           <button
             onClick={() => setOpenNotification(!openNotification)}
@@ -139,7 +138,7 @@ export default function Header() {
           >
             <Bell size={20} />
 
-            {/* 🔴 BADGE */}
+    
             {unreadCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-md">
                 {unreadCount > 99 ? "99+" : unreadCount}
