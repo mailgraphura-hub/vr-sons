@@ -22,6 +22,12 @@ const Footer = () => {
     { name: "Agricultural Goods", path: "/CategoryProducts/699b759a545f793544e4f700" },
     { name: "Bricks", path: "/CategoryProducts/699b7571545f793544e4f6fe" },
   ];
+
+  const socialIcons = [
+  { icon: Linkedin, color: "hover:bg-[#0077B5]" },
+  { icon: Instagram, color: "hover:bg-gradient-to-r hover:from-pink-500 hover:to-yellow-500" },
+  { icon: Facebook, color: "hover:bg-[#1877F2]" },
+];
   return (
     <footer className="bg-gradient-to-b from-[#f4f1ec] to-[#e9e4dc] px-4 md:px-10 pt-16 pb-12">
       <div className="bg-white rounded-3xl shadow-lg border border-neutral-200 px-8 md:px-16 py-12">
@@ -135,16 +141,20 @@ const Footer = () => {
 
             {/* Social Icons */}
             <div className="flex gap-4 mt-6">
-              {[Linkedin, Instagram, Facebook].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-9 h-9 flex items-center justify-center rounded-full border border-neutral-300 text-neutral-700 hover:bg-black hover:text-white hover:scale-105 transition-all duration-300"
-                >
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div>
+  {socialIcons.map(({ icon: Icon, color }, i) => (
+    <a
+      key={i}
+      href="#"
+      className={`w-10 h-10 flex items-center justify-center 
+                  rounded-full border border-neutral-300 
+                  text-neutral-700 bg-white shadow-sm
+                  transition-all duration-300 ease-in-out
+                  hover:text-white hover:scale-110 hover:shadow-lg ${color}`}
+    >
+      <Icon size={18} />
+    </a>
+  ))}
+</div>
           </div>
         </div>
 

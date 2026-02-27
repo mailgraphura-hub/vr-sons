@@ -101,7 +101,7 @@ export default function Sidebar() {
               My Inquiries
             </NavLink>
 
-            <NavLink
+            {/* <NavLink
               to="/user/profile"
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
@@ -110,7 +110,7 @@ export default function Sidebar() {
             >
               <User size={18} />
               Profile
-            </NavLink>
+            </NavLink> */}
 
             {/* Settings moved UP */}
             <NavLink
@@ -120,8 +120,8 @@ export default function Sidebar() {
                 `${navItem} ${isActive ? activeStyle : normalStyle}`
               }
             >
-              <Settings size={18} />
-              Settings
+              <User size={18} />
+              Profile
             </NavLink>
           </div>
 

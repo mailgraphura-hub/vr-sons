@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import {getService} from "../../service/axios"
+import { getService } from "../../service/axios"
 import { useNavigate } from "react-router-dom";
 
 
@@ -44,8 +44,8 @@ const VENN_DATA = {
   heading: "Path to Smart Export Partnership",
   circle1: { line1: "Premium Quality", line2: "Products" },
   circle2: { line1: "Competitive MOQ", line2: "from 500 kg" },
-  circle3: { line1: "On-time Export",  line2: "Delivery" },
-  merged:  { line1: "Global",          line2: "Trade Success" },
+  circle3: { line1: "On-time Export", line2: "Delivery" },
+  merged: { line1: "Global", line2: "Trade Success" },
   ctaLabel: "Download Product Catalog",
 };
 
@@ -97,27 +97,52 @@ const CountUp = ({ target, suffix = "", duration = 1.8 }) => {
 // ── Original ServicePill — image + heading, NO dropdown ──────────────────────
 const ServicePill = ({ service, index }) => {
   const navigate = useNavigate();
-  return(
-  <motion.div
-    initial={{ opacity: 0, x: 40 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.55, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-    className="rounded-full overflow-hidden cursor-pointer"
-    style={{ background: "rgba(255,255,255,0.93)" }}
-    whileHover={{ scale: 1.02, transition: { duration: 0.25 } }}
-  >
-    <div className="flex items-center gap-3 md:gap-4 px-2 py-2 pr-5" onClick={() => navigate(`/CategoryProducts/${service._id}`)}>
-      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden flex-shrink-0">
-        <img src={service.categoryImage} alt={service.name} className="w-full h-full object-cover" />
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 40 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.55, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      className="rounded-full overflow-hidden cursor-pointer"
+      style={{ background: "rgba(255,255,255,0.93)" }}
+      whileHover={{ scale: 1.02, transition: { duration: 0.25 } }}
+    >
+      <div
+        onClick={() => navigate(`/CategoryProducts/${service._id}`)}
+        className="group flex items-center gap-3 md:gap-4 px-3 py-2 pr-5 rounded-xl cursor-pointer 
+             transition-all duration-300 ease-in-out 
+             hover:bg-neutral-100 hover:shadow-md hover:scale-[1.02]"
+      >
+        <div className="relative w-11 h-11 md:w-13 md:h-13 rounded-full overflow-hidden flex-shrink-0 
+                  border border-neutral-200 shadow-sm 
+                  transition-all duration-300 group-hover:shadow-md">
+          <img
+            src={service.categoryImage}
+            alt={service.name}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span
+            className="text-neutral-800 text-sm md:text-base font-semibold tracking-wide 
+                 transition-colors duration-300 group-hover:text-black"
+            style={{ fontFamily: "'DM Sans', sans-serif" }}
+          >
+            {service.name}
+          </span>
+
+          {index >= 0 && (
+            <span className="text-[10px] px-2 py-[2px] rounded-full bg-neutral-200 
+                       text-neutral-600 font-medium">
+              0{index + 1}
+            </span>
+          )}
+        </div>
       </div>
-      <span className="text-neutral-900 text-xs md:text-sm font-medium" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-        {service.name}
-        {index >= 0 && <sup className="text-neutral-400 text-[9px] ml-1">0{index + 1}</sup>}
-      </span>
-    </div>
-  </motion.div>
-)}
+    </motion.div>
+  )
+}
 
 const VennDiagram = () => {
   const ref = useRef(null);
@@ -132,9 +157,9 @@ const VennDiagram = () => {
 
   const spread = 70;
   const cx = 360; const cy = 200; const r = 120;
-  const topY    = cy - spread * (1 - p);
-  const leftX   = cx - spread * (1 - p);
-  const rightX  = cx + spread * (1 - p);
+  const topY = cy - spread * (1 - p);
+  const leftX = cx - spread * (1 - p);
+  const rightX = cx + spread * (1 - p);
   const bottomY = cy + spread * (1 - p) * 0.6;
   const showLabels = p < 0.7;
   const showMerged = p > 0.85;
@@ -149,15 +174,15 @@ const VennDiagram = () => {
           {showLabels && (
             <>
               <text x={cx} y={topY - 10} textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.circle1.line1}</text>
-              <text x={cx} y={topY + 8}  textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.circle1.line2}</text>
-              <text x={leftX - 5} y={bottomY - 4}  textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.circle2.line1}</text>
+              <text x={cx} y={topY + 8} textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.circle1.line2}</text>
+              <text x={leftX - 5} y={bottomY - 4} textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.circle2.line1}</text>
               <text x={leftX - 5} y={bottomY + 12} textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.circle2.line2}</text>
               <text x={rightX + 5} y={bottomY + 4} textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.circle3.line1}</text>
             </>
           )}
           {showMerged && (
             <>
-              <text x={cx} y={cy - 6}  textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.merged.line1}</text>
+              <text x={cx} y={cy - 6} textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.merged.line1}</text>
               <text x={cx} y={cy + 10} textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="11" fontFamily="DM Sans, sans-serif">{VENN_DATA.merged.line2}</text>
             </>
           )}
@@ -181,20 +206,20 @@ const ServicesSection = () => {
   const opacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
 
   const [categoryProduct, setcategoryProduct] = useState([])
-    useEffect(() => {
-      ;(
-        async () => {
-          const apiResponse = await getService("/customer/product/category?page=1&limit=4");
-  
-          if(!apiResponse.ok){
-            console.log(apiResponse.message);
-            return
-          }
+  useEffect(() => {
+    ; (
+      async () => {
+        const apiResponse = await getService("/customer/product/category?page=1&limit=4");
 
-          setcategoryProduct(apiResponse.data.data.categoryList)
+        if (!apiResponse.ok) {
+          console.log(apiResponse.message);
+          return
         }
-      )()
-    },[])
+
+        setcategoryProduct(apiResponse.data.data.categoryList)
+      }
+    )()
+  }, [])
 
   return (
     <section

@@ -59,8 +59,8 @@ function App() {
       {/* USER DASHBOARD */}
       {/* ================================================= */}
       <Route path="/user/dashboard" element={<Dashboard />} />
-      <Route path="/user/profile" element={<Profile />} />
-      <Route path="/user/settings" element={<Settings />} />
+      {/* <Route path="/user/profile" element={<Profile />} /> */}
+      <Route path="/user/profile" element={<Settings />} />
       <Route path="/user/myinquiries" element={<MyInquiries />} />
       <Route path="/user/inquiries/:id" element={<InquiryDetail />} />
 

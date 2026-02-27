@@ -126,7 +126,7 @@ const ProductsSection = () => {
     className="bg-[#f0ede8] pt-6 px-3 md:px-6 pb-6"
     style={{ fontFamily: "'DM Sans', sans-serif" }}
   >
-    <div className="bg-white rounded-3xl px-5 md:px-10 py-8 md:py-12">
+    <div className="bg-white rounded-3xl px-5 md:px-10 py-16 md:py-24">
 
       {/* Header */}
       <div className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
