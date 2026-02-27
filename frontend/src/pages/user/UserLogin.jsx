@@ -6,7 +6,7 @@ import { postService } from "../../service/axios";
 import { GoogleLogin } from "@react-oauth/google";
 import logo from "../../assets/logo/TextLogo.png";
 
-const bgImage = "https://www.protectourlivelihood.in/wp-content/uploads/2025/04/Image-Groundnut.jpg";
+const bgImage = "./src/assets/Image-Groundnut.webp";
 
 export default function Login() {
     const navigate = useNavigate();
