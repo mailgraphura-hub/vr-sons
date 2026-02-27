@@ -33,7 +33,7 @@ const C = {
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
 
-  .dash-root * { font-family: 'DM Sans', sans-serif; }
+  .dash-root * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
 
   /* ── KPI card ── */
   .dash-kpi-card {
@@ -82,6 +82,20 @@ const GLOBAL_CSS = `
   .dash-kpi-card:hover .dash-kpi-icon {
     transform: scale(1.12) rotate(-4deg);
     box-shadow: 0 8px 20px rgba(195,106,77,.2);
+  }
+
+  /* ── KPI grid ── */
+  .dash-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  /* ── Bottom row ── */
+  .dash-bottom-row {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 18px;
   }
 
   /* ── Inquiry row ── */
@@ -151,6 +165,7 @@ const GLOBAL_CSS = `
     border-radius: 8px;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
   }
   .dash-live-pill::before {
     content: '';
@@ -189,6 +204,72 @@ const GLOBAL_CSS = `
     border-radius: 13px;
     padding: 10px 16px;
     box-shadow: 0 8px 24px rgba(195,106,77,.15);
+  }
+
+  /* ── Responsive ── */
+
+  /* Tablet: ≤900px */
+  @media (max-width: 900px) {
+    .dash-bottom-row {
+      grid-template-columns: 1fr;
+    }
+    .dash-chart-panel {
+      min-height: 280px;
+    }
+  }
+
+  /* Tablet: ≤640px — 2-col KPI grid */
+  @media (max-width: 640px) {
+    .dash-kpi-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .dash-kpi-card {
+      padding: 16px 18px;
+      border-radius: 16px;
+      gap: 14px;
+    }
+    .dash-kpi-icon {
+      height: 42px; width: 42px;
+      border-radius: 12px;
+    }
+    .dash-root-inner {
+      gap: 16px !important;
+    }
+    .dash-root-pad {
+      padding: 0 0 28px !important;
+    }
+    .dash-panel {
+      border-radius: 16px;
+    }
+    .dash-inquiry-row {
+      padding: 12px 16px;
+    }
+    .dash-badge-col {
+      width: 90px !important;
+    }
+    .dash-date-col {
+      width: 56px !important;
+    }
+  }
+
+  /* Mobile: ≤400px — 1-col KPI grid */
+  @media (max-width: 400px) {
+    .dash-kpi-grid {
+      grid-template-columns: 1fr;
+    }
+    .dash-kpi-card {
+      padding: 14px 16px;
+    }
+    .dash-heading-title {
+      font-size: 18px !important;
+    }
+    .dash-badge-col {
+      display: none !important;
+    }
+    .dash-date-col {
+      width: 52px !important;
+    }
   }
 `;
 
@@ -262,12 +343,28 @@ export default function Dashboard() {
     <AdminLayout>
       <style>{GLOBAL_CSS}</style>
 
-      <div className="dash-root" style={{ background: C.bg, minHeight: "100%", padding: "0 0 36px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexDirection: "column", gap: 24 }}>
+      <div
+        className="dash-root dash-root-pad"
+        style={{ background: C.bg, minHeight: "100%", padding: "0 0 36px" }}
+      >
+        <div
+          className="dash-root-inner"
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: 24,
+            padding: "0 16px",
+          }}
+        >
 
           {/* ── Heading ───────────────────────────────────────────────── */}
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, letterSpacing: "-0.5px", margin: 0 }}>
+            <h1
+              className="dash-heading-title"
+              style={{ fontSize: 22, fontWeight: 800, color: C.text, letterSpacing: "-0.5px", margin: 0 }}
+            >
               Overview
             </h1>
             <p style={{ fontSize: 13, color: C.subtle, marginTop: 3, fontWeight: 500 }}>
@@ -276,7 +373,7 @@ export default function Dashboard() {
           </div>
 
           {/* ── KPI Cards ─────────────────────────────────────────────── */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
+          <div className="dash-kpi-grid">
             {stats.map((stat, i) => {
               const cfg  = cardConfig[i] || cardConfig[0];
               const Icon = cfg.icon;
@@ -311,7 +408,7 @@ export default function Dashboard() {
           </div>
 
           {/* ── Bottom row ────────────────────────────────────────────── */}
-          <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 18 }}>
+          <div className="dash-bottom-row">
 
             {/* Recent Inquiries */}
             <div className="dash-panel">
@@ -319,10 +416,11 @@ export default function Dashboard() {
               <div style={{
                 padding: "16px 24px",
                 display: "flex", alignItems: "center", justifyContent: "space-between",
+                gap: 12,
                 borderBottom: `1.5px solid ${C.tint20}`,
                 background: C.tint10,
               }}>
-                <div>
+                <div style={{ minWidth: 0 }}>
                   <h2 style={{ fontSize: 14, fontWeight: 800, color: C.text, margin: 0 }}>
                     Recent Inquiries
                   </h2>
@@ -371,13 +469,19 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    {/* Badge — fixed 110px column, centered */}
-                    <div style={{ width: 110, display: "flex", justifyContent: "center", flexShrink: 0 }}>
+                    {/* Badge — fixed 110px column, centered; hidden at ≤400px via class */}
+                    <div
+                      className="flex justify-center w-[110px] flex-shrink-0"
+                      style={{ width: 110, display: "flex", justifyContent: "center", flexShrink: 0 }}
+                    >
                       <span className={badgeClass(item.status)}>{item.status}</span>
                     </div>
 
                     {/* Date — fixed 70px column, right-aligned */}
-                    <div style={{ width: 70, display: "flex", justifyContent: "flex-end", flexShrink: 0 }}>
+                    <div
+                      className="dash-date-col"
+                      style={{ width: 70, display: "flex", justifyContent: "flex-end", flexShrink: 0 }}
+                    >
                       <span style={{ fontSize: 12, color: C.subtle, fontWeight: 500 }}>
                         {new Date(item.createdAt).toLocaleDateString("en-GB", {
                           day: "2-digit", month: "short",
@@ -392,8 +496,8 @@ export default function Dashboard() {
 
             {/* Chart */}
             <div
-              className="dash-panel"
-              style={{ padding: 24, display: "flex", flexDirection: "column" }}
+              className="dash-panel dash-chart-panel"
+              style={{ padding: 24, display: "flex", flexDirection: "column", minHeight: 300 }}
             >
               <div style={{ marginBottom: 20 }}>
                 <h2 style={{ fontSize: 14, fontWeight: 800, color: C.text, margin: 0 }}>

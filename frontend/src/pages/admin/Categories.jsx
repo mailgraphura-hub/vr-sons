@@ -4,7 +4,7 @@ import { getService, postService, patchService } from "../../service/axios";
 import { toast } from "react-hot-toast";
 import { Search, Plus, Pencil, X, Tag } from "lucide-react";
 
-// ─── Design tokens (matches SubCategories theme) ──────────────────────────────
+// ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
   primary:   "#c36a4d",
   primary90: "#b05c40",
@@ -25,7 +25,7 @@ const C = {
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
 
-  .cat-root * { font-family: 'DM Sans', sans-serif; }
+  .cat-root * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
 
   /* ── Add button ── */
   .cat-add-btn {
@@ -36,11 +36,13 @@ const GLOBAL_CSS = `
     font-size: 13px; font-weight: 700;
     border: none; border-radius: 14px;
     cursor: pointer;
+    white-space: nowrap;
     box-shadow: 0 4px 14px rgba(195,106,77,.35);
     transition: background 160ms ease,
                 transform 200ms cubic-bezier(.34,1.56,.64,1),
                 box-shadow 200ms ease;
     position: relative; overflow: hidden;
+    flex-shrink: 0;
   }
   .cat-add-btn::after {
     content: '';
@@ -62,7 +64,8 @@ const GLOBAL_CSS = `
     border: 1.5px solid ${C.border};
     border-radius: 14px;
     padding: 10px 15px;
-    width: 288px;
+    width: 100%;
+    max-width: 288px;
     box-shadow: 0 1px 3px rgba(0,0,0,.04);
     transition: border-color 160ms ease, box-shadow 160ms ease;
   }
@@ -76,14 +79,23 @@ const GLOBAL_CSS = `
     background: transparent;
     border: none; outline: none;
     width: 100%;
+    min-width: 0;
   }
   .cat-search-input::placeholder { color: ${C.subtle}; }
+
+  /* ── Search container — full width on mobile ── */
+  .cat-search-container {
+    position: relative;
+    display: inline-block;
+    width: auto;
+  }
 
   /* ── Suggestion dropdown ── */
   .cat-suggestions {
     position: absolute;
     top: calc(100% + 6px); left: 0;
-    width: 288px;
+    width: 100%;
+    min-width: 220px;
     background: #fff;
     border: 1.5px solid ${C.tint20};
     border-radius: 14px;
@@ -145,6 +157,7 @@ const GLOBAL_CSS = `
     font-size: 11.5px; font-weight: 700;
     border-width: 1.5px; border-style: solid;
     cursor: pointer;
+    white-space: nowrap;
     transition: background 150ms ease, transform 180ms cubic-bezier(.34,1.56,.64,1),
                 box-shadow 150ms ease;
   }
@@ -152,12 +165,8 @@ const GLOBAL_CSS = `
     transform: scale(1.07);
     box-shadow: 0 4px 10px rgba(0,0,0,.08);
   }
-  .cat-status-available {
-    background: #ecfdf5; color: #059669; border-color: #a7f3d0;
-  }
-  .cat-status-unavailable {
-    background: ${C.tint10}; color: ${C.primary}; border-color: ${C.tint30};
-  }
+  .cat-status-available   { background: #ecfdf5; color: #059669; border-color: #a7f3d0; }
+  .cat-status-unavailable { background: ${C.tint10}; color: ${C.primary}; border-color: ${C.tint30}; }
 
   /* ── Edit button ── */
   .cat-edit-btn {
@@ -169,6 +178,7 @@ const GLOBAL_CSS = `
     border: 1.5px solid ${C.tint20};
     border-radius: 9px;
     cursor: pointer;
+    white-space: nowrap;
     transition: background 150ms ease, border-color 150ms ease,
                 transform 200ms cubic-bezier(.34,1.56,.64,1), box-shadow 180ms ease;
   }
@@ -179,7 +189,10 @@ const GLOBAL_CSS = `
     box-shadow: 0 6px 14px rgba(195,106,77,.18);
   }
 
-  /* ── Pagination number buttons ── */
+  /* ── Hide table columns on mobile ── */
+  .cat-col-date { }
+
+  /* ── Pagination ── */
   .cat-page-btn {
     width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
@@ -214,9 +227,8 @@ const GLOBAL_CSS = `
   @keyframes cat-overlay-in {
     from { opacity: 0; } to { opacity: 1; }
   }
-  .cat-overlay { animation: cat-overlay-in 200ms ease both; }
-  .cat-modal-panel { animation: cat-fade-up 240ms cubic-bezier(.22,1,.36,1) both; }
-
+  .cat-overlay       { animation: cat-overlay-in 200ms ease both; }
+  .cat-modal-panel   { animation: cat-fade-up 240ms cubic-bezier(.22,1,.36,1) both; }
   .cat-modal-close {
     width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
@@ -224,6 +236,7 @@ const GLOBAL_CSS = `
     border: none; background: transparent;
     color: ${C.subtle};
     cursor: pointer;
+    flex-shrink: 0;
     transition: background 150ms ease, color 150ms ease, transform 200ms ease;
   }
   .cat-modal-close:hover {
@@ -339,12 +352,74 @@ const GLOBAL_CSS = `
     border-color: ${C.tint30};
     transform: translateY(-1px);
   }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────────────────── */
+
+  /* Mobile ≤ 640px */
+  @media (max-width: 640px) {
+    /* Heading row: stack vertically */
+    .cat-heading-row {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 12px !important;
+    }
+    .cat-add-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Search full width */
+    .cat-search-container { width: 100%; }
+    .cat-search-wrap { max-width: 100%; }
+
+    /* Hide date column */
+    .cat-col-date { display: none; }
+
+    /* Tighten table cells */
+    .cat-tr td, thead tr th {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+
+    /* Smaller thumbnail */
+    .cat-thumb { width: 34px; height: 34px; border-radius: 10px; }
+
+    /* Status badge compact */
+    .cat-status-btn { padding: 3px 8px; font-size: 10.5px; }
+
+    /* Modal: full screen bottom sheet on mobile */
+    .cat-modal-overlay-inner {
+      align-items: flex-end !important;
+      padding: 0 !important;
+    }
+    .cat-modal-panel {
+      border-radius: 20px 20px 0 0 !important;
+      max-height: 92vh;
+      overflow-y: auto;
+      animation: cat-sheet-up 260ms cubic-bezier(.22,1,.36,1) both !important;
+    }
+
+    @keyframes cat-sheet-up {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modal body padding tighter */
+    .cat-modal-body { padding: 16px !important; }
+    .cat-modal-header, .cat-modal-footer { padding-left: 16px !important; padding-right: 16px !important; }
+  }
+
+  /* Tiny ≤ 400px */
+  @media (max-width: 400px) {
+    .cat-edit-btn span { display: none; }
+    .cat-edit-btn { padding: 6px 10px; }
+  }
 `;
 
 export default function Categories() {
-  const [categories, setCategories]       = useState([]);
-  const [search, setSearch]               = useState("");
-  const [suggestions, setSuggestions]     = useState([]);
+  const [categories, setCategories]           = useState([]);
+  const [search, setSearch]                   = useState("");
+  const [suggestions, setSuggestions]         = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [modal, setModal]   = useState(false);
@@ -459,15 +534,15 @@ export default function Categories() {
       <style>{GLOBAL_CSS}</style>
 
       <div className="cat-root" style={{ background: C.bg, minHeight: "100%", padding: "0 0 32px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexDirection: "column", gap: 22 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 16px", display: "flex", flexDirection: "column", gap: 22 }}>
 
           {/* ── Heading + Add ─────────────────────────────────────────── */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div
+            className="cat-heading-row"
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}
+          >
             <div>
-              <h1 style={{
-                fontSize: 22, fontWeight: 800, color: C.text,
-                letterSpacing: "-0.5px", margin: 0,
-              }}>
+              <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, letterSpacing: "-0.5px", margin: 0 }}>
                 Categories
               </h1>
               <p style={{ fontSize: 13, color: C.subtle, marginTop: 3, fontWeight: 500 }}>
@@ -481,7 +556,7 @@ export default function Categories() {
           </div>
 
           {/* ── Search ────────────────────────────────────────────────── */}
-          <div style={{ position: "relative", display: "inline-block" }}>
+          <div className="cat-search-container">
             <div className="cat-search-wrap">
               <Search size={15} style={{ color: C.subtle, flexShrink: 0 }} />
               <input
@@ -520,95 +595,100 @@ export default function Categories() {
             overflow: "hidden",
             boxShadow: "0 2px 8px rgba(0,0,0,.04)",
           }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-              <thead>
-                <tr style={{ background: C.tint10, borderBottom: `1.5px solid ${C.tint20}` }}>
-                  {["Image", "Name", "Status", "Created", "Action"].map((h) => (
-                    <th
-                      key={h}
-                      style={{
-                        padding: "10px 22px",
-                        textAlign: "left",
-                        fontSize: 10.5, fontWeight: 800,
-                        letterSpacing: "0.08em",
-                        textTransform: "uppercase",
-                        color: C.subtle,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {categories.length > 0 ? categories.map((c, i) => (
-                  <tr
-                    key={c._id}
-                    className="cat-tr"
-                    style={{ borderTop: i === 0 ? "none" : `1px solid ${C.tint10}` }}
-                  >
-                    {/* Image */}
-                    <td style={{ padding: "13px 22px" }}>
-                      <div className="cat-thumb">
-                        <img
-                          src={c.categoryImage}
-                          alt={c.name}
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      </div>
-                    </td>
-
-                    {/* Name */}
-                    <td style={{ padding: "13px 22px" }}>
-                      <span style={{ fontWeight: 700, color: C.text }}>{c.name}</span>
-                    </td>
-
-                    {/* Status */}
-                    <td style={{ padding: "13px 22px" }}>
-                      <button
-                        onClick={() => toggleStatus(c)}
-                        className={`cat-status-btn ${c.status === "Available" ? "cat-status-available" : "cat-status-unavailable"}`}
+            {/* Scrollable wrapper for table */}
+            <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+              <table style={{ width: "100%", minWidth: 480, borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: C.tint10, borderBottom: `1.5px solid ${C.tint20}` }}>
+                    {["Image", "Name", "Status", "Created", "Action"].map((h, idx) => (
+                      <th
+                        key={h}
+                        className={idx === 3 ? "cat-col-date" : ""}
+                        style={{
+                          padding: "10px 22px",
+                          textAlign: "left",
+                          fontSize: 10.5, fontWeight: 800,
+                          letterSpacing: "0.08em",
+                          textTransform: "uppercase",
+                          color: C.subtle,
+                          whiteSpace: "nowrap",
+                        }}
                       >
-                        {c.status}
-                      </button>
-                    </td>
-
-                    {/* Date */}
-                    <td style={{ padding: "13px 22px", color: C.subtle, fontWeight: 500, fontSize: 12.5 }}>
-                      {new Date(c.createdAt).toLocaleDateString("en-GB", {
-                        day: "2-digit", month: "short", year: "numeric",
-                      })}
-                    </td>
-
-                    {/* Edit */}
-                    <td style={{ padding: "13px 22px" }}>
-                      <button className="cat-edit-btn" onClick={() => handleEdit(c)}>
-                        <Pencil size={12} />
-                        Edit
-                      </button>
-                    </td>
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                )) : (
-                  <tr>
-                    <td
-                      colSpan="5"
-                      style={{
-                        textAlign: "center", padding: "52px 0",
-                        fontSize: 13, color: C.subtle, fontWeight: 500,
-                      }}
+                </thead>
+                <tbody>
+                  {categories.length > 0 ? categories.map((c, i) => (
+                    <tr
+                      key={c._id}
+                      className="cat-tr"
+                      style={{ borderTop: i === 0 ? "none" : `1px solid ${C.tint10}` }}
                     >
-                      No categories found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                      {/* Image */}
+                      <td style={{ padding: "13px 22px" }}>
+                        <div className="cat-thumb">
+                          <img
+                            src={c.categoryImage}
+                            alt={c.name}
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                        </div>
+                      </td>
+
+                      {/* Name */}
+                      <td style={{ padding: "13px 22px" }}>
+                        <span style={{ fontWeight: 700, color: C.text }}>{c.name}</span>
+                      </td>
+
+                      {/* Status */}
+                      <td style={{ padding: "13px 22px" }}>
+                        <button
+                          onClick={() => toggleStatus(c)}
+                          className={`cat-status-btn ${c.status === "Available" ? "cat-status-available" : "cat-status-unavailable"}`}
+                        >
+                          {c.status}
+                        </button>
+                      </td>
+
+                      {/* Date — hidden on mobile */}
+                      <td className="cat-col-date" style={{ padding: "13px 22px", color: C.subtle, fontWeight: 500, fontSize: 12.5 }}>
+                        {new Date(c.createdAt).toLocaleDateString("en-GB", {
+                          day: "2-digit", month: "short", year: "numeric",
+                        })}
+                      </td>
+
+                      {/* Edit */}
+                      <td style={{ padding: "13px 22px" }}>
+                        <button className="cat-edit-btn" onClick={() => handleEdit(c)}>
+                          <Pencil size={12} />
+                          <span>Edit</span>
+                        </button>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        style={{
+                          textAlign: "center", padding: "52px 0",
+                          fontSize: 13, color: C.subtle, fontWeight: 500,
+                        }}
+                      >
+                        No categories found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
             {/* Pagination */}
             {totalPages > 1 && (
               <div style={{
                 display: "flex", alignItems: "center", justifyContent: "center",
+                flexWrap: "wrap",
                 gap: 6, padding: "12px 22px",
                 borderTop: `1.5px solid ${C.tint20}`,
                 background: C.tint10,
@@ -635,128 +715,139 @@ export default function Categories() {
           className="cat-overlay"
           style={{
             position: "fixed", inset: 0, zIndex: 50,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            padding: 16,
             background: "rgba(28,25,23,0.45)",
             backdropFilter: "blur(3px)",
           }}
         >
+          {/* Inner aligner — switches to bottom-sheet on mobile via CSS */}
           <div
-            className="cat-modal-panel"
+            className="cat-modal-overlay-inner"
             style={{
-              background: C.surface,
-              width: "100%", maxWidth: 460,
-              borderRadius: 24,
-              boxShadow: "0 24px 64px rgba(195,106,77,.22), 0 4px 12px rgba(0,0,0,.08)",
-              overflow: "hidden",
-              border: `1.5px solid ${C.tint20}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "100%",
+              padding: 16,
             }}
           >
-            {/* Header */}
-            <div style={{
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-              padding: "18px 24px",
-              borderBottom: `1.5px solid ${C.tint20}`,
-              background: C.tint10,
-            }}>
-              <div>
-                <h2 style={{ fontSize: 15, fontWeight: 800, color: C.text, margin: 0 }}>
-                  {editId ? "Edit Category" : "Add New Category"}
-                </h2>
-                <p style={{ fontSize: 12, color: C.subtle, marginTop: 3, fontWeight: 500 }}>
-                  {editId ? "Update category details" : "Fill in the details below"}
-                </p>
-              </div>
-              <button className="cat-modal-close" onClick={closeModal}>
-                <X size={16} />
-              </button>
-            </div>
-
-            {/* Body */}
-            <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
-
-              {/* Name */}
-              <div>
-                <FieldLabel>Category Name</FieldLabel>
-                <input
-                  type="text"
-                  placeholder="e.g. Electronics"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="cat-field"
-                />
-              </div>
-
-              {/* Slug */}
-              <div>
-                <FieldLabel>Slug (Auto-generated)</FieldLabel>
-                <input
-                  type="text"
-                  value={slug}
-                  disabled
-                  className="cat-field"
-                />
+            <div
+              className="cat-modal-panel"
+              style={{
+                background: C.surface,
+                width: "100%", maxWidth: 460,
+                borderRadius: 24,
+                boxShadow: "0 24px 64px rgba(195,106,77,.22), 0 4px 12px rgba(0,0,0,.08)",
+                overflow: "hidden",
+                border: `1.5px solid ${C.tint20}`,
+              }}
+            >
+              {/* Header */}
+              <div
+                className="cat-modal-header"
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  padding: "18px 24px",
+                  borderBottom: `1.5px solid ${C.tint20}`,
+                  background: C.tint10,
+                  gap: 12,
+                }}
+              >
+                <div style={{ minWidth: 0 }}>
+                  <h2 style={{ fontSize: 15, fontWeight: 800, color: C.text, margin: 0 }}>
+                    {editId ? "Edit Category" : "Add New Category"}
+                  </h2>
+                  <p style={{ fontSize: 12, color: C.subtle, marginTop: 3, fontWeight: 500 }}>
+                    {editId ? "Update category details" : "Fill in the details below"}
+                  </p>
+                </div>
+                <button className="cat-modal-close" onClick={closeModal}>
+                  <X size={16} />
+                </button>
               </div>
 
-              {/* Description */}
-              <div>
-                <FieldLabel>Description</FieldLabel>
-                <textarea
-                  placeholder="Brief category description…"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  className="cat-field"
-                  style={{ resize: "none" }}
-                />
-              </div>
-
-              {/* Image */}
-              <div>
-                <FieldLabel>Category Image</FieldLabel>
-                <label className="cat-upload-label">
-                  <Plus size={14} style={{ color: C.subtle, flexShrink: 0 }} />
-                  <span style={{ fontSize: 13, color: C.subtle, fontWeight: 500 }}>
-                    {image ? image.name : "Click to upload image"}
-                  </span>
+              {/* Body */}
+              <div
+                className="cat-modal-body"
+                style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14 }}
+              >
+                {/* Name */}
+                <div>
+                  <FieldLabel>Category Name</FieldLabel>
                   <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setImage(e.target.files[0])}
-                    style={{ display: "none" }}
+                    type="text"
+                    placeholder="e.g. Electronics"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="cat-field"
                   />
-                </label>
-              </div>
+                </div>
 
-              {/* Toggle */}
-              <div className="cat-toggle-row" onClick={() => setEnabled(!enabled)}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>
-                  Mark as Available
-                </span>
-                <div
-                  className="cat-toggle"
-                  style={{ background: enabled ? C.primary : "#d4ccc8" }}
-                >
-                  <span
-                    className="cat-toggle-thumb"
-                    style={{ transform: enabled ? "translateX(21px)" : "translateX(3px)" }}
+                {/* Slug */}
+                <div>
+                  <FieldLabel>Slug (Auto-generated)</FieldLabel>
+                  <input type="text" value={slug} disabled className="cat-field" />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <FieldLabel>Description</FieldLabel>
+                  <textarea
+                    placeholder="Brief category description…"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={3}
+                    className="cat-field"
+                    style={{ resize: "none" }}
                   />
+                </div>
+
+                {/* Image */}
+                <div>
+                  <FieldLabel>Category Image</FieldLabel>
+                  <label className="cat-upload-label">
+                    <Plus size={14} style={{ color: C.subtle, flexShrink: 0 }} />
+                    <span style={{ fontSize: 13, color: C.subtle, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {image ? image.name : "Click to upload image"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImage(e.target.files[0])}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                </div>
+
+                {/* Toggle */}
+                <div className="cat-toggle-row" onClick={() => setEnabled(!enabled)}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>
+                    Mark as Available
+                  </span>
+                  <div className="cat-toggle" style={{ background: enabled ? C.primary : "#d4ccc8" }}>
+                    <span
+                      className="cat-toggle-thumb"
+                      style={{ transform: enabled ? "translateX(21px)" : "translateX(3px)" }}
+                    />
+                  </div>
                 </div>
               </div>
 
-            </div>
-
-            {/* Footer */}
-            <div style={{
-              display: "flex", alignItems: "center", justifyContent: "flex-end",
-              gap: 10, padding: "14px 24px",
-              borderTop: `1.5px solid ${C.tint20}`,
-              background: C.tint10,
-            }}>
-              <button className="cat-cancel-btn" onClick={closeModal}>Cancel</button>
-              <button className="cat-save-btn" onClick={handleSave}>
-                {editId ? "Update" : "Save Category"}
-              </button>
+              {/* Footer */}
+              <div
+                className="cat-modal-footer"
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "flex-end",
+                  gap: 10, padding: "14px 24px",
+                  borderTop: `1.5px solid ${C.tint20}`,
+                  background: C.tint10,
+                  flexWrap: "wrap",
+                }}
+              >
+                <button className="cat-cancel-btn" onClick={closeModal}>Cancel</button>
+                <button className="cat-save-btn" onClick={handleSave}>
+                  {editId ? "Update" : "Save Category"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

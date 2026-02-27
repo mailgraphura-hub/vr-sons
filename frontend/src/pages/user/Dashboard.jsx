@@ -75,17 +75,17 @@ export default function Dashboard() {
   };
 
   const statusColor = (status) => {
-    if (status === "Open") return "bg-yellow-100 text-yellow-600";
-    if (status === "Processing") return "bg-purple-100 text-purple-600";
-    if (status === "Close") return "bg-green-100 text-green-600";
-    return "bg-gray-100 text-gray-600";
+    if (status === "Open") return "bg-blue-50 text-blue-500 border border-blue-200";
+    if (status === "Processing") return "bg-amber-50 text-amber-600 border border-amber-200";
+    if (status === "Close") return "bg-emerald-50 text-emerald-600 border border-emerald-200";
+    return "bg-stone-100 text-stone-500";
   };
 
   // if (!user) return <div className="p-10">Loading...</div>;
   // if (loading) return <div className="p-10">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen flex" style={{ backgroundColor: "#fdf6f0" }}>
 
       <Sidebar />
 
@@ -93,32 +93,32 @@ export default function Dashboard() {
 
         <Header />
 
-        <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm flex justify-between items-center">
+        <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm flex justify-between items-center" style={{ borderLeft: "4px solid #c97b5a" }}>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+            <h1 className="text-2xl md:text-3xl font-bold text-stone-800">
               Welcome, {user?.name} 👋
             </h1>
-            <p className="text-gray-500 mt-2">
+            <p className="text-stone-400 mt-2">
               Here's a summary of your inquiries.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
-          <Card title="Total Inquiries" value={stats.total} icon={<ClipboardList className="text-blue-500" />} />
-          <Card title="Open" value={stats.open} icon={<Clock className="text-yellow-500" />} />
-          <Card title="Processing" value={stats.processing} icon={<Loader className="text-purple-500" />} />
-          <Card title="Closed" value={stats.close} icon={<CheckCircle className="text-green-500" />} />
+          <Card title="Total Inquiries" value={stats.total} icon={<ClipboardList style={{ color: "#c97b5a" }} />} accent="#fef0e8" />
+          <Card title="Open" value={stats.open} icon={<Clock className="text-blue-400" />} accent="#eff6ff" />
+          <Card title="Processing" value={stats.processing} icon={<Loader className="text-amber-500" />} accent="#fffbeb" />
+          <Card title="Closed" value={stats.close} icon={<CheckCircle className="text-emerald-500" />} accent="#ecfdf5" />
         </div>
 
         <div className="bg-white mt-8 p-6 rounded-3xl shadow-sm overflow-x-auto">
-          <h2 className="text-lg font-semibold mb-6 text-gray-800">
+          <h2 className="text-lg font-semibold mb-6 text-stone-800">
             Recent Inquiries
           </h2>
 
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="text-gray-400 border-b">
+              <tr className="text-stone-400 border-b border-stone-100">
                 <th className="pb-4 text-left">Company</th>
                 <th className="pb-4 text-left">Quantity</th>
                 <th className="pb-4 text-left">Date</th>
@@ -129,7 +129,7 @@ export default function Dashboard() {
             <tbody>
               {recent.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="py-6 text-center text-gray-500">
+                  <td colSpan="4" className="py-6 text-center text-stone-400">
                     No Recent Inquiries
                   </td>
                 </tr>
@@ -137,15 +137,15 @@ export default function Dashboard() {
                 recent.map((item) => (
                   <tr
                     key={item._id}
-                    className="border-b last:border-none hover:bg-gray-50 transition"
+                    className="border-b border-stone-50 last:border-none hover:bg-orange-50 transition"
                   >
-                    <td className="py-4 font-medium text-gray-700">
+                    <td className="py-4 font-medium text-stone-700">
                       {item.company}
                     </td>
-                    <td className="text-gray-600">
+                    <td className="text-stone-500">
                       {item.quantity}
                     </td>
-                    <td className="text-gray-500">
+                    <td className="text-stone-400">
                       {new Date(item.createdAt).toLocaleDateString()}
                     </td>
                     <td>
@@ -169,16 +169,23 @@ export default function Dashboard() {
   );
 }
 
-function Card({ title, value, icon }) {
+function Card({ title, value, icon, accent }) {
   return (
-    <div className="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 flex justify-between items-center">
+    <div
+      className="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 flex justify-between items-center"
+    >
       <div>
-        <p className="text-gray-400 text-sm">{title}</p>
-        <h2 className="text-3xl font-bold mt-1 text-gray-800">
+        <p className="text-stone-400 text-sm">{title}</p>
+        <h2 className="text-3xl font-bold mt-1 text-stone-800">
           {value}
         </h2>
       </div>
-      <div className="text-3xl">{icon}</div>
+      <div
+        className="text-3xl p-3 rounded-2xl"
+        style={{ backgroundColor: accent }}
+      >
+        {icon}
+      </div>
     </div>
   );
 }

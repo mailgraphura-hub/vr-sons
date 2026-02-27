@@ -86,8 +86,8 @@ function App() {
 
         {/* User Routes */}
         <Route path="/user/dashboard" element={<Dashboard />} />
-        <Route path="/user/profile" element={<Profile />} />
-        <Route path="/user/settings" element={<Settings />} />
+        {/* <Route path="/user/profile" element={<Profile />} /> */}
+        <Route path="/user/profile" element={<Settings />} />
 
       {/* Category product listing */}
       {/* Valid IDs: food | spices | agri | industrial */}

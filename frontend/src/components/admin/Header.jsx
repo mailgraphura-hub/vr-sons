@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { ChevronRight, UserCircle } from "lucide-react";
+import { ChevronRight, UserCircle, Menu } from "lucide-react";
 import { getService } from "../../service/axios";
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
   primary:   "#c36a4d",
   primary90: "#b05c40",
@@ -18,71 +17,57 @@ const C = {
   surface:   "#ffffff",
 };
 
-// ─── Global CSS ───────────────────────────────────────────────────────────────
 const HEADER_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
 
-  .hdr-root {
-    font-family: 'DM Sans', sans-serif;
-  }
+  .hdr-root { font-family: 'DM Sans', sans-serif; }
 
-  /* Glassmorphism header */
   .hdr-bar {
     height: 64px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 28px;
-    background: rgba(255, 251, 249, 0.82);
+    padding: 0 24px;
+    background: rgba(255, 251, 249, 0.92);
     backdrop-filter: blur(18px) saturate(1.6);
     -webkit-backdrop-filter: blur(18px) saturate(1.6);
     border-bottom: 1.5px solid rgba(243, 201, 187, 0.55);
-    box-shadow: 0 1px 0 rgba(195,106,77,.06),
-                0 4px 20px rgba(195,106,77,.05);
+    box-shadow: 0 1px 0 rgba(195,106,77,.06), 0 4px 20px rgba(195,106,77,.05);
+    position: relative;
   }
 
-  /* Subtle shimmer line at very top */
   .hdr-bar::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      ${C.tint30} 30%,
-      ${C.primary} 50%,
-      ${C.tint30} 70%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg, transparent 0%, ${C.tint30} 30%, ${C.primary} 50%, ${C.tint30} 70%, transparent 100%);
     opacity: 0.7;
   }
 
-  /* ── Breadcrumb crumbs ── */
   .hdr-crumb-last {
-    font-size: 15px;
-    font-weight: 800;
-    color: ${C.text};
-    letter-spacing: -0.2px;
+    font-size: 15px; font-weight: 800;
+    color: ${C.text}; letter-spacing: -0.2px;
+    white-space: nowrap;
   }
   .hdr-crumb-parent {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 14px; font-weight: 500;
     color: ${C.subtle};
     transition: color 150ms ease;
+    white-space: nowrap;
   }
   .hdr-crumb-parent:hover { color: ${C.primary}; }
+  .hdr-crumb-sep { color: ${C.tint50}; }
 
-  .hdr-crumb-sep {
-    color: ${C.tint50};
+  .hdr-center {
+    display: flex; align-items: center;
+    gap: 6px; min-width: 0; flex: 1;
   }
 
-  /* ── Avatar link ── */
   .hdr-avatar-link {
     position: relative;
     width: 38px; height: 38px;
-    border-radius: 50%;
-    overflow: hidden;
+    border-radius: 50%; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
     outline: 2.5px solid ${C.tint30};
     outline-offset: 2px;
@@ -97,83 +82,73 @@ const HEADER_CSS = `
     box-shadow: 0 6px 18px rgba(195,106,77,.28);
   }
 
-  /* ── Admin info pill ── */
-  .hdr-admin-pill {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-  }
-
-  /* ── Divider ── */
   .hdr-divider {
-    width: 1px;
-    height: 32px;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      ${C.tint30} 30%,
-      ${C.tint30} 70%,
-      transparent
-    );
+    width: 1px; height: 32px;
+    background: linear-gradient(to bottom, transparent, ${C.tint30} 30%, ${C.tint30} 70%, transparent);
   }
 
-  /* ── Right side wrapper ── */
   .hdr-right {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    justify-content: flex-end;
+    display: flex; align-items: center;
+    gap: 14px; flex-shrink: 0;
   }
 
-  /* ── Left side (empty spacer) ── */
-  .hdr-left {
-    display: flex;
-    align-items: center;
+  .hdr-admin-block {
+    display: flex; flex-direction: column;
+    align-items: flex-end; gap: 2px;
   }
 
-  /* ── Center breadcrumb wrapper ── */
-  .hdr-center {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 6px;
+  /* Hamburger button — only on mobile */
+  .hdr-hamburger {
+    display: none;
+    align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    border: 1.5px solid ${C.tint30};
+    background: ${C.tint10};
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 150ms ease;
   }
+  .hdr-hamburger:hover { background: ${C.tint20}; }
 
-  /* Skeleton pulse */
   @keyframes hdr-pulse {
     0%, 100% { opacity: 1; }
     50%       { opacity: .45; }
   }
   .hdr-skeleton {
-    background: ${C.tint20};
-    border-radius: 6px;
+    background: ${C.tint20}; border-radius: 6px;
     animation: hdr-pulse 1.5s ease infinite;
+  }
+
+  /* ── Mobile overrides ── */
+  @media (max-width: 767px) {
+    .hdr-bar { padding: 0 16px; }
+    .hdr-hamburger { display: flex; }
+    .hdr-center { display: none; }       /* hide breadcrumbs on mobile */
+    .hdr-admin-block { display: none; }  /* hide name/role on mobile   */
+    .hdr-divider { display: none; }      /* hide divider on mobile     */
   }
 `;
 
-export default function Header() {
+export default function Header({ onMenuClick }) {
   const [admin, setAdmin]     = useState(null);
   const [loading, setLoading] = useState(true);
   const location              = useLocation();
 
-  /* ── Breadcrumbs — logic untouched ───────────────────────────────────── */
   const renderBreadcrumbs = () => {
     const path = location.pathname;
-
     const nameMap = {
-      categories:      "Categories",
-      "sub-categories":"Categories",
-      products:        "Products",
-      promotion:       "Promotion",
-      settings:        "Settings",
-      managPromotion:  "Promotion Manager",
-      blogs:           "Blogs",
-      profile:         "Profile",
+      categories:       "Categories",
+      "sub-categories": "Categories",
+      products:         "Products",
+      promotion:        "Promotion",
+      settings:         "Settings",
+      managPromotion:   "Promotion Manager",
+      blogs:            "Blogs",
+      profile:          "Profile",
     };
 
     let breadcrumbs = [];
-
     if (path.includes("dashboard"))                     breadcrumbs = ["Dashboard"];
     else if (path.includes("sub-categories"))           breadcrumbs = ["Categories", "Sub Categories"];
     else if (path.includes("categories"))               breadcrumbs = ["Categories", "All Categories"];
@@ -192,25 +167,15 @@ export default function Header() {
           const isLast = i === breadcrumbs.length - 1;
           return (
             <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span className={isLast ? "hdr-crumb-last" : "hdr-crumb-parent"}>
-                {crumb}
-              </span>
-              {!isLast && (
-                <ChevronRight
-                  size={13}
-                  className="hdr-crumb-sep"
-                  strokeWidth={2.5}
-                />
-              )}
+              <span className={isLast ? "hdr-crumb-last" : "hdr-crumb-parent"}>{crumb}</span>
+              {!isLast && <ChevronRight size={13} className="hdr-crumb-sep" strokeWidth={2.5} />}
             </span>
           );
         })}
       </div>
     );
   };
-  /* ─────────────────────────────────────────────────────────────────────── */
 
-  /* ── Profile fetch — untouched ───────────────────────────────────────── */
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -225,7 +190,6 @@ export default function Header() {
     };
     fetchProfile();
   }, []);
-  /* ─────────────────────────────────────────────────────────────────────── */
 
   return (
     <>
@@ -233,25 +197,19 @@ export default function Header() {
 
       <header className="hdr-root hdr-bar">
 
-        {/* ── Left: breadcrumbs ──────────────────────────────────────── */}
-        {renderBreadcrumbs()}
+        {/* Left: hamburger (mobile) + breadcrumbs (desktop) */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flex: 1, minWidth: 0 }}>
+          <button className="hdr-hamburger" onClick={onMenuClick} aria-label="Open menu">
+            <Menu size={17} color={C.primary} />
+          </button>
+          {renderBreadcrumbs()}
+        </div>
 
-        {/* ── Right: admin info + avatar ──────────────────────────────── */}
+        {/* Right: name + divider + avatar */}
         <div className="hdr-right">
 
-          {/* Name + role */}
-          <div className="hdr-admin-pill" style={{ display: "none" }}>
-            {/* hidden on mobile, shown via media if needed */}
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              gap: 2,
-            }}
-          >
+          {/* Admin name + role */}
+          <div className="hdr-admin-block">
             {loading ? (
               <>
                 <div className="hdr-skeleton" style={{ height: 12, width: 110 }} />
@@ -259,21 +217,10 @@ export default function Header() {
               </>
             ) : (
               <>
-                <span style={{
-                  fontSize: 13.5, fontWeight: 700,
-                  color: C.text,
-                  lineHeight: 1,
-                  textTransform: "capitalize",
-                }}>
+                <span style={{ fontSize: 13.5, fontWeight: 700, color: C.text, lineHeight: 1, textTransform: "capitalize" }}>
                   {admin?.name || "Guest Admin"}
                 </span>
-                <span style={{
-                  fontSize: 10, fontWeight: 800,
-                  color: C.primary,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  lineHeight: 1,
-                }}>
+                <span style={{ fontSize: 10, fontWeight: 800, color: C.primary, textTransform: "uppercase", letterSpacing: "0.08em", lineHeight: 1 }}>
                   {admin ? "Administrator" : "Not Logged In"}
                 </span>
               </>
@@ -286,22 +233,11 @@ export default function Header() {
           {/* Avatar */}
           <Link to="/admin/settings/profile" className="hdr-avatar-link">
             {loading ? (
-              <div
-                className="hdr-skeleton"
-                style={{ width: "100%", height: "100%", borderRadius: "50%" }}
-              />
+              <div className="hdr-skeleton" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
             ) : admin?.profileImage ? (
-              <img
-                src={admin.profileImage}
-                alt="Profile"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
+              <img src={admin.profileImage} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <div style={{
-                width: "100%", height: "100%",
-                background: C.tint10,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
+              <div style={{ width: "100%", height: "100%", background: C.tint10, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <UserCircle size={22} style={{ color: C.tint50 }} />
               </div>
             )}

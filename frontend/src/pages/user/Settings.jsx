@@ -1,314 +1,240 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/user/sidebar";
 import Header from "../../components/user/Header";
 import { putService } from "../../service/axios";
 import { userProfile } from "../../context/profileContext";
-import { Toaster, toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Camera, Mail, ShieldCheck, User } from "lucide-react";
+import { toast, Toaster } from "react-hot-toast";
 
-
-export default function Profile() {
-  const fileInputRef = useRef(null);
-
-    const [isEditing, setIsEditing] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-
+export default function ProfileSettings() {
   const navigate = useNavigate();
-
-
   const { user, setUser } = userProfile();
 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Check login
   useEffect(() => {
-      const access = localStorage.getItem("access")
-      if (!access) {
-        navigate("/login");
-      }
-    }, [navigate]);
+    const access = localStorage.getItem("access");
+    if (!access) navigate("/login");
+  }, [navigate]);
 
-  const handleChange = (e) => {
-    setUser({
-      ...user,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      setSelectedFile(file);
-      const imageURL = URL.createObjectURL(file);
-
-      setUser({
-        ...user,
-        profileImage: imageURL,
-      });
+  // Set user data
+  useEffect(() => {
+    if (user) {
+      setName(user.name || "");
+      setEmail(user.email || "");
     }
-  };
+  }, [user]);
 
-  const updateProfile = async () => {
+  // Save profile
+  const handleSave = async () => {
     try {
       setLoading(true);
 
-      const formData = new FormData();
-      formData.append("contact", user.contact || "");
-      formData.append("gender", user.gender || "");
-      formData.append("dob", user.dob || "");
-      formData.append("country", user.country || "");
-      formData.append("state", user.state || "");
+      const response = await putService("/customer/profile/update", {
+        name,
+        email,
+      });
 
-      if (selectedFile) {
-        formData.append("profileImage", selectedFile);
-      }
-
-      const apiResponse = await putService(
-        "/customer/auth/updateProfile",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (!apiResponse.ok && !apiResponse.fetchMessage) {
-        console.log(apiResponse?.message);
-        toast.error("Update Profile Failed")
+      if (!response?.ok) {
+        toast.error("Failed to update profile");
         setLoading(false);
         return;
       }
 
-      if (!apiResponse.ok && apiResponse.fetchMessage) {
-        console.log(apiResponse?.message);
-        toast.error(apiResponse?.message)
-        setLoading(false);
-        return;
-      }
-
-      toast.success("Update Profile Successful");
-      setUser(apiResponse.data.data);
-      setIsEditing(false);
+      toast.success("Profile updated successfully!");
+      setUser({ ...user, name, email });
       setLoading(false);
-
-      console.log("Profile Updated Successfully");
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong");
       setLoading(false);
     }
   };
 
-  // Format createdAt nicely
-  const formattedCreatedAt = user?.createdAt
-    ? new Date(user.createdAt).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      })
-    : "";
-
-  //     if (!user) {
-  //   return <div className="p-10">Loading...</div>;
-  // }
+  // Avatar initials
+  const initials = (user?.name || "A")
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
-    <div className="flex bg-gray-50">
-        <Toaster />
+    <div className="flex bg-[#f4ece6] min-h-screen">
+      <Toaster />
+
       <Sidebar />
 
-      <div className="flex-1 md:ml-64 pt-24 px-4 md:px-8 min-h-screen pb-16">
+      <div className="flex-1 md:ml-64 pt-24 px-4 md:px-10 pb-16">
         <Header />
 
-        <div className="space-y-8">
+        {/* Page Title */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-stone-800">
+            Profile Settings
+          </h1>
+          <p className="text-stone-400 text-sm mt-1">
+            Manage your account information
+          </p>
+        </div>
 
-          {/* Profile Card */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8">
-            <div className="flex flex-col md:flex-row items-center gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* LEFT CARD */}
+          <div className="bg-[#f8f1ea] rounded-3xl p-8 flex flex-col items-center text-center border border-[#eadfd6] w-full lg:w-[300px]">
 
-              {/* Profile Image */}
-              <div className="relative">
-                <img
-                  src={user?.profileImage}
-                  alt="Profile"
-                  className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border"
-                />
+            {/* Avatar */}
+            <div className="relative mb-4">
+              <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center bg-[#efd8cc] text-[#b86b4b] border-4 border-[#f6ebe4] text-3xl font-bold">
 
-                {isEditing && (
-                  <>
-                    <button
-                      onClick={() => fileInputRef.current.click()}
-                      className="absolute bottom-0 right-0 bg-black text-white text-xs px-3 py-1 rounded-full"
-                    >
-                      Change
-                    </button>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
-                  </>
-                )}
-              </div>
-
-              {/* Info */}
-              <div className="flex-1 text-center md:text-left">
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="name"
-                    value={user?.name || ""}
-                    onChange={handleChange}
-                    className="text-xl md:text-2xl font-semibold border-b w-full outline-none"
+                {user?.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
-                  <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
-                    {user?.name}
-                  </h2>
+                  initials
                 )}
 
-                <p className="text-gray-500 text-sm mt-1">
-                  {user?.email}
-                </p>
-
-                {!isEditing ? (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="mt-4 px-4 py-2 bg-black text-white rounded-lg text-sm"
-                  >
-                    Edit Profile
-                  </button>
-                ) : (
-                  <div className="mt-4 flex gap-3 justify-center md:justify-start">
-                    <button
-                      onClick={updateProfile}
-                      disabled={loading}
-                      className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                    >
-                      {loading ? "Saving..." : "Save"}
-                    </button>
-                    <button
-                      onClick={() => setIsEditing(false)}
-                      className="px-4 py-2 border rounded-lg text-sm"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                )}
               </div>
+
+              <button className="absolute bottom-1 right-1 w-9 h-9 rounded-full bg-[#c97b5a] flex items-center justify-center shadow-md hover:scale-105 transition">
+                <Camera size={15} className="text-white" />
+              </button>
             </div>
 
-            {/* Editable Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 text-sm">
+            {/* Name */}
+            <h2 className="text-lg font-bold text-stone-800 mt-1">
+              {user?.name || "—"}
+            </h2>
 
-              {/* Contact */}
-              <div>
-                <label className="text-gray-500 text-xs">Mobile Number</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="contact"
-                    value={user?.contact || ""}
-                    maxLength={10}
-                    onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
-                  />
-                ) : (
-                  <p className="font-medium text-gray-800 mt-1">
-                    +91 {user?.contact || ""}
-                  </p>
-                )}
+            {/* Role Badge */}
+            <span className="mt-2 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-[#efd8cc] text-[#b86b4b]">
+              {user?.role || "User"}
+            </span>
+
+            {/* Divider */}
+            <div className="w-full my-5 border-t border-[#eadfd6]" />
+
+            {/* Email Row */}
+            <div className="flex items-center gap-3 w-full px-1 mb-3">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#fde8df]">
+                <Mail size={14} className="text-[#c97b5a]" />
               </div>
+              <span className="text-stone-500 text-sm truncate">
+                {user?.email || "—"}
+              </span>
+            </div>
 
-              {/* Gender */}
-              <div>
-                <label className="text-gray-500 text-xs">Gender</label>
-                {isEditing ? (
-                  <select
-                    name="gender"
-                    value={user?.gender || ""}
-                    onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
-                  >
-                    <option value="">Select</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                ) : (
-                  <p className="font-medium text-gray-800 mt-1">
-                    {user?.gender || ""}
-                  </p>
-                )}
+            {/* Verified Row */}
+            <div className="flex items-center gap-3 w-full px-1">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#d1fae5]">
+                <ShieldCheck size={14} className="text-[#059669]" />
               </div>
-
-              {/* DOB */}
-              <div>
-                <label className="text-gray-500 text-xs">Date of Birth</label>
-                {isEditing ? (
-                  <input
-                    type="date"
-                    name="dob"
-                    value={user?.dob || ""}
-                    onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
-                  />
-                ) : (
-                  <p className="font-medium text-gray-800 mt-1">
-                    {user?.dob || ""}
-                  </p>
-                )}
-              </div>
-
-              {/* State */}
-              <div>
-                <label className="text-gray-500 text-xs">State</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="state"
-                    value={user?.state || ""}
-                    onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
-                  />
-                ) : (
-                  <p className="font-medium text-gray-800 mt-1">
-                    {user?.state || ""}
-                  </p>
-                )}
-              </div>
-
-              {/* Country */}
-              <div>
-                <label className="text-gray-500 text-xs">Country</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="country"
-                    value={user?.country || ""}
-                    onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
-                  />
-                ) : (
-                  <p className="font-medium text-gray-800 mt-1">
-                    {user?.country || ""}
-                  </p>
-                )}
-              </div>
-
-              {/* Created At (Non Editable) */}
-              <div>
-                <label className="text-gray-500 text-xs">Account Created</label>
-                <p className="font-medium text-gray-800 mt-1">
-                  {formattedCreatedAt}
-                </p>
-              </div>
-
+              <span className="text-stone-500 text-sm">
+                Verified Account
+              </span>
             </div>
           </div>
 
+          {/* RIGHT CARD */}
+          <div className="flex-1 bg-[#f8f1ea] rounded-3xl border border-[#eadfd6] overflow-hidden">
+
+            {/* Header */}
+            <div className="px-8 py-6 flex items-center justify-between bg-[#f1dfd5] border-b border-[#eadfd6]">
+              <div>
+                <h3 className="text-base font-bold text-stone-800">
+                  Personal Information
+                </h3>
+                <p className="text-stone-400 text-sm mt-1">
+                  Update your name and email address
+                </p>
+              </div>
+
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#efd8cc]">
+                <ShieldCheck size={16} className="text-[#b86b4b]" />
+              </div>
+            </div>
+
+            {/* Form Fields */}
+            <div className="px-8 py-7 flex flex-col gap-6">
+
+              {/* Full Name */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-stone-400 mb-2">
+                  Full Name
+                </label>
+
+                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-[#e6d8cf] bg-[#fdf8f4]">
+                  <User size={16} className="text-[#c97b5a]" />
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your full name"
+                    className="flex-1 bg-transparent text-stone-700 text-sm outline-none placeholder-stone-300"
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-stone-400 mb-2">
+                  Email Address
+                </label>
+
+                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-[#e6d8cf] bg-[#fdf8f4]">
+                  <Mail size={16} className="text-[#c97b5a]" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    className="flex-1 bg-transparent text-stone-700 text-sm outline-none placeholder-stone-300"
+                  />
+                </div>
+              </div>
+
+              {/* Role */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-stone-400 mb-2">
+                  Role
+                </label>
+
+                <div className="flex items-center justify-between px-4 py-3 rounded-2xl border border-[#e6d8cf] bg-[#f1dfd5]">
+                  <div className="flex items-center gap-3">
+                    <ShieldCheck size={16} className="text-[#b86b4b]" />
+                    <span className="text-stone-700 text-sm font-semibold">
+                      {user?.role || "User"}
+                    </span>
+                  </div>
+
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#e7c9bb] text-[#b86b4b]">
+                    Read-only
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-8 py-6 flex items-center justify-between border-t border-[#eadfd6] bg-[#fdf8f4]">
+              <p className="text-stone-400 text-sm">
+                Changes reflect immediately after saving
+              </p>
+
+              <button
+                onClick={handleSave}
+                disabled={loading}
+                className="px-8 py-3 rounded-2xl bg-[#c36d4e] text-white text-sm font-semibold hover:opacity-90 active:scale-95 transition-all disabled:opacity-60"
+              >
+                {loading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -2,7 +2,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   User,
-  Settings,
   MessageSquare,
   Menu,
   X,
@@ -19,119 +18,111 @@ export default function Sidebar() {
 
   const signout = async () => {
     const apiResponse = await postService("/signout");
-
-    if(!apiResponse.ok){
-      console.log(apiResponse.message)
+    if (!apiResponse.ok) {
+      console.log(apiResponse.message);
       toast.error("Signout Failed");
-      return
+      return;
     }
-
     toast.success("Signout");
     localStorage.clear();
-
-    setTimeout(() => {
-      navigate("/")
-    }, 1000)
-  }
+    setTimeout(() => navigate("/"), 1000);
+  };
 
   const navItem =
-    "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200";
+    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200";
 
-  const activeStyle = "bg-gray-100 text-black border-l-4 border-black";
+  const activeStyle = "text-white shadow-sm";
+  const normalStyle = "text-stone-500 hover:bg-orange-50 hover:text-stone-700";
 
-  const normalStyle = "text-gray-600 hover:bg-gray-50";
+  const links = [
+    { to: "/user/dashboard",   icon: <LayoutDashboard size={18} />, label: "Dashboard"    },
+    { to: "/user/myinquiries", icon: <MessageSquare size={18} />,   label: "My Inquiries" },
+    { to: "/user/profile",     icon: <User size={18} />,            label: "Profile"      },
+  ];
 
   return (
     <>
+      <Toaster />
 
-    <Toaster/>
-      {/* Mobile Toggle */}
+      {/* Mobile Toggle Button */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-40 bg-white p-2 rounded-lg shadow"
+        className="md:hidden fixed top-4 left-4 z-40 p-2 rounded-xl shadow-sm"
+        style={{ backgroundColor: "#fff", border: "1px solid #e7e5e4" }}
+        aria-label="Open menu"
       >
-        <Menu size={22} />
+        <Menu size={20} color="#c97b5a" />
       </button>
 
+      {/* Backdrop */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/30 z-40 md:hidden"
+          className="fixed inset-0 bg-black/25 z-40 md:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
+      {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 z-50
-        flex flex-col
-        transform transition-transform duration-300
-        ${open ? "translate-x-0" : "-translate-x-full"}
-        md:translate-x-0`}
+        className={`
+          fixed top-0 left-0 h-screen w-64 z-50 flex flex-col
+          transform transition-transform duration-300 ease-in-out
+          ${open ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0
+        `}
+        style={{ backgroundColor: "#fffaf6", borderRight: "1px solid #ede0d4" }}
       >
-        {/* Logo Section */}
-        <div className="h-16 pl-20 px-6 flex items-center justify-between border-b border-gray-200">
-          <img src={logo} alt="Logo" className="h-8" />
-          <button onClick={() => setOpen(false)} className="md:hidden">
-            <X size={20} />
+        {/* Logo */}
+        <div
+          className="h-16 px-5 flex items-center justify-between flex-shrink-0"
+          style={{ borderBottom: "1px solid #ede0d4" }}
+        >
+          <img src={logo} alt="Logo" className="h-8 max-w-[140px] object-contain" />
+          <button
+            onClick={() => setOpen(false)}
+            className="md:hidden w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-stone-600 hover:bg-orange-50 transition"
+            aria-label="Close menu"
+          >
+            <X size={18} />
           </button>
         </div>
 
-        {/* Navigation */}
-        <div className="flex flex-col justify-between flex-1 p-4">
-          {/* Top Menu */}
-          <div className="flex flex-col gap-1">
+        {/* Section Label */}
+        <div className="px-5 pt-5 pb-1">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+            Main Menu
+          </p>
+        </div>
+
+        {/* Nav Links */}
+        <nav className="flex-1 overflow-y-auto px-3 py-2 flex flex-col gap-1">
+          {links.map(({ to, icon, label }) => (
             <NavLink
-              to="/user/dashboard"
+              key={to}
+              to={to}
               onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `${navItem} ${isActive ? activeStyle : normalStyle}`
-              }
+              className={({ isActive }) => `${navItem} ${isActive ? activeStyle : normalStyle}`}
+              style={({ isActive }) => isActive ? { backgroundColor: "#c97b5a" } : {}}
             >
-              <LayoutDashboard size={18} />
-              Dashboard
+              {icon}
+              <span>{label}</span>
             </NavLink>
+          ))}
+        </nav>
 
-            <NavLink
-              to="/user/myinquiries"
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `${navItem} ${isActive ? activeStyle : normalStyle}`
-              }
-            >
-              <MessageSquare size={18} />
-              My Inquiries
-            </NavLink>
-
-            {/* <NavLink
-              to="/user/profile"
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `${navItem} ${isActive ? activeStyle : normalStyle}`
-              }
-            >
-              <User size={18} />
-              Profile
-            </NavLink> */}
-
-            {/* Settings moved UP */}
-            <NavLink
-              to="/user/settings"
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `${navItem} ${isActive ? activeStyle : normalStyle}`
-              }
-            >
-              <User size={18} />
-              Profile
-            </NavLink>
-          </div>
-
-          {/* Bottom Section */}
-          <div className="pt-4 border-t border-gray-200" onClick={signout}>
-            <button  className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-red-600 hover:bg-gray-50 rounded-lg transition">
-              <LogOut size={18} />
-              Logout
-            </button>
-          </div>
+        {/* Logout */}
+        <div
+          className="px-3 py-4 flex-shrink-0"
+          style={{ borderTop: "1px solid #ede0d4" }}
+        >
+          <button
+            onClick={signout}
+            className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium rounded-xl transition hover:bg-red-50 active:scale-95"
+            style={{ color: "#c0392b" }}
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
         </div>
       </aside>
     </>

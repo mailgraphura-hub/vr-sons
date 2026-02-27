@@ -22,6 +22,108 @@ const T = {
   mutedLight:  "#b09080",
 };
 
+/* ── Global CSS ──────────────────────────────────────────────────────────*/
+const GLOBAL_CSS = `
+  .pm-root * { box-sizing: border-box; }
+
+  /* ── Stat grid ── */
+  .pm-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  /* ── Form grid ── */
+  .pm-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 24px;
+  }
+
+  /* ── Table: scrollable wrapper ── */
+  .pm-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pm-table { width: 100%; min-width: 500px; }
+
+  /* ── Hide SKU col on mobile ── */
+  .pm-col-sku { }
+
+  /* ── Pagination row ── */
+  .pm-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ── Heading row ── */
+  .pm-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* ═══════════════════════════
+     RESPONSIVE
+  ═══════════════════════════ */
+
+  /* ≤ 768px: form 1-col, stat grid 2-col */
+  @media (max-width: 768px) {
+    .pm-form-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .pm-stat-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    /* 3rd stat spans full */
+    .pm-stat-card:nth-child(3) {
+      grid-column: 1 / -1;
+    }
+    /* outer padding */
+    .pm-outer {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+    /* form/table header padding tighter */
+    .pm-card-pad { padding: 16px !important; }
+    .pm-form-header, .pm-table-header {
+      padding: 14px 16px !important;
+    }
+    /* hide SKU col */
+    .pm-col-sku { display: none !important; }
+    /* table cell padding */
+    .pm-table td, .pm-table th {
+      padding-left: 14px !important;
+      padding-right: 14px !important;
+    }
+  }
+
+  /* ≤ 480px: stat grid 1-col */
+  @media (max-width: 480px) {
+    .pm-stat-grid {
+      grid-template-columns: 1fr;
+    }
+    .pm-stat-card:nth-child(3) {
+      grid-column: auto;
+    }
+    /* save btn full width */
+    .pm-submit-row {
+      justify-content: stretch !important;
+    }
+    .pm-submit-row button {
+      width: 100%;
+      justify-content: center;
+    }
+    .pm-pagination {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+`;
+
 /* ── Focus helpers ───────────────────────────────────────────────────────*/
 const applyFocus  = (e) => { e.currentTarget.style.borderColor = T.primary; e.currentTarget.style.boxShadow = `0 0 0 3px ${T.tint20}`; };
 const removeFocus = (e) => { e.currentTarget.style.borderColor = "#e5e7eb"; e.currentTarget.style.boxShadow = "none"; };
@@ -116,7 +218,12 @@ export default function ProductManagement() {
 
   return (
     <AdminLayout>
-      <div className="max-w-[1100px] mx-auto space-y-5">
+      <style>{GLOBAL_CSS}</style>
+
+      <div
+        className="pm-root pm-outer"
+        style={{ maxWidth: 1100, margin: "0 auto", padding: "0 16px 32px", display: "flex", flexDirection: "column", gap: 20 }}
+      >
 
         {/* ── Heading ──────────────────────────────────────────────────── */}
         <div>
@@ -125,10 +232,10 @@ export default function ProductManagement() {
         </div>
 
         {/* ── Stat cards ───────────────────────────────────────────────── */}
-        <div className="grid grid-cols-3 gap-4">
-          <StatCard icon={<Boxes size={18}        />} label="Total"        value={stats.total}       accent={T.primary}  bg={T.tint20}   ring={T.border}    />
-          <StatCard icon={<CheckCircle size={18}  />} label="Available"    value={stats.available}   accent="#059669"    bg="#ecfdf5"    ring="#a7f3d0"     />
-          <StatCard icon={<AlertTriangle size={18}/>} label="Un-Available" value={stats.unavailable} accent="#6b7280"    bg="#f9fafb"    ring="#e5e7eb"     />
+        <div className="pm-stat-grid">
+          <StatCard className="pm-stat-card" icon={<Boxes size={18}        />} label="Total"        value={stats.total}       accent={T.primary}  bg={T.tint20}  ring={T.border}   />
+          <StatCard className="pm-stat-card" icon={<CheckCircle size={18}  />} label="Available"    value={stats.available}   accent="#059669"    bg="#ecfdf5"   ring="#a7f3d0"   />
+          <StatCard className="pm-stat-card" icon={<AlertTriangle size={18}/>} label="Un-Available" value={stats.unavailable} accent="#6b7280"    bg="#f9fafb"   ring="#e5e7eb"   />
         </div>
 
         {/* ── Add Product form ─────────────────────────────────────────── */}
@@ -139,8 +246,10 @@ export default function ProductManagement() {
           onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 4px rgba(195,106,77,0.07)"}
         >
           {/* Form header */}
-          <div className="flex items-center gap-3 px-6 py-4"
-            style={{ borderBottom:`1px solid ${T.border}`, background:T.tint10 }}>
+          <div
+            className="pm-form-header flex items-center gap-3 px-6 py-4"
+            style={{ borderBottom:`1px solid ${T.border}`, background:T.tint10 }}
+          >
             <div className="h-8 w-8 rounded-xl flex items-center justify-center shrink-0"
               style={{ background:T.tint20, border:`1px solid ${T.border}`, color:T.primary }}>
               <Package size={15} />
@@ -152,8 +261,8 @@ export default function ProductManagement() {
           </div>
 
           {/* Form body */}
-          <form onSubmit={handleSubmit} className="px-6 py-5">
-            <div className="grid md:grid-cols-2 gap-x-6 gap-y-4">
+          <form onSubmit={handleSubmit} className="pm-card-pad px-6 py-5">
+            <div className="pm-form-grid">
 
               {/* Category */}
               <BrandField label="Category">
@@ -161,8 +270,7 @@ export default function ProductManagement() {
                   <select
                     value={form.categoryId}
                     onChange={(e) => { setForm({ ...form, categoryId:e.target.value, subCategoryId:"" }); fetchSubCategories(e.target.value); }}
-                    style={baseSelect}
-                    onFocus={applyFocus} onBlur={removeFocus}
+                    style={baseSelect} onFocus={applyFocus} onBlur={removeFocus}
                   >
                     <option value="">Select Category</option>
                     {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
@@ -177,8 +285,7 @@ export default function ProductManagement() {
                   <select
                     value={form.subCategoryId}
                     onChange={(e) => setForm({ ...form, subCategoryId:e.target.value })}
-                    style={baseSelect}
-                    onFocus={applyFocus} onBlur={removeFocus}
+                    style={baseSelect} onFocus={applyFocus} onBlur={removeFocus}
                   >
                     <option value="">Select Sub-Category</option>
                     {subCategories.map((s) => <option key={s._id} value={s._id}>{s.name}</option>)}
@@ -229,8 +336,7 @@ export default function ProductManagement() {
                   <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status:e.target.value })}
-                    style={baseSelect}
-                    onFocus={applyFocus} onBlur={removeFocus}
+                    style={baseSelect} onFocus={applyFocus} onBlur={removeFocus}
                   >
                     <option value="Available">Available</option>
                     <option value="Un-Available">Un-Available</option>
@@ -251,7 +357,7 @@ export default function ProductManagement() {
                     style={{ background:T.tint20, border:`1px solid ${T.border}`, color:T.primary }}>
                     <Upload size={13} />
                   </div>
-                  <span className="text-[13px] font-medium" style={{ color:T.primaryDark }}>
+                  <span className="text-[13px] font-medium truncate" style={{ color:T.primaryDark }}>
                     {form.images.length > 0 ? `${form.images.length} file(s) selected` : "Click to upload images"}
                   </span>
                   <input type="file" multiple hidden onChange={(e) => setForm({ ...form, images:Array.from(e.target.files) })} />
@@ -261,7 +367,10 @@ export default function ProductManagement() {
             </div>
 
             {/* Submit row */}
-            <div className="flex justify-end mt-5 pt-4" style={{ borderTop:`1px solid ${T.border}` }}>
+            <div
+              className="pm-submit-row flex justify-end mt-5 pt-4"
+              style={{ borderTop:`1px solid ${T.border}` }}
+            >
               <PrimaryBtn type="submit" icon={<Save size={14} />}>Save Product</PrimaryBtn>
             </div>
           </form>
@@ -275,99 +384,112 @@ export default function ProductManagement() {
           onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 4px rgba(195,106,77,0.07)"}
         >
           {/* Table header */}
-          <div className="px-6 py-4" style={{ borderBottom:`1px solid ${T.border}`, background:T.tint10 }}>
+          <div
+            className="pm-table-header px-6 py-4"
+            style={{ borderBottom:`1px solid ${T.border}`, background:T.tint10 }}
+          >
             <h2 className="text-[14px] font-bold" style={{ color:T.primaryDark }}>Product List</h2>
             <p className="text-[12px] mt-0.5" style={{ color:T.mutedLight }}>{totalItems} total products</p>
           </div>
 
-          <table className="w-full text-[13px]">
-            <thead>
-              <tr style={{ background:T.tint10, borderBottom:`1px solid ${T.border}` }}>
-                {["Product","SKU","Status","Actions"].map((h) => (
-                  <th key={h} className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest"
-                    style={{ color:T.muted, opacity:0.8 }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {products.length === 0 ? (
-                <tr>
-                  <td colSpan="4" className="px-6 py-12 text-center text-[13px]" style={{ color:T.mutedLight }}>
-                    No products found
-                  </td>
+          {/* Scrollable table */}
+          <div className="pm-table-wrap">
+            <table className="pm-table text-[13px]" style={{ borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background:T.tint10, borderBottom:`1px solid ${T.border}` }}>
+                  <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color:T.muted, opacity:0.8 }}>Product</th>
+                  <th className="pm-col-sku px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color:T.muted, opacity:0.8 }}>SKU</th>
+                  <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color:T.muted, opacity:0.8 }}>Status</th>
+                  <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color:T.muted, opacity:0.8 }}>Actions</th>
                 </tr>
-              ) : products.map((p) => (
-                <tr
-                  key={p._id}
-                  style={{ borderBottom:`1px solid #faf7f6`, background:"white" }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = T.tint10}
-                  onMouseLeave={(e) => e.currentTarget.style.background = "white"}
-                >
-                  {/* Product */}
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-xl overflow-hidden flex items-center justify-center shrink-0"
-                        style={{ background:T.tint20, border:`1px solid ${T.border}`, color:T.primary }}>
-                        {p.images?.[0]
-                          ? <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
-                          : <Package size={15} />
-                        }
+              </thead>
+              <tbody>
+                {products.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="px-6 py-12 text-center text-[13px]" style={{ color:T.mutedLight }}>
+                      No products found
+                    </td>
+                  </tr>
+                ) : products.map((p) => (
+                  <tr
+                    key={p._id}
+                    style={{ borderBottom:`1px solid #faf7f6`, background:"white" }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = T.tint10}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "white"}
+                  >
+                    {/* Product */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-xl overflow-hidden flex items-center justify-center shrink-0"
+                          style={{ background:T.tint20, border:`1px solid ${T.border}`, color:T.primary }}>
+                          {p.images?.[0]
+                            ? <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
+                            : <Package size={15} />
+                          }
+                        </div>
+                        <span
+                          className="font-semibold"
+                          style={{ color:"#1a1a1a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", maxWidth:160, display:"block" }}
+                        >
+                          {p.name}
+                        </span>
                       </div>
-                      <span className="font-semibold truncate max-w-[200px]" style={{ color:"#1a1a1a" }}>{p.name}</span>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* SKU */}
-                  <td className="px-6 py-4">
-                    <span className="font-mono text-[12px] px-2.5 py-1 rounded-lg"
-                      style={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.primaryDark }}>
-                      {p.skuId || "—"}
-                    </span>
-                  </td>
+                    {/* SKU — hidden on mobile */}
+                    <td className="pm-col-sku px-6 py-4">
+                      <span className="font-mono text-[12px] px-2.5 py-1 rounded-lg"
+                        style={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.primaryDark }}>
+                        {p.skuId || "—"}
+                      </span>
+                    </td>
 
-                  {/* Status */}
-                  <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 text-[11.5px] font-semibold rounded-lg border"
-                      style={p.status === "Available"
-                        ? { background:"#ecfdf5", color:"#059669", borderColor:"#a7f3d0" }
-                        : { background:"#f9fafb", color:"#6b7280", borderColor:"#e5e7eb" }
-                      }>
-                      {p.status}
-                    </span>
-                  </td>
+                    {/* Status */}
+                    <td className="px-6 py-4">
+                      <span className="px-2.5 py-1 text-[11.5px] font-semibold rounded-lg border"
+                        style={p.status === "Available"
+                          ? { background:"#ecfdf5", color:"#059669", borderColor:"#a7f3d0" }
+                          : { background:"#f9fafb", color:"#6b7280", borderColor:"#e5e7eb" }
+                        }>
+                        {p.status}
+                      </span>
+                    </td>
 
-                  {/* Actions */}
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <ActionBtn
-                        onClick={() => toggleStatus(p._id, p.status)}
-                        title={p.status === "Available" ? "Disable" : "Enable"}
-                        base={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.muted }}
-                        hover={p.status === "Available"
-                          ? { background:"#fef2f2", borderColor:"#fecaca", color:"#ef4444" }
-                          : { background:"#ecfdf5", borderColor:"#a7f3d0", color:"#059669" }
-                        }
-                      >
-                        {p.status === "Available" ? <EyeOff size={14} /> : <Eye size={14} />}
-                      </ActionBtn>
+                    {/* Actions */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <ActionBtn
+                          onClick={() => toggleStatus(p._id, p.status)}
+                          title={p.status === "Available" ? "Disable" : "Enable"}
+                          base={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.muted }}
+                          hover={p.status === "Available"
+                            ? { background:"#fef2f2", borderColor:"#fecaca", color:"#ef4444" }
+                            : { background:"#ecfdf5", borderColor:"#a7f3d0", color:"#059669" }
+                          }
+                        >
+                          {p.status === "Available" ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </ActionBtn>
 
-                      <ActionBtn
-                        onClick={() => handleDelete(p._id)}
-                        base={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.muted }}
-                        hover={{ background:"#fef2f2", borderColor:"#fecaca", color:"#ef4444" }}
-                      >
-                        <Trash2 size={14} />
-                      </ActionBtn>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                        <ActionBtn
+                          onClick={() => handleDelete(p._id)}
+                          base={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.muted }}
+                          hover={{ background:"#fef2f2", borderColor:"#fecaca", color:"#ef4444" }}
+                        >
+                          <Trash2 size={14} />
+                        </ActionBtn>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between px-6 py-3.5"
-            style={{ borderTop:`1px solid ${T.border}`, background:T.tint10 }}>
+          <div
+            className="pm-pagination"
+            style={{ borderTop:`1px solid ${T.border}`, background:T.tint10 }}
+          >
             <span className="text-[12.5px] font-medium" style={{ color:T.mutedLight }}>
               Page{" "}
               <span className="font-bold" style={{ color:T.primaryDark }}>{currentPage}</span>
@@ -375,7 +497,7 @@ export default function ProductManagement() {
               <span className="font-bold" style={{ color:T.primaryDark }}>{totalPages}</span>
             </span>
             <div className="flex items-center gap-2">
-              <PaginationBtn disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
+              <PaginationBtn disabled={currentPage === 1}          onClick={() => setCurrentPage(currentPage - 1)}>
                 <ChevronLeft size={13} /> Prev
               </PaginationBtn>
               <PaginationBtn disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
@@ -391,10 +513,10 @@ export default function ProductManagement() {
 }
 
 /* ── Stat card ──────────────────────────────────────────────────────────── */
-function StatCard({ icon, label, value, accent, bg, ring }) {
+function StatCard({ className = "", icon, label, value, accent, bg, ring }) {
   return (
     <div
-      className="rounded-2xl px-5 py-4 flex items-center gap-4 transition-shadow duration-200"
+      className={`pm-stat-card rounded-2xl px-5 py-4 flex items-center gap-4 transition-shadow duration-200 ${className}`}
       style={{ background:"white", border:`1px solid ${T.border}`, boxShadow:"0 1px 3px rgba(195,106,77,0.05)" }}
       onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 6px 20px rgba(195,106,77,0.13)`}
       onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 3px rgba(195,106,77,0.05)"}
