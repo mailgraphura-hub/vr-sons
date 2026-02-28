@@ -23,6 +23,7 @@ export default function Login() {
 
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
+            localStorage.clear();
             if (!credentialResponse?.credential) {
                 toast.error("Invalid Google response");
                 return;
@@ -53,6 +54,7 @@ export default function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        localStorage.clear();
         if (!form.email || !form.password) { toast.error("Please fill all fields"); return; }
         if (!validateEmail(form.email)) { toast.error("Enter valid email"); return; }
         setLoading(true);

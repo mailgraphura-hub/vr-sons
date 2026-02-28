@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
- 
+
   useEffect(() => {
     const session = localStorage.getItem("admin_session");
     if (session) {
@@ -16,22 +16,24 @@ export function AuthProvider({ children }) {
 
 
 
-  
- const signup = async (data) => {
+
+  const signup = async (data) => {
     const res = await postService("/admin/auth/signup", data);
 
     if (res.ok) {
-        setUser(res.data?.data);
-        localStorage.setItem("admin_session", JSON.stringify(res.data?.data));
-        localStorage.setItem("admin", "true");
-        return "SUCCESS";
+      localStorage.clear();
+      setUser(res.data?.data);
+      localStorage.setItem("admin_session", JSON.stringify(res.data?.data));
+      localStorage.setItem("admin", "true");
+      return "SUCCESS";
     }
 
-   
+
     return res.message || "Signup failed";
-};
+  };
 
   const login = async (email, password) => {
+    localStorage.clear();
     const res = await postService("/admin/auth/login", { email, password });
 
     if (res.ok && res.data?.data) {
@@ -47,6 +49,7 @@ export function AuthProvider({ children }) {
   };
 
   const forgotPassword = async (email) => {
+    localStorage.clear();
     const res = await postService("/admin/auth/forgot-password", { email });
     return res.ok ? "SUCCESS" : res.message || "Failed";
   };

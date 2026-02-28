@@ -16,20 +16,23 @@ export default function Signup() {
     password: "", confirmPassword: "", terms: false,
   });
 
-  const [showPassword, setShowPassword]   = useState(false);
-  const [showConfirm, setShowConfirm]     = useState(false);
-  const [loading, setLoading]             = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState("");
 
   // OTP States
-  const [otpSent, setOtpSent]             = useState(false);
-  const [otpInput, setOtpInput]           = useState("");
-  const [emailOtp, setEmailOtp]           = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpInput, setOtpInput] = useState("");
+  const [emailOtp, setEmailOtp] = useState("");
   const [emailVerified, setEmailVerified] = useState(false);
-  const [otpLoading, setOtpLoading]       = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
+
+      localStorage.clear();
+
       if (!credentialResponse?.credential) { toast.error("Invalid Google response"); return; }
       const token = credentialResponse.credential;
       const apiResponse = await postService("/customer/auth/google", { token });
@@ -48,7 +51,7 @@ export default function Signup() {
     else setForm({ ...form, [name]: value });
   };
 
-  const validateEmail    = (email)    => /\S+@\S+\.\S+/.test(email);
+  const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
   const validatePassword = (password) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(password);
 
   const handlePasswordStrength = (password) => {
@@ -65,7 +68,7 @@ export default function Signup() {
     const apiResponse = await postService("/customer/auth/signupOtp", { name: form.fullName, email: form.email });
     setOtpLoading(false);
     if (!apiResponse.ok && !apiResponse.fetchMessage) { toast.error("OTP Sent Failed"); console.log(apiResponse.message); return; }
-    if (!apiResponse.ok && apiResponse.fetchMessage)  { toast.error(apiResponse.message || "OTP Sent Failed"); return; }
+    if (!apiResponse.ok && apiResponse.fetchMessage) { toast.error(apiResponse.message || "OTP Sent Failed"); return; }
     setEmailOtp(apiResponse.data.data);
     setTimeout(() => setEmailOtp(null), 5 * 60 * 1000);
     setOtpSent(true);
@@ -78,19 +81,20 @@ export default function Signup() {
   };
 
   const handleSubmit = async (e) => {
+    localStorage.clear();
     e.preventDefault();
     setLoading(true);
-    if (!emailVerified)                          { toast.error("Please verify email first");          setLoading(false); return; }
+    if (!emailVerified) { toast.error("Please verify email first"); setLoading(false); return; }
     if (!form.fullName || !form.email || !form.password || !form.confirmPassword) { toast.error("Please fill all required fields"); setLoading(false); return; }
-    if (!validatePassword(form.password))        { toast.error("Password must be strong");            setLoading(false); return; }
-    if (form.password !== form.confirmPassword)  { toast.error("Passwords do not match");             setLoading(false); return; }
-    if (!form.terms)                             { toast.error("Accept Terms & Conditions");          setLoading(false); return; }
+    if (!validatePassword(form.password)) { toast.error("Password must be strong"); setLoading(false); return; }
+    if (form.password !== form.confirmPassword) { toast.error("Passwords do not match"); setLoading(false); return; }
+    if (!form.terms) { toast.error("Accept Terms & Conditions"); setLoading(false); return; }
 
     const apiResponse = await postService("/customer/auth/signup",
       { name: form.fullName, email: form.email, password: form.password }
     );
     if (!apiResponse.ok && !apiResponse.fetchMessage) { console.log(apiResponse.message); toast.error("Signup Failed!"); setLoading(false); return; }
-    if (!apiResponse.ok && apiResponse.fetchMessage)  { toast.error(apiResponse.message || "Signup Failed!"); setLoading(false); return; }
+    if (!apiResponse.ok && apiResponse.fetchMessage) { toast.error(apiResponse.message || "Signup Failed!"); setLoading(false); return; }
 
     setTimeout(() => {
       toast.success("Signup successful!");
