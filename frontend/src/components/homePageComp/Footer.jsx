@@ -206,8 +206,8 @@ const Footer = () => {
         {/* Bottom Strip */}
         <div className="mt-6 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm font-semibold text-neutral-900">
-            © {new Date().getFullYear()} VR & Sons. Built for global trade
-            excellence.
+            © {new Date().getFullYear()} ©️ 2026 VR AND SONS | Design & Develop
+            by Graphura India Private Limited | All Rights Reserves
           </p>
 
           <div className="flex gap-8 text-sm font-semibold text-neutral-900">
