@@ -36,7 +36,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:5174",
-      "vr-sons.vercel.app",
+      "https://vr-sons-virid.vercel.app",
       "vr-sons-git-main-mukundkumarjha728-4840s-projects.vercel.app",
       "vr-sons-g54a1kbwg-mukundkumarjha728-4840s-projects.vercel.app",
     ],
