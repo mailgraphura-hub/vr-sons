@@ -14,6 +14,29 @@ import Navbar from "../../components/homePageComp/Navbar";
 import Footer from "../../components/homePageComp/Footer";
 
 export default function ContactPage() {
+
+
+  const contactUsMethod = [
+    {
+      icon: Phone,
+      title: "Call Us",
+      desc: "+91 98765 43210",
+      link: "tel:+919876543210",
+    },
+    {
+      icon: Mail,
+      title: "Email Address",
+      desc: "info@vrsons.com",
+      link: "mailto:info@vrsons.com",
+    },
+    {
+      icon: MapPin,
+      title: "Head Office",
+      desc: "Nashik, India",
+      link: "https://www.google.com/maps/search/?api=1&query=Nashik,India",
+    },
+  ]
+
   return (
     <div className="bg-white text-neutral-900 font-sans overflow-x-hidden">
 
@@ -52,24 +75,26 @@ export default function ContactPage() {
       <section className="px-6 py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
 
-          {[
-            { icon: Phone, title: "Call Us", desc: "+91 98765 43210" },
-            { icon: Mail, title: "Email Address", desc: "info@vrsons.com" },
-            { icon: MapPin, title: "Head Office", desc: "Nashik, India" },
-          ].map((item, i) => {
+          {contactUsMethod.map((item, i) => {
             const Icon = item.icon;
 
             return (
-              <motion.div
+              <motion.a
                 key={i}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.2 }}
                 whileHover={{ y: -8 }}
-                className="group bg-white p-10 rounded-3xl border border-neutral-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-[#C36A4D]/40 text-center"
+                className="group bg-white p-10 rounded-3xl border border-neutral-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-[#C36A4D]/40 text-center cursor-pointer"
               >
                 <div className="w-16 h-16 mx-auto rounded-2xl bg-[#C36A4D]/10 flex items-center justify-center mb-6 group-hover:bg-[#C36A4D] transition">
-                  <Icon size={26} className="text-[#C36A4D] group-hover:text-white transition" />
+                  <Icon
+                    size={26}
+                    className="text-[#C36A4D] group-hover:text-white transition"
+                  />
                 </div>
 
                 <h3 className="text-lg font-black mb-3">
@@ -79,9 +104,10 @@ export default function ContactPage() {
                 <p className="text-neutral-600 text-sm">
                   {item.desc}
                 </p>
-              </motion.div>
+              </motion.a>
             );
           })}
+
 
         </div>
       </section>

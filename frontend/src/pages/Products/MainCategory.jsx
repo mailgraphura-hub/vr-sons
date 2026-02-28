@@ -17,19 +17,38 @@ const GlobalPortal = () => {
   const [displayText, setDisplayText] = useState("");
   const navigate = useNavigate();
 
-  // ── API (unchanged) ───────────────────────────────────────────────────────
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    (async () => {
+    const fetchCategories = async () => {
+      setLoading(true);
+
+      const start = Date.now();
+
       const apiResponse = await getService("/customer/product/category");
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return;
+
+      const end = Date.now();
+      const elapsed = end - start;
+
+      // Ensure minimum 2 seconds loading
+      const remaining = 2000 - elapsed;
+      if (remaining > 0) {
+        await new Promise((res) => setTimeout(res, remaining));
       }
-      setCategory(apiResponse.data.data.categoryList);
-    })();
+
+      if (apiResponse.ok) {
+        setCategory(apiResponse.data.data.categoryList);
+      } else {
+        console.log(apiResponse.message);
+      }
+
+      setLoading(false);
+    };
+
+    fetchCategories();
   }, []);
 
-  // ── TYPING EFFECT (unchanged) ─────────────────────────────────────────────
+
   useEffect(() => {
     let i = 0;
     const timer = setInterval(() => {
@@ -272,8 +291,8 @@ const GlobalPortal = () => {
           </motion.div>
         </section>
 
-      
-         {/* ── STATS ── */}
+
+        {/* ── STATS ── */}
         <section className="bg-black py-12 mt-12 md:mt-16">
           <div className="max-w-6xl mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-neutral-800">
@@ -329,7 +348,13 @@ const GlobalPortal = () => {
               initial="hidden"
               animate="show"
             >
-              {categories.length === 0 ? (
+              {loading ? (
+                <div className="gp-loading">
+                  <div className="gp-dot" />
+                  <div className="gp-dot" />
+                  <div className="gp-dot" />
+                </div>
+              ) : categories.length === 0 ? (
                 <div className="gp-loading">
                   <div className="gp-dot" />
                   <div className="gp-dot" />

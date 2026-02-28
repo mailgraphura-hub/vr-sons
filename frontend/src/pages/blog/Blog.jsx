@@ -106,7 +106,7 @@ export default function Blog() {
           </p>
 
           <Link
-            to="/contact"
+            to="/ContactUs"
             className="inline-block px-6 py-3 mt-6 font-semibold transition shadow-lg bg-black/80 hover:bg-black rounded-xl"
           >
             Get Expert Guidance →

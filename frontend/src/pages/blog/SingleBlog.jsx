@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import blogs from "../../data/blogData";
 import { getService } from "../../service/axios";
@@ -6,6 +6,8 @@ import { getService } from "../../service/axios";
 export default function SingleBlog() {
   const { id } = useParams();
   // const blog = blogs.find((b) => b.id === parseInt(id));
+
+  const navigate = useNavigate();
 
   const [blog, setBlog] = useState(null)
 
@@ -92,7 +94,7 @@ export default function SingleBlog() {
             Get expert guidance, documentation support and buyer sourcing help.
           </p>
           <Link
-            // to="/contact"
+            to="/ContactUs"
             className="inline-block bg-white text-black/80 hover:text-black font-semibold px-6 py-3 rounded-xl hover:bg-gray-100 transition"
           >
             Contact Our Experts

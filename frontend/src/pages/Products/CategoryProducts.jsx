@@ -7,56 +7,96 @@ import { getService } from "../../service/axios";
 /* ─── SUB-CATEGORY CARD ─────────────────────────────────────────────────── */
 const SubcategoryCard = ({ sub, index, onClick }) => {
   const available = sub.status === "Available";
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        delay: index * 0.07,
-        duration: 0.55,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      onClick={() => available && onClick(sub)}
-      className="cd-card"
-      style={{
-        opacity: available ? 1 : 0.5,
-        cursor: available ? "pointer" : "not-allowed",
-      }}
-    >
-      {/* always-visible image */}
-      {sub.subcategoryImage && (
-        <img
-          className="cd-card__img"
-          src={sub.subcategoryImage}
-          alt={sub.name}
-          loading="lazy"
-        />
-      )}
-      <div className="cd-card__scrim" />
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 28 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: index * 0.07,
+          duration: 0.55,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        onClick={() => available && onClick(sub)}
+        className={`cd-card ${available ? "cd-card--available" : "cd-card--unavailable"
+          }`}
+        style={{
+          cursor: available ? "pointer" : "not-allowed",
+        }}
+      >
+        {/* always-visible image */}
+        {sub.subcategoryImage && (
+          <img
+            className="cd-card__img"
+            src={sub.subcategoryImage}
+            alt={sub.name}
+            loading="lazy"
+          />
+        )}
 
-      <div className="cd-card__body">
-        {/* top row */}
-        <div className="cd-card__top">
-          <span
-            className={`cd-badge ${available ? "cd-badge--green" : "cd-badge--red"}`}
-          >
-            {sub.status}
-          </span>
-          {sub.skuId && <span className="cd-sku">{sub.skuId}</span>}
-        </div>
+        <div className="cd-card__scrim" />
 
-        {/* bottom */}
-        <div>
-          <h3 className="cd-card__name">{sub.name}</h3>
-          <p className="cd-card__desc">{sub.decription}</p>
-          <div className="cd-card__foot">
-            <div className="cd-card__arrow">
-              <ChevronRight size={14} />
+        <div className="cd-card__body">
+          {/* top row */}
+          <div className="cd-card__top">
+            <span
+              className={`cd-badge ${available ? "cd-badge--green" : "cd-badge--red"
+                }`}
+            >
+              {sub.status}
+            </span>
+
+            {sub.skuId && (
+              <span className="cd-sku">{sub.skuId}</span>
+            )}
+          </div>
+
+          {/* bottom */}
+          <div>
+            <h3 className="cd-card__name">{sub.name}</h3>
+            <p className="cd-card__desc">{sub.decription}</p>
+
+            <div className="cd-card__foot">
+              <div className="cd-card__arrow">
+                <ChevronRight size={14} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+
+      {/* ===== DARK PREMIUM STATUS STYLES ===== */}
+      <style>{`
+        /* Available Card Border */
+        .cd-card--available {
+          border-color: rgba(16,185,129,0.25);
+        }
+
+        /* Unavailable Card Effect */
+        .cd-card--unavailable {
+          border-color: rgba(239,68,68,0.25);
+          filter: grayscale(40%);
+          opacity: 0.85;
+        }
+
+        /* Dark Available Badge */
+        .cd-badge--green {
+          background: linear-gradient(135deg, #064e3b, #065f46);
+          color: #d1fae5;
+          border: 1px solid #10b981;
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        /* Dark Unavailable Badge */
+        .cd-badge--red {
+          background: linear-gradient(135deg, #7f1d1d, #991b1b);
+          color: #fee2e2;
+          border: 1px solid #ef4444;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+        }
+      `}</style>
+    </>
   );
 };
 
@@ -64,6 +104,8 @@ const SubcategoryCard = ({ sub, index, onClick }) => {
 export default function CategoryDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const [loading, setLoading] = useState(true);
 
   const [subCategory, setSubCateogory] = useState([]);
   const [category, setCategory] = useState(null);
@@ -74,35 +116,70 @@ export default function CategoryDetail() {
   const [totalPages, setTotalPages] = useState(1);
   const [isSuggestionClick, setIsSuggestionClick] = useState(false);
 
-  /* ── API calls (unchanged) ─────────────────────────────────────────────── */
   useEffect(() => {
     if (!id) return;
-    (async () => {
-      const apiResponse = await getService(`/customer/product/category/${id}`);
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return;
+
+    const fetchCategory = async () => {
+      setLoading(true);
+
+      const start = Date.now(); // track time
+
+      const apiResponse = await getService(
+        `/customer/product/category/${id}`
+      );
+
+      const end = Date.now();
+      const elapsed = end - start;
+
+      // ensure minimum 2 seconds loading
+      const remaining = 2000 - elapsed;
+
+      if (remaining > 0) {
+        await new Promise((res) => setTimeout(res, remaining));
       }
-      setCategory(apiResponse.data.data);
-    })();
+
+      if (apiResponse.ok) {
+        setCategory(apiResponse.data.data);
+      }
+
+      setLoading(false);
+    };
+
+    fetchCategory();
   }, [id]);
 
   useEffect(() => {
     if (!id || searchQuery) return;
-    (async () => {
+
+    const fetchSubcategories = async () => {
+      setLoading(true);
+
+      const start = Date.now();
+
       const apiResponse = await getService(
-        `/customer/product/subcategorybycategoryId?categoryId=${id}&page=${currentPage}&limit=12`,
+        `/customer/product/subcategorybycategoryId?categoryId=${id}&page=${currentPage}&limit=12`
       );
-      if (!apiResponse.ok) {
-        console.log(apiResponse.message);
-        return;
+
+      const end = Date.now();
+      const elapsed = end - start;
+      const remaining = 2000 - elapsed;
+
+      if (remaining > 0) {
+        await new Promise((res) => setTimeout(res, remaining));
       }
-      const data = apiResponse.data.data;
-      setSubCateogory(data.subcategoryList);
-      setSubCategoryCount(data.totalItems);
-      setCurrentPage(data.currentPage);
-      setTotalPages(data.totalPage);
-    })();
+
+      if (apiResponse.ok) {
+        const data = apiResponse.data.data;
+        setSubCateogory(data.subcategoryList);
+        setSubCategoryCount(data.totalItems);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalPage);
+      }
+
+      setLoading(false);
+    };
+
+    fetchSubcategories();
   }, [id, currentPage, searchQuery]);
 
   useEffect(() => {
@@ -443,7 +520,13 @@ export default function CategoryDetail() {
 
         {/* ── CONTENT ── */}
         <main className="cd-main">
-          {subCategory.length > 0 ? (
+          {loading ? (
+            <div className="cd-loading">
+              <div className="cd-dot" />
+              <div className="cd-dot" />
+              <div className="cd-dot" />
+            </div>
+          ) : subCategory.length > 0 ? (
             <div className="cd-grid">
               {subCategory.map((sub, i) => (
                 <SubcategoryCard

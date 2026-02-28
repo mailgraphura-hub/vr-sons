@@ -440,7 +440,7 @@ export default function Signup() {
               <input type="checkbox" className="cs-checkbox" id="terms"
                 name="terms" checked={form.terms} onChange={handleChange} />
               <label htmlFor="terms" className="cs-checkbox-label">
-                I agree to the <a href="#">Terms &amp; Conditions</a>
+                I agree to the <a href="/Term_Services" >Terms &amp; Conditions</a>
               </label>
             </div>
 

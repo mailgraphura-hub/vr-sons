@@ -10,24 +10,68 @@ import {
   Instagram,
   Facebook,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import logo from "../../assets/logo/NavLogo.svg";
+import { getService } from "../../service/axios";
 
 const Footer = () => {
 
+  const navigate = useNavigate();
+
+  // const categories = [
+  //   { name: "Food Products", path: "/CategoryProducts/699b74ee545f793544e4f6fa" },
+  //   { name: "Spices", path: "/CategoryProducts/699b753e545f793544e4f6fc" },
+  //   { name: "Agricultural Goods", path: "/CategoryProducts/699b759a545f793544e4f700" },
+  //   { name: "Bricks", path: "/CategoryProducts/699b7571545f793544e4f6fe" },
+  // ];
+
+
   const categories = [
-    { name: "Food Products", path: "/CategoryProducts/699b74ee545f793544e4f6fa" },
-    { name: "Spices", path: "/CategoryProducts/699b753e545f793544e4f6fc" },
-    { name: "Agricultural Goods", path: "/CategoryProducts/699b759a545f793544e4f700" },
-    { name: "Bricks", path: "/CategoryProducts/699b7571545f793544e4f6fe" },
+    { name: "Food Products" },
+    { name: "Spices" },
+    { name: "Agricultural Goods" },
+    { name: "Bricks" },
   ];
 
   const socialIcons = [
-  { icon: Linkedin, color: "hover:bg-[#0077B5]" },
-  { icon: Instagram, color: "hover:bg-gradient-to-r hover:from-pink-500 hover:to-yellow-500" },
-  { icon: Facebook, color: "hover:bg-[#1877F2]" },
-];
+    { icon: Linkedin, color: "hover:bg-[#0077B5]" },
+    { icon: Instagram, color: "hover:bg-gradient-to-r hover:from-pink-500 hover:to-yellow-500" },
+    { icon: Facebook, color: "hover:bg-[#1877F2]" },
+  ];
+
+
+  const searchSubCategory = async (name) => {
+    try {
+      const apiResponse = await getService(
+        `/customer/search/category?keyword=${name}`
+      );
+
+      const data = apiResponse?.data?.data?.categories;
+
+      // If empty array
+      if (!data || data.length === 0) {
+        navigate("/MainCategory");
+        return;
+      }
+
+      const id = data[0]._id;
+
+      navigate(`/CategoryProducts/${id}`);
+
+    } catch (error) {
+      console.log("Error:", error);
+
+      // If API returned 404
+      if (error.response && error.response.status === 404) {
+        navigate("/MainCategory");
+      } else {
+        navigate("/MainCategory"); // fallback
+      }
+    }
+  };
+
+
   return (
     <footer className="bg-gradient-to-b from-[#f4f1ec] to-[#e9e4dc] px-4 md:px-10 pt-16 pb-12">
       <div className="bg-white rounded-3xl shadow-lg border border-neutral-200 px-8 md:px-16 py-12">
@@ -95,15 +139,16 @@ const Footer = () => {
             <h3 className="text-sm font-semibold text-neutral-900 mb-5 tracking-wide">
               Export Categories
             </h3>
+
             <ul className="space-y-3 text-sm text-neutral-700">
               {categories.map((item) => (
                 <li key={item.name}>
-                  <Link
-                    to={item.path}
-                    className="hover:text-black hover:underline underline-offset-4 transition"
+                  <button
+                    onClick={() => searchSubCategory(item.name)}
+                    className="hover:text-black hover:underline underline-offset-4 transition text-left"
                   >
                     {item.name}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -141,20 +186,20 @@ const Footer = () => {
 
             {/* Social Icons */}
             <div className="flex gap-4 mt-6">
-  {socialIcons.map(({ icon: Icon, color }, i) => (
-    <a
-      key={i}
-      href="#"
-      className={`w-10 h-10 flex items-center justify-center 
+              {socialIcons.map(({ icon: Icon, color }, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className={`w-10 h-10 flex items-center justify-center 
                   rounded-full border border-neutral-300 
                   text-neutral-700 bg-white shadow-sm
                   transition-all duration-300 ease-in-out
                   hover:text-white hover:scale-110 hover:shadow-lg ${color}`}
-    >
-      <Icon size={18} />
-    </a>
-  ))}
-</div>
+                >
+                  <Icon size={18} />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 

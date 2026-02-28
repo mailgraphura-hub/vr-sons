@@ -42,7 +42,7 @@ export default function ProductDetail() {
   const { id } = useParams();
   const { user } = userProfile();
   const navigate = useNavigate();
-  
+  const [loading, setLoading] = useState(true);
 
   const [product, setProduct] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
@@ -50,19 +50,55 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (!id) return;
-    (async () => {
-      const res = await getService(`/customer/product/product/${id}`);
-      if (!res.ok) return;
-      setProduct(res.data.data);
-    })();
+
+    const fetchProduct = async () => {
+      setLoading(true);
+
+      const start = Date.now();
+
+      const res = await getService(
+        `/customer/product/product/${id}`
+      );
+
+      const end = Date.now();
+      const elapsed = end - start;
+
+      const remaining = 2000 - elapsed;
+      if (remaining > 0) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, remaining)
+        );
+      }
+
+      if (res.ok) {
+        setProduct(res.data.data);
+      }
+
+      setLoading(false);
+    };
+
+    fetchProduct();
   }, [id]);
 
-  if (!product)
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white text-gray-400">
-        Loading Product...
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="flex gap-3">
+          <div className="w-3 h-3 rounded-full bg-[#C36A4D] animate-bounce"></div>
+          <div className="w-3 h-3 rounded-full bg-[#C36A4D] animate-bounce delay-150"></div>
+          <div className="w-3 h-3 rounded-full bg-[#C36A4D] animate-bounce delay-300"></div>
+        </div>
       </div>
     );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-400">
+        Product not found.
+      </div>
+    );
+  }
 
   const specs = parseSpecifications(product.specifications);
 
@@ -204,7 +240,7 @@ export default function ProductDetail() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => {
-              if (!user) return navigate("/login", {state:{data: id}});
+              if (!user) return navigate("/login", { state: { data: id } });
               setShowInquiry(true);
             }}
             className="mt-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#C36A4D] to-[#e28b6f] text-white font-semibold tracking-wider shadow-lg hover:shadow-xl transition"
