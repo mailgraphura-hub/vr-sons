@@ -86,7 +86,10 @@ export default function Signup() {
     setLoading(true);
     if (!emailVerified) { toast.error("Please verify email first"); setLoading(false); return; }
     if (!form.fullName || !form.email || !form.password || !form.confirmPassword) { toast.error("Please fill all required fields"); setLoading(false); return; }
-    if (!validatePassword(form.password)) { toast.error("Password must be strong"); setLoading(false); return; }
+    if (!validatePassword(form.password)) {
+      toast.dismiss();
+      toast.error("Password must be strong"); setLoading(false); return;
+    }
     if (form.password !== form.confirmPassword) { toast.error("Passwords do not match"); setLoading(false); return; }
     if (!form.terms) { toast.error("Accept Terms & Conditions"); setLoading(false); return; }
 

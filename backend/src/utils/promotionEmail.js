@@ -49,7 +49,7 @@ export const createPromotionEmail = (offerTitle, offerDescription) => {
 
       <!-- CTA Button -->
       <div style="text-align:center;">
-        <a href="https://vr-sons.vercel.app/"
+        <a href="https://vr-sons-virid.vercel.app"
            style="
              display:inline-block;
              background:linear-gradient(90deg,#1e3a8a,#4f46e5);
