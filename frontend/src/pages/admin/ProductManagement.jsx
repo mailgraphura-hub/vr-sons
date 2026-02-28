@@ -211,6 +211,9 @@ export default function ProductManagement() {
     }
   };
 
+
+
+
   const handleDelete = async (id) => {
     try {
       await deleteService(`/admin/product/delete?productId=${id}`);
