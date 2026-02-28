@@ -1,6 +1,6 @@
-import { Bell, CheckCheck, Trash2 } from "lucide-react";
+import { Bell, CheckCheck, Trash2, Home } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { getService, patchService, deleteService } from "../../service/axios";
 
 export default function Header() {
@@ -60,15 +60,12 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Calculate dropdown position so it never overflows screen
   const handleBellClick = () => {
     if (bellButtonRef.current) {
       const rect = bellButtonRef.current.getBoundingClientRect();
       const MARGIN = 8;
       const dropWidth = Math.min(320, window.innerWidth - MARGIN * 2);
-      // Align right edge of dropdown to right edge of bell button
       let leftPos = rect.right - dropWidth;
-      // Clamp so it doesn't go off left edge
       if (leftPos < MARGIN) leftPos = MARGIN;
       setDropdownPos({ top: rect.bottom + 8, left: leftPos, width: dropWidth });
     }
@@ -120,6 +117,17 @@ export default function Header() {
       <div className="md:hidden" />
 
       <div className="flex items-center gap-3 md:gap-5">
+
+        {/* 🏠 HOME BUTTON */}
+        <Link
+          to="/"
+          className="w-9 h-9 flex items-center justify-center rounded-xl transition hover:scale-105"
+          style={{ backgroundColor: "#fde8df" }}
+          aria-label="Go to Home"
+        >
+          <Home size={17} color="#c97b5a" />
+        </Link>
+
         {/* 🔔 NOTIFICATIONS */}
         <div ref={notificationRef}>
           <button

@@ -13,6 +13,7 @@ const navLinks = [
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dashboardLink, setDashboardLink] = useState(null);
   const lastScrollY = useRef(0);
   const location = useLocation();
 
@@ -34,10 +35,38 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const admin = localStorage.getItem("admin");
+    const access = localStorage.getItem("access");
+
+    if (admin === "true") {
+      setDashboardLink("/admin/dashboard");
+    } else if (access === "grant") {
+      setDashboardLink("/user/dashboard");
+    } else {
+      setDashboardLink(null);
+    }
+  }, []);
+
   const isActive = (href) => {
     if (href === "/") return location.pathname === "/";
     return location.pathname.startsWith(href);
   };
+
+  const ProfileIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-5 h-5"
+    >
+      <path
+        fillRule="evenodd"
+        d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
 
   return (
     <section
@@ -46,7 +75,7 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-[1500px] mx-auto px-4 md:px-8">
-        {/* Main navbar row - Solid White Background */}
+        {/* Main navbar row */}
         <div className="flex items-center justify-between px-5 md:px-8 py-3 md:py-4 rounded-full bg-white shadow-md border border-gray-100">
           {/* Logo Section */}
           <Link to="/" className="flex items-center">
@@ -77,12 +106,22 @@ const Navbar = () => {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            <a
-              href="/login"
-              className="hidden md:inline-flex px-5 py-2 rounded-full bg-black text-white text-sm font-medium hover:bg-neutral-800 transition-all duration-300 shadow-sm"
-            >
-              Get Started
-            </a>
+            {dashboardLink ? (
+              <Link
+                to={dashboardLink}
+                className="hidden md:inline-flex items-center justify-center w-10 h-10 rounded-full bg-black text-white hover:bg-neutral-800 transition-all duration-300 shadow-sm"
+                aria-label="Go to Dashboard"
+              >
+                <ProfileIcon />
+              </Link>
+            ) : (
+              <a
+                href="/login"
+                className="hidden md:inline-flex px-5 py-2 rounded-full bg-black text-white text-sm font-medium hover:bg-neutral-800 transition-all duration-300 shadow-sm"
+              >
+                Get Started
+              </a>
+            )}
 
             {/* Hamburger — mobile only */}
             <button
@@ -109,7 +148,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu - Solid White */}
+        {/* Mobile Dropdown Menu */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
             menuOpen ? "max-h-96 opacity-100 mt-2" : "max-h-0 opacity-0"
@@ -133,13 +172,24 @@ const Navbar = () => {
             ))}
 
             <li className="mt-2">
-              <Link
-                to="/login"
-                onClick={() => setMenuOpen(false)}
-                className="block text-center w-full px-4 py-2.5 rounded-xl bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition"
-              >
-                Get Started
-              </Link>
+              {dashboardLink ? (
+                <Link
+                  to={dashboardLink}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition"
+                >
+                  <ProfileIcon />
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="block text-center w-full px-4 py-2.5 rounded-xl bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition"
+                >
+                  Get Started
+                </Link>
+              )}
             </li>
           </ul>
         </div>
