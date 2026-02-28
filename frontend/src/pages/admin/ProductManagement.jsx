@@ -11,15 +11,15 @@ import {
 
 /* ── Brand tokens ────────────────────────────────────────────────────────*/
 const T = {
-  primary:     "#c36a4d",
-  primaryHov:  "#ad5d42",
+  primary: "#c36a4d",
+  primaryHov: "#ad5d42",
   primaryDark: "#8f4c35",
-  tint10:      "#fdf3f0",
-  tint20:      "#fae4dc",
-  tint40:      "#f0bfb0",
-  border:      "#f2e0da",
-  muted:       "#a17060",
-  mutedLight:  "#b09080",
+  tint10: "#fdf3f0",
+  tint20: "#fae4dc",
+  tint40: "#f0bfb0",
+  border: "#f2e0da",
+  muted: "#a17060",
+  mutedLight: "#b09080",
 };
 
 /* ── Global CSS ──────────────────────────────────────────────────────────*/
@@ -126,10 +126,10 @@ const GLOBAL_CSS = `
 `;
 
 /* ── Focus helpers ───────────────────────────────────────────────────────*/
-const applyFocus  = (e) => { e.currentTarget.style.borderColor = T.primary; e.currentTarget.style.boxShadow = `0 0 0 3px ${T.tint20}`; };
+const applyFocus = (e) => { e.currentTarget.style.borderColor = T.primary; e.currentTarget.style.boxShadow = `0 0 0 3px ${T.tint20}`; };
 const removeFocus = (e) => { e.currentTarget.style.borderColor = "#e5e7eb"; e.currentTarget.style.boxShadow = "none"; };
-const baseInput   = { width:"100%", padding:"10px 14px", fontSize:13, color:"#1a1a1a", background:"white", border:"1.5px solid #e5e7eb", borderRadius:12, outline:"none", transition:"border 0.15s, box-shadow 0.15s" };
-const baseSelect  = { ...baseInput, appearance:"none", paddingRight:36, cursor:"pointer" };
+const baseInput = { width: "100%", padding: "10px 14px", fontSize: 13, color: "#1a1a1a", background: "white", border: "1.5px solid #e5e7eb", borderRadius: 12, outline: "none", transition: "border 0.15s, box-shadow 0.15s" };
+const baseSelect = { ...baseInput, appearance: "none", paddingRight: 36, cursor: "pointer" };
 
 const labelCls = `block text-[11px] font-bold uppercase tracking-widest mb-1.5`;
 
@@ -137,17 +137,19 @@ export default function ProductManagement() {
   const PAGE_SIZE = 5;
 
   const emptyProduct = {
-    categoryId:"", subCategoryId:"", name:"", skuId:"",
-    description:"", specifications:"", status:"Available", images:[],
+    categoryId: "", subCategoryId: "", name: "", skuId: "",
+    description: "", specifications: "", status: "Available", images: [],
   };
 
-  const [products, setProducts]           = useState([]);
-  const [categories, setCategories]       = useState([]);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [form, setForm]                   = useState(emptyProduct);
-  const [currentPage, setCurrentPage]     = useState(1);
-  const [totalPages, setTotalPages]       = useState(1);
-  const [totalItems, setTotalItems]       = useState(0);
+  const [form, setForm] = useState(emptyProduct);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const [saving, setSaving] = useState(false);
 
   /* ── API — completely untouched ─────────────────────────────────────── */
   const fetchProducts = async (page = 1) => {
@@ -181,18 +183,32 @@ export default function ProductManagement() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+      setSaving(true);
+
       const formData = new FormData();
-      formData.append("categoryId",     form.categoryId);
-      formData.append("subCategoryId",  form.subCategoryId);
-      formData.append("name",           form.name);
-      formData.append("skuId",          form.skuId);
-      formData.append("description",    form.description);
+      formData.append("categoryId", form.categoryId);
+      formData.append("subCategoryId", form.subCategoryId);
+      formData.append("name", form.name);
+      formData.append("skuId", form.skuId);
+      formData.append("description", form.description);
       formData.append("specifications", form.specifications);
-      formData.append("status",         form.status);
+      formData.append("status", form.status);
       form.images.forEach((file) => formData.append("productImage", file));
-      await postService("/admin/product/addProduct", formData);
+      const apiResponse = await postService("/admin/product/addProduct", formData);
+
+      if (!apiResponse.ok) {
+        alert("Failed");
+        return
+      }
+
+      alert("Successfully");
+
       setForm(emptyProduct); setSubCategories([]); fetchProducts(1);
     } catch (err) { console.log(err); }
+    finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -212,8 +228,8 @@ export default function ProductManagement() {
   /* ─────────────────────────────────────────────────────────────────── */
 
   const stats = {
-    total:       totalItems,
-    available:   products.filter((p) => p.status === "Available").length,
+    total: totalItems,
+    available: products.filter((p) => p.status === "Available").length,
     unavailable: products.filter((p) => p.status === "Un-Available").length,
   };
 
@@ -234,30 +250,30 @@ export default function ProductManagement() {
 
         {/* ── Stat cards ───────────────────────────────────────────────── */}
         <div className="pm-stat-grid">
-          <StatCard icon={<Boxes size={17} />}         label="Total"        value={stats.total}       accent={T.primary} bg={T.tint20} ring={T.border}  />
-          <StatCard icon={<CheckCircle size={17} />}   label="Available"    value={stats.available}   accent="#059669"   bg="#ecfdf5"  ring="#a7f3d0"   />
-          <StatCard icon={<AlertTriangle size={17} />} label="Un-Available" value={stats.unavailable} accent="#6b7280"   bg="#f9fafb"  ring="#e5e7eb"   />
+          <StatCard icon={<Boxes size={17} />} label="Total" value={stats.total} accent={T.primary} bg={T.tint20} ring={T.border} />
+          <StatCard icon={<CheckCircle size={17} />} label="Available" value={stats.available} accent="#059669" bg="#ecfdf5" ring="#a7f3d0" />
+          <StatCard icon={<AlertTriangle size={17} />} label="Un-Available" value={stats.unavailable} accent="#6b7280" bg="#f9fafb" ring="#e5e7eb" />
         </div>
 
         {/* ── Add Product form ─────────────────────────────────────────── */}
         <div
           className="rounded-2xl overflow-hidden transition-shadow duration-200"
-          style={{ background:"white", border:`1px solid ${T.border}`, boxShadow:"0 1px 4px rgba(195,106,77,0.07)" }}
+          style={{ background: "white", border: `1px solid ${T.border}`, boxShadow: "0 1px 4px rgba(195,106,77,0.07)" }}
           onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 6px 24px rgba(195,106,77,0.11)`}
           onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 4px rgba(195,106,77,0.07)"}
         >
           {/* Form header */}
           <div
             className="pm-form-header flex items-center gap-3 px-6 py-4"
-            style={{ borderBottom:`1px solid ${T.border}`, background:T.tint10 }}
+            style={{ borderBottom: `1px solid ${T.border}`, background: T.tint10 }}
           >
             <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-xl flex items-center justify-center shrink-0"
-              style={{ background:T.tint20, border:`1px solid ${T.border}`, color:T.primary }}>
+              style={{ background: T.tint20, border: `1px solid ${T.border}`, color: T.primary }}>
               <Package size={14} />
             </div>
             <div>
-              <h2 className="text-[13px] sm:text-[14px] font-bold" style={{ color:T.primaryDark }}>Add New Product</h2>
-              <p className="text-[11px] sm:text-[12px]" style={{ color:T.mutedLight }}>Fill in all product details</p>
+              <h2 className="text-[13px] sm:text-[14px] font-bold" style={{ color: T.primaryDark }}>Add New Product</h2>
+              <p className="text-[11px] sm:text-[12px]" style={{ color: T.mutedLight }}>Fill in all product details</p>
             </div>
           </div>
 
@@ -270,13 +286,13 @@ export default function ProductManagement() {
                 <div className="relative">
                   <select
                     value={form.categoryId}
-                    onChange={(e) => { setForm({ ...form, categoryId:e.target.value, subCategoryId:"" }); fetchSubCategories(e.target.value); }}
+                    onChange={(e) => { setForm({ ...form, categoryId: e.target.value, subCategoryId: "" }); fetchSubCategories(e.target.value); }}
                     style={baseSelect} onFocus={applyFocus} onBlur={removeFocus}
                   >
                     <option value="">Select Category</option>
                     {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
                   </select>
-                  <ChevronRightIcon size={13} className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" style={{ color:T.muted }} />
+                  <ChevronRightIcon size={13} className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" style={{ color: T.muted }} />
                 </div>
               </BrandField>
 
@@ -285,13 +301,13 @@ export default function ProductManagement() {
                 <div className="relative">
                   <select
                     value={form.subCategoryId}
-                    onChange={(e) => setForm({ ...form, subCategoryId:e.target.value })}
+                    onChange={(e) => setForm({ ...form, subCategoryId: e.target.value })}
                     style={baseSelect} onFocus={applyFocus} onBlur={removeFocus}
                   >
                     <option value="">Select Sub-Category</option>
                     {subCategories.map((s) => <option key={s._id} value={s._id}>{s.name}</option>)}
                   </select>
-                  <ChevronRightIcon size={13} className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" style={{ color:T.muted }} />
+                  <ChevronRightIcon size={13} className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" style={{ color: T.muted }} />
                 </div>
               </BrandField>
 
@@ -299,7 +315,7 @@ export default function ProductManagement() {
               <BrandField label="Product Name">
                 <input
                   style={baseInput} placeholder="e.g. Wireless Headphones"
-                  value={form.name} onChange={(e) => setForm({ ...form, name:e.target.value })}
+                  value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                   onFocus={applyFocus} onBlur={removeFocus}
                 />
               </BrandField>
@@ -308,7 +324,7 @@ export default function ProductManagement() {
               <BrandField label="SKU ID">
                 <input
                   style={baseInput} placeholder="e.g. ELEC-WH-001"
-                  value={form.skuId} onChange={(e) => setForm({ ...form, skuId:e.target.value })}
+                  value={form.skuId} onChange={(e) => setForm({ ...form, skuId: e.target.value })}
                   onFocus={applyFocus} onBlur={removeFocus}
                 />
               </BrandField>
@@ -316,8 +332,8 @@ export default function ProductManagement() {
               {/* Description */}
               <BrandField label="Description">
                 <textarea
-                  style={{ ...baseInput, resize:"none" }} rows={3} placeholder="Product description..."
-                  value={form.description} onChange={(e) => setForm({ ...form, description:e.target.value })}
+                  style={{ ...baseInput, resize: "none" }} rows={3} placeholder="Product description..."
+                  value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                   onFocus={applyFocus} onBlur={removeFocus}
                 />
               </BrandField>
@@ -325,8 +341,8 @@ export default function ProductManagement() {
               {/* Specifications */}
               <BrandField label="Specifications">
                 <textarea
-                  style={{ ...baseInput, resize:"none" }} rows={3} placeholder="Key specifications..."
-                  value={form.specifications} onChange={(e) => setForm({ ...form, specifications:e.target.value })}
+                  style={{ ...baseInput, resize: "none" }} rows={3} placeholder="Key specifications..."
+                  value={form.specifications} onChange={(e) => setForm({ ...form, specifications: e.target.value })}
                   onFocus={applyFocus} onBlur={removeFocus}
                 />
               </BrandField>
@@ -336,13 +352,13 @@ export default function ProductManagement() {
                 <div className="relative">
                   <select
                     value={form.status}
-                    onChange={(e) => setForm({ ...form, status:e.target.value })}
+                    onChange={(e) => setForm({ ...form, status: e.target.value })}
                     style={baseSelect} onFocus={applyFocus} onBlur={removeFocus}
                   >
                     <option value="Available">Available</option>
                     <option value="Un-Available">Un-Available</option>
                   </select>
-                  <ChevronRightIcon size={13} className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" style={{ color:T.muted }} />
+                  <ChevronRightIcon size={13} className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" style={{ color: T.muted }} />
                 </div>
               </BrandField>
 
@@ -350,18 +366,18 @@ export default function ProductManagement() {
               <BrandField label="Product Images">
                 <label
                   className="flex items-center gap-3 w-full px-3 sm:px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-150"
-                  style={{ border:`1.5px dashed ${T.tint40}`, background:T.tint10 }}
+                  style={{ border: `1.5px dashed ${T.tint40}`, background: T.tint10 }}
                   onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.primary; e.currentTarget.style.background = T.tint20; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = T.tint40;  e.currentTarget.style.background = T.tint10; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = T.tint40; e.currentTarget.style.background = T.tint10; }}
                 >
                   <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background:T.tint20, border:`1px solid ${T.border}`, color:T.primary }}>
+                    style={{ background: T.tint20, border: `1px solid ${T.border}`, color: T.primary }}>
                     <Upload size={13} />
                   </div>
-                  <span className="text-[12px] sm:text-[13px] font-medium truncate" style={{ color:T.primaryDark }}>
+                  <span className="text-[12px] sm:text-[13px] font-medium truncate" style={{ color: T.primaryDark }}>
                     {form.images.length > 0 ? `${form.images.length} file(s) selected` : "Click to upload images"}
                   </span>
-                  <input type="file" multiple hidden onChange={(e) => setForm({ ...form, images:Array.from(e.target.files) })} />
+                  <input type="file" multiple hidden onChange={(e) => setForm({ ...form, images: Array.from(e.target.files) })} />
                 </label>
               </BrandField>
 
@@ -370,9 +386,19 @@ export default function ProductManagement() {
             {/* Submit row */}
             <div
               className="pm-submit-row flex justify-end mt-4 sm:mt-5 pt-4"
-              style={{ borderTop:`1px solid ${T.border}` }}
+              style={{ borderTop: `1px solid ${T.border}` }}
             >
-              <PrimaryBtn type="submit" icon={<Save size={14} />}>Save Product</PrimaryBtn>
+              <PrimaryBtn
+                type="submit"
+                icon={!saving && <Save size={14} />}
+                disabled={saving}
+                style={{
+                  opacity: saving ? 0.7 : 1,
+                  cursor: saving ? "not-allowed" : "pointer"
+                }}
+              >
+                {saving ? "Saving..." : "Save Product"}
+              </PrimaryBtn>
             </div>
           </form>
         </div>
@@ -380,17 +406,17 @@ export default function ProductManagement() {
         {/* ── Products table / cards ────────────────────────────────────── */}
         <div
           className="rounded-2xl overflow-hidden transition-shadow duration-200"
-          style={{ background:"white", border:`1px solid ${T.border}`, boxShadow:"0 1px 4px rgba(195,106,77,0.07)" }}
+          style={{ background: "white", border: `1px solid ${T.border}`, boxShadow: "0 1px 4px rgba(195,106,77,0.07)" }}
           onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 6px 24px rgba(195,106,77,0.11)`}
           onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 4px rgba(195,106,77,0.07)"}
         >
           {/* Table header */}
           <div
             className="pm-table-header px-4 sm:px-6 py-3 sm:py-4"
-            style={{ borderBottom:`1px solid ${T.border}`, background:T.tint10 }}
+            style={{ borderBottom: `1px solid ${T.border}`, background: T.tint10 }}
           >
-            <h2 className="text-[13px] sm:text-[14px] font-bold" style={{ color:T.primaryDark }}>Product List</h2>
-            <p className="text-[11px] sm:text-[12px] mt-0.5" style={{ color:T.mutedLight }}>{totalItems} total products</p>
+            <h2 className="text-[13px] sm:text-[14px] font-bold" style={{ color: T.primaryDark }}>Product List</h2>
+            <p className="text-[11px] sm:text-[12px] mt-0.5" style={{ color: T.mutedLight }}>{totalItems} total products</p>
           </div>
 
           {/* ── DESKTOP: Scrollable table ─────────────────────────────── */}
@@ -398,52 +424,52 @@ export default function ProductManagement() {
             <div className="pm-table-wrap">
               <table className="pm-table text-[13px]">
                 <thead>
-                  <tr style={{ background:T.tint10, borderBottom:`1px solid ${T.border}` }}>
-                    <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color:T.muted }}>Product</th>
-                    <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color:T.muted }}>SKU</th>
-                    <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color:T.muted }}>Status</th>
-                    <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color:T.muted }}>Actions</th>
+                  <tr style={{ background: T.tint10, borderBottom: `1px solid ${T.border}` }}>
+                    <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color: T.muted }}>Product</th>
+                    <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color: T.muted }}>SKU</th>
+                    <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color: T.muted }}>Status</th>
+                    <th className="px-6 py-3.5 text-left text-[10.5px] font-bold uppercase tracking-widest" style={{ color: T.muted }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="px-6 py-12 text-center text-[13px]" style={{ color:T.mutedLight }}>
+                      <td colSpan="4" className="px-6 py-12 text-center text-[13px]" style={{ color: T.mutedLight }}>
                         No products found
                       </td>
                     </tr>
                   ) : products.map((p) => (
                     <tr
                       key={p._id}
-                      style={{ borderBottom:`1px solid #faf7f6`, background:"white" }}
+                      style={{ borderBottom: `1px solid #faf7f6`, background: "white" }}
                       onMouseEnter={(e) => e.currentTarget.style.background = T.tint10}
                       onMouseLeave={(e) => e.currentTarget.style.background = "white"}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="h-9 w-9 rounded-xl overflow-hidden flex items-center justify-center shrink-0"
-                            style={{ background:T.tint20, border:`1px solid ${T.border}`, color:T.primary }}>
+                            style={{ background: T.tint20, border: `1px solid ${T.border}`, color: T.primary }}>
                             {p.images?.[0]
                               ? <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
                               : <Package size={15} />
                             }
                           </div>
-                          <span className="font-semibold" style={{ color:"#1a1a1a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", maxWidth:160, display:"block" }}>
+                          <span className="font-semibold" style={{ color: "#1a1a1a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160, display: "block" }}>
                             {p.name}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <span className="font-mono text-[12px] px-2.5 py-1 rounded-lg"
-                          style={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.primaryDark }}>
+                          style={{ background: T.tint10, border: `1px solid ${T.border}`, color: T.primaryDark }}>
                           {p.skuId || "—"}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span className="px-2.5 py-1 text-[11.5px] font-semibold rounded-lg border"
                           style={p.status === "Available"
-                            ? { background:"#ecfdf5", color:"#059669", borderColor:"#a7f3d0" }
-                            : { background:"#f9fafb", color:"#6b7280", borderColor:"#e5e7eb" }
+                            ? { background: "#ecfdf5", color: "#059669", borderColor: "#a7f3d0" }
+                            : { background: "#f9fafb", color: "#6b7280", borderColor: "#e5e7eb" }
                           }>
                           {p.status}
                         </span>
@@ -453,18 +479,18 @@ export default function ProductManagement() {
                           <ActionBtn
                             onClick={() => toggleStatus(p._id, p.status)}
                             title={p.status === "Available" ? "Disable" : "Enable"}
-                            base={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.muted }}
+                            base={{ background: T.tint10, border: `1px solid ${T.border}`, color: T.muted }}
                             hover={p.status === "Available"
-                              ? { background:"#fef2f2", borderColor:"#fecaca", color:"#ef4444" }
-                              : { background:"#ecfdf5", borderColor:"#a7f3d0", color:"#059669" }
+                              ? { background: "#fef2f2", borderColor: "#fecaca", color: "#ef4444" }
+                              : { background: "#ecfdf5", borderColor: "#a7f3d0", color: "#059669" }
                             }
                           >
                             {p.status === "Available" ? <EyeOff size={14} /> : <Eye size={14} />}
                           </ActionBtn>
                           <ActionBtn
                             onClick={() => handleDelete(p._id)}
-                            base={{ background:T.tint10, border:`1px solid ${T.border}`, color:T.muted }}
-                            hover={{ background:"#fef2f2", borderColor:"#fecaca", color:"#ef4444" }}
+                            base={{ background: T.tint10, border: `1px solid ${T.border}`, color: T.muted }}
+                            hover={{ background: "#fef2f2", borderColor: "#fecaca", color: "#ef4444" }}
                           >
                             <Trash2 size={14} />
                           </ActionBtn>
@@ -480,28 +506,28 @@ export default function ProductManagement() {
           {/* ── MOBILE: Card list ─────────────────────────────────────── */}
           <div className="pm-mobile-cards">
             {products.length === 0 ? (
-              <div className="py-10 text-center text-[13px]" style={{ color:T.mutedLight }}>No products found</div>
+              <div className="py-10 text-center text-[13px]" style={{ color: T.mutedLight }}>No products found</div>
             ) : products.map((p) => (
               <div
                 key={p._id}
                 className="px-4 py-3.5"
-                style={{ borderBottom:`1px solid ${T.tint10}` }}
+                style={{ borderBottom: `1px solid ${T.tint10}` }}
               >
                 {/* Top row: image + name + status badge */}
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-xl overflow-hidden flex items-center justify-center shrink-0"
-                    style={{ background:T.tint20, border:`1px solid ${T.border}`, color:T.primary }}>
+                    style={{ background: T.tint20, border: `1px solid ${T.border}`, color: T.primary }}>
                     {p.images?.[0]
                       ? <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
                       : <Package size={15} />
                     }
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold leading-tight truncate" style={{ color:"#1a1a1a" }}>
+                    <p className="text-[13px] font-semibold leading-tight truncate" style={{ color: "#1a1a1a" }}>
                       {p.name}
                     </p>
                     {p.skuId && (
-                      <p className="text-[11px] mt-0.5 font-mono truncate" style={{ color:T.muted }}>
+                      <p className="text-[11px] mt-0.5 font-mono truncate" style={{ color: T.muted }}>
                         {p.skuId}
                       </p>
                     )}
@@ -509,8 +535,8 @@ export default function ProductManagement() {
                   <span
                     className="shrink-0 px-2 py-0.5 text-[10.5px] font-semibold rounded-lg border"
                     style={p.status === "Available"
-                      ? { background:"#ecfdf5", color:"#059669", borderColor:"#a7f3d0" }
-                      : { background:"#f9fafb", color:"#6b7280", borderColor:"#e5e7eb" }
+                      ? { background: "#ecfdf5", color: "#059669", borderColor: "#a7f3d0" }
+                      : { background: "#f9fafb", color: "#6b7280", borderColor: "#e5e7eb" }
                     }
                   >
                     {p.status === "Available" ? "Available" : "Unavailable"}
@@ -523,8 +549,8 @@ export default function ProductManagement() {
                     onClick={() => toggleStatus(p._id, p.status)}
                     className="flex items-center gap-1.5 px-3 py-1.5 text-[11.5px] font-semibold rounded-lg border transition-all duration-150 flex-1 justify-center"
                     style={p.status === "Available"
-                      ? { background:"#fef2f2", borderColor:"#fecaca", color:"#ef4444" }
-                      : { background:"#ecfdf5", borderColor:"#a7f3d0", color:"#059669" }
+                      ? { background: "#fef2f2", borderColor: "#fecaca", color: "#ef4444" }
+                      : { background: "#ecfdf5", borderColor: "#a7f3d0", color: "#059669" }
                     }
                   >
                     {p.status === "Available" ? <><EyeOff size={13} /> Disable</> : <><Eye size={13} /> Enable</>}
@@ -532,7 +558,7 @@ export default function ProductManagement() {
                   <button
                     onClick={() => handleDelete(p._id)}
                     className="flex items-center gap-1.5 px-3 py-1.5 text-[11.5px] font-semibold rounded-lg border transition-all duration-150 flex-1 justify-center"
-                    style={{ background:"#f9fafb", borderColor:"#e5e7eb", color:"#9ca3af" }}
+                    style={{ background: "#f9fafb", borderColor: "#e5e7eb", color: "#9ca3af" }}
                   >
                     <Trash2 size={13} /> Delete
                   </button>
@@ -544,17 +570,17 @@ export default function ProductManagement() {
           {/* Pagination */}
           <div
             className="pm-pagination"
-            style={{ borderTop:`1px solid ${T.border}`, background:T.tint10 }}
+            style={{ borderTop: `1px solid ${T.border}`, background: T.tint10 }}
           >
-            <span className="text-[12px] font-medium" style={{ color:T.mutedLight }}>
+            <span className="text-[12px] font-medium" style={{ color: T.mutedLight }}>
               Page{" "}
-              <span className="font-bold" style={{ color:T.primaryDark }}>{currentPage}</span>
+              <span className="font-bold" style={{ color: T.primaryDark }}>{currentPage}</span>
               {" "}of{" "}
-              <span className="font-bold" style={{ color:T.primaryDark }}>{totalPages}</span>
-              <span className="ml-2" style={{ color:T.mutedLight }}>({totalItems} items)</span>
+              <span className="font-bold" style={{ color: T.primaryDark }}>{totalPages}</span>
+              <span className="ml-2" style={{ color: T.mutedLight }}>({totalItems} items)</span>
             </span>
             <div className="pm-page-btns flex items-center gap-2">
-              <PaginationBtn disabled={currentPage === 1}          onClick={() => setCurrentPage(currentPage - 1)}>
+              <PaginationBtn disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
                 <ChevronLeft size={13} /> Prev
               </PaginationBtn>
               <PaginationBtn disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
@@ -574,17 +600,17 @@ function StatCard({ icon, label, value, accent, bg, ring }) {
   return (
     <div
       className="pm-stat-card rounded-2xl px-4 sm:px-5 py-3 sm:py-4 flex items-center gap-3 sm:gap-4 transition-shadow duration-200"
-      style={{ background:"white", border:`1px solid ${T.border}`, boxShadow:"0 1px 3px rgba(195,106,77,0.05)" }}
+      style={{ background: "white", border: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(195,106,77,0.05)" }}
       onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 6px 20px rgba(195,106,77,0.13)`}
       onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 3px rgba(195,106,77,0.05)"}
     >
       <div className="pm-stat-icon h-9 w-9 sm:h-11 sm:w-11 rounded-xl flex items-center justify-center shrink-0"
-        style={{ background:bg, border:`1px solid ${ring}`, color:accent }}>
+        style={{ background: bg, border: `1px solid ${ring}`, color: accent }}>
         {icon}
       </div>
       <div className="min-w-0">
-        <p className="pm-stat-label text-[10px] sm:text-[11px] font-bold uppercase tracking-widest truncate" style={{ color:T.muted }}>{label}</p>
-        <p className="pm-stat-value text-[20px] sm:text-[24px] font-bold leading-tight" style={{ color:"#1a1a1a" }}>{value ?? "—"}</p>
+        <p className="pm-stat-label text-[10px] sm:text-[11px] font-bold uppercase tracking-widest truncate" style={{ color: T.muted }}>{label}</p>
+        <p className="pm-stat-value text-[20px] sm:text-[24px] font-bold leading-tight" style={{ color: "#1a1a1a" }}>{value ?? "—"}</p>
       </div>
     </div>
   );
@@ -594,7 +620,7 @@ function StatCard({ icon, label, value, accent, bg, ring }) {
 function BrandField({ label, children }) {
   return (
     <div>
-      <label className={labelCls} style={{ color:T.muted }}>{label}</label>
+      <label className={labelCls} style={{ color: T.muted }}>{label}</label>
       {children}
     </div>
   );
@@ -641,7 +667,7 @@ function PaginationBtn({ disabled, onClick, children }) {
       disabled={disabled} onClick={onClick}
       className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-semibold rounded-lg border
                  transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
-      style={{ color:T.primaryDark, borderColor:T.border, background:"white" }}
+      style={{ color: T.primaryDark, borderColor: T.border, background: "white" }}
       onMouseEnter={(e) => { if (!disabled) { e.currentTarget.style.background = T.tint20; e.currentTarget.style.borderColor = T.primary; } }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "white"; e.currentTarget.style.borderColor = T.border; }}
     >

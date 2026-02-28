@@ -6,6 +6,11 @@ import { ApiResponse } from "../../utils/api-response.js";
 
 const sendPromotion = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { subject, offerTitle, offerDescription } = req.body;
 
         if (!subject || !offerTitle || !offerDescription) {

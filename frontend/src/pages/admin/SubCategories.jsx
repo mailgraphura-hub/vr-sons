@@ -21,19 +21,19 @@ import {
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
-  primary:   "#c36a4d",
+  primary: "#c36a4d",
   primary90: "#b05c40",
   primary80: "#9d4f35",
-  tint10:    "#fdf3f0",
-  tint20:    "#f9e3db",
-  tint30:    "#f3c9bb",
-  tint50:    "#e8a38e",
-  text:      "#1c1917",
-  muted:     "#78716c",
-  subtle:    "#a8a29e",
-  border:    "#e7e5e4",
-  surface:   "#ffffff",
-  bg:        "#faf9f8",
+  tint10: "#fdf3f0",
+  tint20: "#f9e3db",
+  tint30: "#f3c9bb",
+  tint50: "#e8a38e",
+  text: "#1c1917",
+  muted: "#78716c",
+  subtle: "#a8a29e",
+  border: "#e7e5e4",
+  surface: "#ffffff",
+  bg: "#faf9f8",
 };
 
 const PAGE_SIZE = 5;
@@ -402,26 +402,28 @@ const GLOBAL_CSS = `
 `;
 
 export default function SubCategories() {
-  const [categories, setCategories]       = useState([]);
+  const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
 
-  const [search, setSearch]             = useState("");
-  const [suggestions, setSuggestions]   = useState([]);
+  const [search, setSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [parentFilter, setParentFilter] = useState("");
-  const [page, setPage]                 = useState(1);
+  const [page, setPage] = useState(1);
 
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [active, setActive]         = useState(0);
-  const [inactive, setInactive]     = useState(0);
+  const [active, setActive] = useState(0);
+  const [inactive, setInactive] = useState(0);
 
   const [modal, setModal] = useState(false);
 
-  const [name, setName]               = useState("");
-  const [parentId, setParentId]       = useState("");
-  const [skuId, setSkuId]             = useState("");
+  const [name, setName] = useState("");
+  const [parentId, setParentId] = useState("");
+  const [skuId, setSkuId] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage]             = useState(null);
+  const [image, setImage] = useState(null);
+
+  const [saving, setSaving] = useState(false);
 
   /* ── API calls — completely untouched ─────────────────────────────── */
   const fetchCategories = async () => {
@@ -496,14 +498,26 @@ export default function SubCategories() {
 
   const handleAdd = async () => {
     try {
+      setSaving(true);
       const formData = new FormData();
       formData.append("name", name); formData.append("categoryId", parentId);
       formData.append("skuId", skuId); formData.append("decription", description);
       if (image) formData.append("subcategoryImage", image);
-      await postService("/admin/subcategory/addSubcategory", formData);
+      const apiResponse = await postService("/admin/subcategory/addSubcategory", formData);
+
+      if (!apiResponse.ok) {
+        alert("Failed");
+        return
+      }
+
+      alert("Successfully");
+
       setModal(false); setName(""); setParentId(""); setSkuId(""); setDescription(""); setImage(null);
       fetchSubCategories(1);
     } catch (err) { console.log(err); }
+    finally {
+      setSaving(false);
+    }
   };
 
   useEffect(() => {
@@ -527,9 +541,9 @@ export default function SubCategories() {
             className="sc-stats-grid"
             style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}
           >
-            <StatCard icon={<BarChart3 size={18} />}    label="Total"        value={totalItems} accent={C.primary} bg={C.tint10}  ring={C.tint30}  />
-            <StatCard icon={<CheckCircle2 size={18} />} label="Available"    value={active}     accent="#059669"   bg="#ecfdf5"   ring="#a7f3d0"   />
-            <StatCard icon={<AlertTriangle size={18} />} label="Un-Available" value={inactive}  accent="#92400e"   bg="#fffbeb"   ring="#fde68a"   />
+            <StatCard icon={<BarChart3 size={18} />} label="Total" value={totalItems} accent={C.primary} bg={C.tint10} ring={C.tint30} />
+            <StatCard icon={<CheckCircle2 size={18} />} label="Available" value={active} accent="#059669" bg="#ecfdf5" ring="#a7f3d0" />
+            <StatCard icon={<AlertTriangle size={18} />} label="Un-Available" value={inactive} accent="#92400e" bg="#fffbeb" ring="#fde68a" />
           </div>
 
           {/* ── Heading + Add ─────────────────────────────────────────── */}
@@ -704,7 +718,7 @@ export default function SubCategories() {
                 <strong style={{ color: C.text, fontWeight: 700 }}>{totalPages}</strong>
               </span>
               <div style={{ display: "flex", gap: 8 }}>
-                <button className="sc-page-btn" disabled={page === 1}          onClick={() => setPage(page - 1)}><ChevronLeft size={13} /> Prev</button>
+                <button className="sc-page-btn" disabled={page === 1} onClick={() => setPage(page - 1)}><ChevronLeft size={13} /> Prev</button>
                 <button className="sc-page-btn" disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next <ChevronRight size={13} /></button>
               </div>
             </div>
@@ -814,7 +828,17 @@ export default function SubCategories() {
                 }}
               >
                 <button className="sc-cancel-btn" onClick={() => setModal(false)}>Cancel</button>
-                <button className="sc-save-btn"   onClick={handleAdd}>Save Sub‑Category</button>
+                <button
+                  className="sc-save-btn"
+                  onClick={handleAdd}
+                  disabled={saving}
+                  style={{
+                    opacity: saving ? 0.7 : 1,
+                    cursor: saving ? "not-allowed" : "pointer"
+                  }}
+                >
+                  {saving ? "Saving..." : "Save Sub-Category"}
+                </button>
               </div>
             </div>
           </div>
@@ -824,7 +848,6 @@ export default function SubCategories() {
   );
 }
 
-/* ── Field label helper ─────────────────────────────────────────────────────── */
 function FieldLabel({ children }) {
   return (
     <label style={{
@@ -836,7 +859,6 @@ function FieldLabel({ children }) {
   );
 }
 
-/* ── Stat card ──────────────────────────────────────────────────────────────── */
 function StatCard({ icon, label, value, accent, bg, ring }) {
   return (
     <div className="sc-stat-card">

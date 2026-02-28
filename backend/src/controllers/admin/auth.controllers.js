@@ -12,7 +12,7 @@ import { brevo } from '../../config/brevo.config.js';
 //         console.log("🔧 Admin Signup API Hit");
 //         console.log("Request body:", req.body);
 //         const { name, email, password, company, contact, profileImage, Gender } = req.body;
-        
+
 //         // Validate required fields
 //         if (!name || !email || !password || !company) {
 //             return res.status(400).json(new ApiError(400, "Missing required fields: name, email, password, company"));
@@ -27,7 +27,7 @@ import { brevo } from '../../config/brevo.config.js';
 //         console.log("🔐 Encrypting password...");
 //         const hashPassword = await passwordEncrypt(password);
 //         console.log("✅ Password encrypted successfully");
-        
+
 //         const adminDetail = new adminAuth_Model({
 //             name: name.trim(),
 //             email,
@@ -37,11 +37,11 @@ import { brevo } from '../../config/brevo.config.js';
 //             profileImage,
 //             Gender
 //         });
-        
+
 //         console.log("💾 Saving admin to database...");
 //         const clientDetail = await adminDetail.save();
 //         console.log("✅ Admin saved to database:", clientDetail);
-        
+
 //         adminDetail.password = undefined;
 //         await cookiesForUser(res, adminDetail);
 //         return res.status(200).json(new ApiResponse(200, adminDetail, "Admin Signup Successfully."));
@@ -252,42 +252,44 @@ import { brevo } from '../../config/brevo.config.js';
 
 
 const Signup = async (req, res) => {
-    try {
-      // console.log(req.body);
-        const { name, email, password, securityKey } = req.body;
-
-        
-        if (!name || !email || !password || !securityKey) {
-            return res.status(400).json(new ApiError(400, "Sab fields required hain"));
-        }
-
-        
-        if (securityKey !== process.env.adminKey) {
-            return res.status(401).json(new ApiError(401, "Wrong Security Key"));
-        }
-
-        
-        const hashPassword = await passwordEncrypt(password);
+  try {
+    // console.log(req.body);
+    const { name, email, password, securityKey } = req.body;
 
 
-        const adminDetail = new adminAuth_Model({
-            name,
-            email,
-            password: hashPassword
-        });
-
-        await adminDetail.save();
-
-        
-        adminDetail.password = undefined;
-
-        await cookiesForUser(res, adminDetail);
-
-        return res.status(200).json(new ApiResponse(200, adminDetail, "Signup Successfully"));
-
-    } catch (err) {
-        return res.status(500).json(new ApiError(500, err.message));
+    if (!name || !email || !password || !securityKey) {
+      return res.status(400).json(new ApiError(400, "Sab fields required hain"));
     }
+
+
+    if (securityKey !== process.env.adminKey) {
+      return res.status(401).json(new ApiError(401, "Wrong Security Key"));
+    }
+
+
+    const hashPassword = await passwordEncrypt(password);
+
+
+    const adminDetail = new adminAuth_Model({
+      name,
+      email,
+      password: hashPassword
+    });
+
+    await adminDetail.save();
+    adminDetail.password = undefined;
+
+    const adminJWT = adminDetail.toObject();
+
+    adminJWT.role = "true"
+
+    await cookiesForUser(res, adminJWT);
+
+    return res.status(200).json(new ApiResponse(200, adminDetail, "Signup Successfully"));
+
+  } catch (err) {
+    return res.status(500).json(new ApiError(500, err.message));
+  }
 }
 
 
@@ -320,32 +322,35 @@ const Signup = async (req, res) => {
 
 
 const Login = async (req, res) => {
-    try {
-      // console.log("login me: ",req.body);
-        const { password } = req.body;
+  try {
+    // console.log("login me: ",req.body);
+    const { password } = req.body;
 
-       
-        const adminDetail = req.user;
-        // console.log("after login req.user ",req.user);
-        if (!password) {
-            return res.status(400).json(new ApiError(400, "Password is required"));
-        }
 
-        const isPasswordCorrect = await passwordDecrypt(password, adminDetail.password);
-        if (!isPasswordCorrect) {
-            return res.status(401).json(new ApiError(401, "Incorrect Password"));
-        }
-
-        
-        adminDetail.password = undefined;
-
-        await cookiesForUser(res, adminDetail);
-
-        return res.status(200).json(new ApiResponse(200, adminDetail, "Login Successfully"));
-
-    } catch (err) {
-        return res.status(500).json(new ApiError(500, err.message));
+    const adminDetail = req.user;
+    // console.log("after login req.user ",req.user);
+    if (!password) {
+      return res.status(400).json(new ApiError(400, "Password is required"));
     }
+
+    const isPasswordCorrect = await passwordDecrypt(password, adminDetail.password);
+    if (!isPasswordCorrect) {
+      return res.status(401).json(new ApiError(401, "Incorrect Password"));
+    }
+
+
+    adminDetail.password = undefined;
+     const adminJWT = adminDetail.toObject();
+
+    adminJWT.role = "true"
+
+    await cookiesForUser(res, adminJWT);
+
+    return res.status(200).json(new ApiResponse(200, adminDetail, "Login Successfully"));
+
+  } catch (err) {
+    return res.status(500).json(new ApiError(500, err.message));
+  }
 }
 
 
@@ -379,48 +384,48 @@ const Login = async (req, res) => {
 
 
 const forgetPassword = async (req, res) => {
-    try {
-        const { email, newPassword, confirmPassword } = req.body;
-        
-        // console.log(req.body);
-        if (!email || !newPassword || !confirmPassword) {
-            return res.status(400).json(new ApiError(400, "Sab fields required hain"));
-        }
+  try {
+    const { email, newPassword, confirmPassword } = req.body;
 
-        if (newPassword !== confirmPassword) {
-            return res.status(400).json(new ApiError(400, "Passwords match nahi karte"));
-        }
-
-        if (newPassword.length < 6) {
-            return res.status(400).json(new ApiError(400, "Password kam se kam 6 characters ka hona chahiye"));
-        }
-
-        const adminDetail = await adminAuth_Model.findOne({ email });
-        if (!adminDetail) {
-            return res.status(404).json(new ApiError(404, "Admin not found"));
-        }
-
-        
-        if (!adminDetail.isOtpVerified) {
-            return res.status(400).json(new ApiError(400, "Pehle OTP verify karo"));
-        }
-
-       
-        const hashPassword = await passwordEncrypt(newPassword);
-
-        
-        await adminAuth_Model.findByIdAndUpdate(adminDetail._id, {
-            password: hashPassword,
-            otp: null,
-            otpExpiry: null,
-            isOtpVerified: false
-        });
-
-        return res.status(200).json(new ApiResponse(200, null, "Password reset successfully"));
-
-    } catch (err) {
-        return res.status(500).json(new ApiError(500, err.message));
+    // console.log(req.body);
+    if (!email || !newPassword || !confirmPassword) {
+      return res.status(400).json(new ApiError(400, "Sab fields required hain"));
     }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json(new ApiError(400, "Passwords match nahi karte"));
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json(new ApiError(400, "Password kam se kam 6 characters ka hona chahiye"));
+    }
+
+    const adminDetail = await adminAuth_Model.findOne({ email });
+    if (!adminDetail) {
+      return res.status(404).json(new ApiError(404, "Admin not found"));
+    }
+
+
+    if (!adminDetail.isOtpVerified) {
+      return res.status(400).json(new ApiError(400, "Pehle OTP verify karo"));
+    }
+
+
+    const hashPassword = await passwordEncrypt(newPassword);
+
+
+    await adminAuth_Model.findByIdAndUpdate(adminDetail._id, {
+      password: hashPassword,
+      otp: null,
+      otpExpiry: null,
+      isOtpVerified: false
+    });
+
+    return res.status(200).json(new ApiResponse(200, null, "Password reset successfully"));
+
+  } catch (err) {
+    return res.status(500).json(new ApiError(500, err.message));
+  }
 }
 
 
@@ -496,11 +501,11 @@ const forgetPassword = async (req, res) => {
 //       return res.status(404).json(new ApiResponse(404, null, "Admin not found"));
 //     }
 
-    
+
 //     let profileImage = userDetail.profileImage; 
 
 //     if (req.file) {
-      
+
 //       if (userDetail.profileImage) {
 //         await deleteFromCloudinary(userDetail.profileImage);
 //       }
@@ -517,7 +522,7 @@ const forgetPassword = async (req, res) => {
 //       });
 //     }
 
-    
+
 //     const updatedadminDetail = await adminAuth_Model.findByIdAndUpdate(
 //       _id,
 //       {
@@ -551,9 +556,9 @@ const updateProfile = async (req, res) => {
     if (!req.user) {
       return res.status(401).json(new ApiResponse(401, null, "Unauthorized access"));
     }
-    
+
     // Check karein ki middleware _id bhej raha hai ya id
-    const adminId = req.user._id || req.user.id; 
+    const adminId = req.user._id || req.user.id;
     console.log("Admin ID to update:", adminId);
 
     const { name, email, contact, gender, dob, country, state } = req.body;
@@ -563,7 +568,7 @@ const updateProfile = async (req, res) => {
       return res.status(404).json(new ApiResponse(404, null, "Admin not found"));
     }
 
-    let profileImage = userDetail.profileImage; 
+    let profileImage = userDetail.profileImage;
 
     // 2. Image Upload Logic
     if (req.file) {
@@ -595,17 +600,17 @@ const updateProfile = async (req, res) => {
       {
         $set: {
           name,
-          email, 
+          email,
           contact,
           gender,
           dob,
           country,
           state,
-          profileImage 
+          profileImage
         }
       },
       { returnDocument: 'after' } // ✅ Warning fixed here
-    ).select("-password"); 
+    ).select("-password");
 
     return res.status(200).json(new ApiResponse(200, updatedadminDetail, "Profile Updated Successfully."));
 
@@ -638,7 +643,7 @@ const getMyProfile = async (req, res) => {
   //       console.log("req.user",req.user);
   try {
     const { _id } = req.user;
-      // console.log(_id);
+    // console.log(_id);
     const userDetail = await adminAuth_Model.findById(_id);
     // console.log(userDetail)
     if (!userDetail) {
@@ -771,7 +776,7 @@ const signupOtp = async (req, res) => {
 //       subject: "Password Forget Verification Otp",
 //       htmlContent: `
 // <div style="background: linear-gradient(135deg, #eef2ff, #f8fafc); padding:50px 0; font-family:Arial, sans-serif;">
-  
+
 //   <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:14px; box-shadow:0 8px 25px rgba(0,0,0,0.08); overflow:hidden;">
 
 //     <!-- Header -->
@@ -786,7 +791,7 @@ const signupOtp = async (req, res) => {
 
 //     <!-- Body -->
 //     <div style="padding:40px;">
-      
+
 //       <p style="font-size:16px; color:#1f2937;">
 //         Dear <b>${name}</b>,
 //       </p>
@@ -854,30 +859,30 @@ const signupOtp = async (req, res) => {
 
 
 const forgetPasswordOtp = async (req, res) => {
-    try {
-        
-        const adminDetail = req.user;
+  try {
 
-        
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+    const adminDetail = req.user;
 
-       
-        await adminAuth_Model.findByIdAndUpdate(adminDetail._id, {
-            otp,
-            otpExpiry,
-            isOtpVerified: false
-        });
 
-       
-        const emailData = {
-            sender: {
-                name: process.env.companyName,
-                email: process.env.companyEmail
-            },
-            to: [{ email: adminDetail.email }],
-            subject: "Password Reset OTP",
-            htmlContent: `
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+
+
+    await adminAuth_Model.findByIdAndUpdate(adminDetail._id, {
+      otp,
+      otpExpiry,
+      isOtpVerified: false
+    });
+
+
+    const emailData = {
+      sender: {
+        name: process.env.companyName,
+        email: process.env.companyEmail
+      },
+      to: [{ email: adminDetail.email }],
+      subject: "Password Reset OTP",
+      htmlContent: `
 <div style="background: linear-gradient(135deg, #eef2ff, #f8fafc); padding:50px 0; font-family:Arial, sans-serif;">
   <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:14px; box-shadow:0 8px 25px rgba(0,0,0,0.08); overflow:hidden;">
     <div style="background: linear-gradient(90deg, #1e3a8a, #4f46e5); padding:30px; text-align:center; color:white;">
@@ -903,19 +908,19 @@ const forgetPasswordOtp = async (req, res) => {
     </div>
   </div>
 </div>`
-        };
+    };
 
-        const result = await brevo(emailData);
-        if (!result) {
-            return res.status(400).json(new ApiError(400, "Failed to send email"));
-        }
-
-        
-        return res.status(200).json(new ApiResponse(200, null, "OTP sent to your email"));
-
-    } catch (err) {
-        return res.status(500).json(new ApiError(500, err.message));
+    const result = await brevo(emailData);
+    if (!result) {
+      return res.status(400).json(new ApiError(400, "Failed to send email"));
     }
+
+
+    return res.status(200).json(new ApiResponse(200, null, "OTP sent to your email"));
+
+  } catch (err) {
+    return res.status(500).json(new ApiError(500, err.message));
+  }
 }
 
 
@@ -925,15 +930,15 @@ const forgetPasswordOtp = async (req, res) => {
 
 
 const Signout = async (req, res) => {
-    try {
-        res.clearCookie("AccessToken");
-        res.clearCookie("RefreshToken");
+  try {
+    res.clearCookie("AccessToken");
+    res.clearCookie("RefreshToken");
 
-        return res.status(200).json(new ApiResponse(200, null, "Signout Successfully"))
-    }
-    catch (err) {
-        return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name }]))
-    }
+    return res.status(200).json(new ApiResponse(200, null, "Signout Successfully"))
+  }
+  catch (err) {
+    return res.status(500).json(new ApiError(500, err.message, [{ message: err.message, name: err.name }]))
+  }
 }
 
 
@@ -942,43 +947,43 @@ const Signout = async (req, res) => {
 
 
 const verifyOTP = async (req, res) => {
-    try {
-        const { email, otp } = req.body;
+  try {
+    const { email, otp } = req.body;
 
-        if (!email || !otp) {
-            return res.status(400).json(new ApiError(400, "Email aur OTP required hain"));
-        }
-
-        const adminDetail = await adminAuth_Model.findOne({ email });
-        if (!adminDetail) {
-            return res.status(404).json(new ApiError(404, "Admin not found"));
-        }
-
-        
-        if (!adminDetail.otp) {
-            return res.status(400).json(new ApiError(400, "Pehle OTP request karo"));
-        }
-
-        
-        if (new Date() > adminDetail.otpExpiry) {
-            return res.status(400).json(new ApiError(400, "OTP expire ho gaya, dobara bhejo"));
-        }
-
-        
-        if (adminDetail.otp !== otp) {
-            return res.status(400).json(new ApiError(400, "Galat OTP hai"));
-        }
-
-      
-        await adminAuth_Model.findByIdAndUpdate(adminDetail._id, {
-            isOtpVerified: true
-        });
-
-        return res.status(200).json(new ApiResponse(200, null, "OTP verified successfully"));
-
-    } catch (err) {
-        return res.status(500).json(new ApiError(500, err.message));
+    if (!email || !otp) {
+      return res.status(400).json(new ApiError(400, "Email aur OTP required hain"));
     }
+
+    const adminDetail = await adminAuth_Model.findOne({ email });
+    if (!adminDetail) {
+      return res.status(404).json(new ApiError(404, "Admin not found"));
+    }
+
+
+    if (!adminDetail.otp) {
+      return res.status(400).json(new ApiError(400, "Pehle OTP request karo"));
+    }
+
+
+    if (new Date() > adminDetail.otpExpiry) {
+      return res.status(400).json(new ApiError(400, "OTP expire ho gaya, dobara bhejo"));
+    }
+
+
+    if (adminDetail.otp !== otp) {
+      return res.status(400).json(new ApiError(400, "Galat OTP hai"));
+    }
+
+
+    await adminAuth_Model.findByIdAndUpdate(adminDetail._id, {
+      isOtpVerified: true
+    });
+
+    return res.status(200).json(new ApiResponse(200, null, "OTP verified successfully"));
+
+  } catch (err) {
+    return res.status(500).json(new ApiError(500, err.message));
+  }
 }
 
 
@@ -987,8 +992,8 @@ const verifyOTP = async (req, res) => {
 
 
 
-export { 
-    Signup, Login, forgetPassword, verifyOTP,
-    updateProfile, getMyProfile, 
-    signupOtp, forgetPasswordOtp, Signout 
+export {
+  Signup, Login, forgetPassword, verifyOTP,
+  updateProfile, getMyProfile,
+  signupOtp, forgetPasswordOtp, Signout
 };

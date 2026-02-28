@@ -5,6 +5,11 @@ import { ApiResponse } from "../../utils/api-response.js";
 
 const addBlog = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { title, description, status, author } = req.body;
 
         if (!req.files || !title || !description) {
@@ -47,6 +52,11 @@ const addBlog = async (req, res) => {
 
 const updateBlogs = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { title, description, status, blogId } = req.body;
 
         const blogDetail = await blogModel.findById(blogId);
@@ -113,6 +123,11 @@ const updateBlogs = async (req, res) => {
 
 const deleteBlogs = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { blogId } = req.query;
 
         const blogDetail = await blogModel.findByIdAndDelete(blogId);
@@ -134,6 +149,11 @@ const deleteBlogs = async (req, res) => {
 
 const getBlogs = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const page = (req.query.page) || 1;
         const limit = (req.query.limit) || 10;
 
@@ -166,6 +186,11 @@ const getBlogs = async (req, res) => {
 
 const getBlogById = async (req, res) => {
     try {
+
+        if(!req.user.role){
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { blogId } = req.query;
 
         const blogDetail = await blogModel.findById(blogId);

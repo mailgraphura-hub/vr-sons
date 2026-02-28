@@ -6,6 +6,10 @@ import { ApiResponse } from "../../utils/api-response.js";
 
 const updateInquiryStatus = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
         const { inquiryId, status } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(inquiryId)) {
@@ -52,6 +56,11 @@ const updateInquiryStatus = async (req, res) => {
 
 const getInquiries = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
@@ -89,7 +98,7 @@ const getInquiries = async (req, res) => {
 
         const close = await inquiriesModel.find({ status: "Close" });
         const open = await inquiriesModel.find({ status: "Open" });
-        const processing = await inquiriesModel.find({status: "Processing"});
+        const processing = await inquiriesModel.find({ status: "Processing" });
 
         return res.status(200).json(
             new ApiResponse(
@@ -118,6 +127,11 @@ const getInquiries = async (req, res) => {
 
 const getInquiriesByDate = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { startDate, endDate } = req.query;
 
         const page = parseInt(req.query.page) || 1;

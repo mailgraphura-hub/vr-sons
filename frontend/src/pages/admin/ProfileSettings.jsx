@@ -31,6 +31,7 @@ export default function ProfileSettings() {
     const fetchProfile = async () => {
       try {
         const response = await getService("/admin/auth/myprofile");
+
         if (response?.data?.data) {
           const userData = response.data.data;
           setProfile(userData);

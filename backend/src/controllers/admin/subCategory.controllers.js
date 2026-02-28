@@ -8,11 +8,15 @@ import mongoose from "mongoose";
 const addSubCategory = async (req, res) => {
     try {
 
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         if (!req.file) {
             return res.status(404).json(new ApiError(404, "Category Image is Required"));
         }
 
-        const { categoryId, name, skuId,decription, status } = req.body;
+        const { categoryId, name, skuId, decription, status } = req.body;
 
         const subcategoryImage = await new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
@@ -47,6 +51,11 @@ const addSubCategory = async (req, res) => {
 
 const updateStatus = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { subCategoryId, status } = req.body;
 
         const subCategoryDetail = await subCategory_Model.findByIdAndUpdate(
@@ -67,6 +76,11 @@ const updateStatus = async (req, res) => {
 
 const deleteSubCategory = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { subCategoryId } = req.query;
 
         if (!mongoose.Types.ObjectId.isValid(subCategoryId)) {
@@ -107,6 +121,11 @@ const deleteSubCategory = async (req, res) => {
 
 const getSubcategoryItems = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
 
@@ -116,7 +135,7 @@ const getSubcategoryItems = async (req, res) => {
             subCategory_Model.find({})
                 .skip(skip)
                 .limit(limit)
-                .sort({createdAt:-1}),
+                .sort({ createdAt: -1 }),
             subCategory_Model.countDocuments()
         ]);
 
@@ -126,10 +145,10 @@ const getSubcategoryItems = async (req, res) => {
             );
         }
 
-        const available = await subCategory_Model.find({status: "Available"});
-        const unavailable = await subCategory_Model.find({status: "Un-Available"});
+        const available = await subCategory_Model.find({ status: "Available" });
+        const unavailable = await subCategory_Model.find({ status: "Un-Available" });
 
-        
+
 
         return res.status(200).json(
             new ApiResponse(200, {
@@ -153,6 +172,11 @@ const getSubcategoryItems = async (req, res) => {
 
 const getSubcategorybyCategoryId = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { categoryId } = req.params;
 
         const page = parseInt(req.query.page) || 1;
@@ -169,7 +193,7 @@ const getSubcategorybyCategoryId = async (req, res) => {
             subCategory_Model.find({ categoryId })
                 .skip(skip)
                 .limit(limit)
-                .sort({createdAt:-1}),
+                .sort({ createdAt: -1 }),
             subCategory_Model.countDocuments({ categoryId })
         ]);
 

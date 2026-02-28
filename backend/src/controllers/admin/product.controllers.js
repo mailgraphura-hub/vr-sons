@@ -7,19 +7,23 @@ import mongoose from "mongoose";
 const addProduct = async (req, res) => {
     try {
 
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         if (!req.files) {
             return res.status(404).json(new ApiError(404, "Category Image is Required"));
         }
 
-        const { categoryId,subCategoryId, name, skuId, description, specifications,  status } = req.body;
+        const { categoryId, subCategoryId, name, skuId, description, specifications, status } = req.body;
 
         const productImage = await Promise.all(
             req.files.map(file => {
                 return new Promise((resolve, reject) => {
                     const stream = cloudinary.uploader.upload_stream(
-                        {folder: "product"},
+                        { folder: "product" },
                         (err, result) => {
-                            if(err) reject(err);
+                            if (err) reject(err);
                             else resolve(result.secure_url);
                         }
                     );
@@ -52,6 +56,11 @@ const addProduct = async (req, res) => {
 
 const updateStatus = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { productId, status } = req.body;
 
         const productDetail = await productModel.findByIdAndUpdate(
@@ -72,6 +81,11 @@ const updateStatus = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { productId } = req.query;
 
         if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -105,6 +119,11 @@ const deleteProduct = async (req, res) => {
 
 const getProduct = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
@@ -143,6 +162,11 @@ const getProduct = async (req, res) => {
 
 const getProductbyCategoryId = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { categoryId, subCategoryId } = req.query;
 
         const page = parseInt(req.query.page) || 1;

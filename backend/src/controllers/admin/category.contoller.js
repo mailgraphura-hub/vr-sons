@@ -8,6 +8,11 @@ import { ApiResponse } from "../../utils/api-response.js";
 const addCategory = async (req, res) => {
     try {
 
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
+
         if (!req.file) {
             return res.status(404).json(new ApiError(404, "Category Image is Required"));
         }
@@ -46,6 +51,10 @@ const addCategory = async (req, res) => {
 
 const updateStatus = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
         const { categoryId, status } = req.body;
 
         const categoryDetail = await categoryModel.findByIdAndUpdate(
@@ -66,6 +75,11 @@ const updateStatus = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
+
         const { categoryId } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(categoryId)) {
@@ -106,6 +120,10 @@ const deleteCategory = async (req, res) => {
 
 const getCategoryItems = async (req, res) => {
     try {
+
+        if (!req.user.role) {
+            return res.status(401).json(new ApiError(401, "Your are not Auth"))
+        }
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
