@@ -28,7 +28,7 @@ import MainCategory from "./pages/Products/MainCategory";
 import CategoryProducts from "./pages/Products/CategoryProducts";
 import PrductDetail from "./pages/Products/PrductDetail";
 import Product from "./pages/Products/Product"
-
+import NotFound from "./pages/NotFound";
 
 //Footer
 import AboutUs from "./pages/user/AboutUs";
@@ -107,7 +107,7 @@ function App() {
       {/* ================================================= */}
       {/* 404 FALLBACK */}
       {/* ================================================= */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound/>} />
 
     </Routes>
   );

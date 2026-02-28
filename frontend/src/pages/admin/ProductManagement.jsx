@@ -190,10 +190,19 @@ export default function ProductManagement() {
       formData.append("specifications", form.specifications);
       formData.append("status",         form.status);
       form.images.forEach((file) => formData.append("productImage", file));
-      await postService("/admin/product/addProduct", formData);
+      const res =  await postService("/admin/product/addProduct", formData);
+      if(!res.ok){
+        alert("Failed");
+        return;
+      }
+      alert("Product saved ");
+     
       setForm(emptyProduct); setSubCategories([]); fetchProducts(1);
     } catch (err) { console.log(err); }
   };
+
+
+
 
   const handleDelete = async (id) => {
     try {

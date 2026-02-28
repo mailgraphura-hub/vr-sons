@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { ChevronRight, UserCircle, Menu } from "lucide-react";
+import { ChevronRight, UserCircle, Menu, Home } from "lucide-react";
 import { getService } from "../../service/axios";
 
 const C = {
@@ -80,6 +80,23 @@ const HEADER_CSS = `
     outline-color: ${C.primary};
     transform: scale(1.1);
     box-shadow: 0 6px 18px rgba(195,106,77,.28);
+  }
+
+  .hdr-home-link {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    border: 1.5px solid ${C.tint30};
+    background: ${C.tint10};
+    color: ${C.primary};
+    flex-shrink: 0;
+    transition: background 150ms ease, border-color 150ms ease, transform 220ms cubic-bezier(.34,1.56,.64,1), box-shadow 200ms ease;
+  }
+  .hdr-home-link:hover {
+    background: ${C.tint20};
+    border-color: ${C.primary};
+    transform: scale(1.08);
+    box-shadow: 0 4px 14px rgba(195,106,77,.2);
   }
 
   .hdr-divider {
@@ -205,8 +222,13 @@ export default function Header({ onMenuClick }) {
           {renderBreadcrumbs()}
         </div>
 
-        {/* Right: name + divider + avatar */}
+        {/* Right: home + name + divider + avatar */}
         <div className="hdr-right">
+
+          {/* Home Button */}
+          <Link to="/" className="hdr-home-link" aria-label="Go to Home">
+            <Home size={16} />
+          </Link>
 
           {/* Admin name + role */}
           <div className="hdr-admin-block">
