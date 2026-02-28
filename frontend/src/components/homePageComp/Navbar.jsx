@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from 'react-router-dom';
-import logo from "../../assets/logo/TextLogo.png"; 
+import { Link, useLocation } from "react-router-dom";
+import logo from "../../assets/logo/TextLogo.png";
 
 const navLinks = [
   { id: 1, label: "Home", href: "/" },
-  { id: 2, label: "About Us", href: "AboutUs" },
+  { id: 2, label: "About Us", href: "/AboutUs" },
   { id: 3, label: "Category", href: "/MainCategory" },
   { id: 4, label: "Contact Us", href: "/ContactUs" },
   { id: 5, label: "Blog", href: "/blog" },
@@ -14,6 +14,7 @@ const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +34,11 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isActive = (href) => {
+    if (href === "/") return location.pathname === "/";
+    return location.pathname.startsWith(href);
+  };
+
   return (
     <section
       className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out pt-2 pb-2 ${
@@ -40,31 +46,38 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-[1500px] mx-auto px-4 md:px-8">
-
         {/* Main navbar row - Solid White Background */}
         <div className="flex items-center justify-between px-5 md:px-8 py-3 md:py-4 rounded-full bg-white shadow-md border border-gray-100">
-
           {/* Logo Section */}
           <Link to="/" className="flex items-center">
-            <img 
-              src={logo} 
-              alt="Logo" 
-              className="h-8 md:h-10 w-auto object-contain" 
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-8 md:h-10 w-auto object-contain"
             />
           </Link>
 
           {/* Center Links — desktop only */}
-          <ul className="hidden md:flex items-center gap-10 text-sm font-semibold text-neutral-700">
+          <ul className="hidden md:flex items-center gap-10 text-sm text-neutral-700">
             {navLinks.map((link) => (
-              <li key={link.id} className="hover:text-black cursor-pointer transition">
-                <a href={link.href}>{link.label}</a>
+              <li key={link.id} className="cursor-pointer transition">
+                <a
+                  href={link.href}
+                  className={`hover:text-black transition ${
+                    isActive(link.href)
+                      ? "font-black text-black"
+                      : "font-semibold"
+                  }`}
+                >
+                  {link.label}
+                </a>
               </li>
             ))}
           </ul>
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            <a 
+            <a
               href="/login"
               className="hidden md:inline-flex px-5 py-2 rounded-full bg-black text-white text-sm font-medium hover:bg-neutral-800 transition-all duration-300 shadow-sm"
             >
@@ -108,7 +121,11 @@ const Navbar = () => {
                 <a
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-neutral-700 hover:bg-neutral-50 hover:text-black transition"
+                  className={`block px-4 py-2.5 rounded-xl text-sm hover:bg-neutral-50 hover:text-black transition ${
+                    isActive(link.href)
+                      ? "font-black text-black"
+                      : "font-semibold text-neutral-700"
+                  }`}
                 >
                   {link.label}
                 </a>
@@ -126,7 +143,6 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-
       </div>
     </section>
   );
