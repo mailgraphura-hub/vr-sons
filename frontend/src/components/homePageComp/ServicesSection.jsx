@@ -304,7 +304,7 @@ const ServicesSection = () => {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
-                  href="#"
+                  href="/MainCategory"
                   className="flex items-center gap-2 text-white/50 text-sm hover:text-white/80 transition-colors group"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white/70 transition-colors" />
@@ -320,6 +320,7 @@ const ServicesSection = () => {
                     <line x1="5" y1="12" x2="19" y2="12" />
                     <polyline points="12 5 19 12 12 19" />
                   </svg>
+                  
                 </motion.a>
               </div>
 
