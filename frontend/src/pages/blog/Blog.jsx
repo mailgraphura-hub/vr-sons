@@ -17,11 +17,6 @@ export default function Blog() {
     )}`;
   };
 
-  // const allBlogs = blogs.map((blog) => ({
-  //   ...blog,
-  //   image: blog.image ? blog.image : getOnlineImage(blog.title),
-  // }));
-
   const [allBlogs, setBlogs] = useState([]);
 
   useEffect(() => {
@@ -44,7 +39,7 @@ export default function Blog() {
       <Navbar />
 
       {/* HERO SECTION */}
-      <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden">
+      <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden mt-16 md:mt-0">
         {/* Keyframe styles */}
         <style>{`
           @keyframes kenBurns {
