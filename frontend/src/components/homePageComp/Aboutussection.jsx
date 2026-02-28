@@ -35,7 +35,6 @@ const ABOUT_FAQS = [
   },
 ];
 
-// ── Beautiful CSS art cards — no external URLs needed ──
 const IMAGE_CARDS = [
   {
     label: "Spices & Agri",
@@ -75,7 +74,6 @@ const IMAGE_CARDS = [
   },
 ];
 
-// Decorative SVG pattern for each card
 const CardArtwork = ({ card }) => (
   <svg
     style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
@@ -83,12 +81,9 @@ const CardArtwork = ({ card }) => (
     preserveAspectRatio="xMidYMid slice"
     xmlns="http://www.w3.org/2000/svg"
   >
-    {/* Background circles */}
     <circle cx="160" cy="40" r="80" fill={card.accent} fillOpacity="0.08" />
     <circle cx="30" cy="200" r="60" fill={card.accent} fillOpacity="0.06" />
     <circle cx="100" cy="125" r="40" fill="white" fillOpacity="0.04" />
-
-    {/* Grid lines */}
     {[0, 40, 80, 120, 160, 200].map((x) => (
       <line
         key={x}
@@ -113,8 +108,6 @@ const CardArtwork = ({ card }) => (
         strokeWidth="0.5"
       />
     ))}
-
-    {/* Dots */}
     {[
       [30, 60],
       [100, 45],
@@ -132,8 +125,6 @@ const CardArtwork = ({ card }) => (
         fillOpacity="0.35"
       />
     ))}
-
-    {/* Diagonal accent line */}
     <line
       x1="0"
       y1="250"
@@ -143,8 +134,6 @@ const CardArtwork = ({ card }) => (
       strokeOpacity="0.1"
       strokeWidth="1"
     />
-
-    {/* Corner accent */}
     <rect
       x="0"
       y="0"
@@ -196,10 +185,7 @@ const ImageCard = ({ card, index }) => {
         cursor: "default",
       }}
     >
-      {/* Artistic SVG background */}
       <CardArtwork card={card} />
-
-      {/* Noise texture overlay */}
       <div
         style={{
           position: "absolute",
@@ -209,8 +195,6 @@ const ImageCard = ({ card, index }) => {
           pointerEvents: "none",
         }}
       />
-
-      {/* Gradient overlay */}
       <div
         style={{
           position: "absolute",
@@ -220,8 +204,6 @@ const ImageCard = ({ card, index }) => {
           pointerEvents: "none",
         }}
       />
-
-      {/* Large icon */}
       <div
         style={{
           position: "absolute",
@@ -236,8 +218,6 @@ const ImageCard = ({ card, index }) => {
       >
         {card.icon}
       </div>
-
-      {/* Label badge */}
       <div
         style={{
           position: "absolute",
@@ -272,8 +252,6 @@ const ImageCard = ({ card, index }) => {
           {card.label}
         </span>
       </div>
-
-      {/* Shimmer on hover */}
       <motion.div
         style={{
           position: "absolute",
@@ -289,7 +267,6 @@ const ImageCard = ({ card, index }) => {
   );
 };
 
-// ── Mini FAQ ──
 const MiniFAQ = ({ faq, index }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -340,7 +317,6 @@ const MiniFAQ = ({ faq, index }) => {
   );
 };
 
-// ── Main ──
 const AboutUsSection = () => (
   <section
     className="bg-[#f0ede8] pt-6 px-3 md:px-6 pb-6"
@@ -380,12 +356,14 @@ const AboutUsSection = () => (
             className="w-10 h-px bg-neutral-200 origin-left mb-6"
           />
 
+          {/* ── FIXED PARAGRAPH ── */}
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.55, delay: 0.2 }}
-            className="text-xs text-neutral-500 leading-relaxed mb-4"
+            className="text-sm text-neutral-700 leading-relaxed mb-4"
+            style={{ fontFamily: "'DM Sans', sans-serif" }}
           >
             {ABOUT_DATA.para1}
           </motion.p>
@@ -419,7 +397,6 @@ const AboutUsSection = () => (
             flexDirection: "column",
           }}
         >
-          {/* Dot grid texture */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -429,8 +406,6 @@ const AboutUsSection = () => (
               opacity: 0.025,
             }}
           />
-
-          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -447,7 +422,6 @@ const AboutUsSection = () => (
             <div className="flex-1 h-px bg-neutral-200" />
           </motion.div>
 
-          {/* 2×2 grid — stretch to fill available height */}
           <div
             style={{
               display: "grid",
