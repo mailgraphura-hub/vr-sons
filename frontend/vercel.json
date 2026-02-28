@@ -2,11 +2,7 @@
     "rewrites": [
         {
             "source": "/api/(.*)",
-<<<<<<< HEAD
-            "destination": "https://vr-sons.onrender.com/api/$1"
-=======
             "destination": "https://vr-sons-t56j.onrender.com/api/$1"
->>>>>>> 5ac588eb8807cdd76380e1e9063f6c01a7dac297
         },
         {
             "source": "/(.*)",
