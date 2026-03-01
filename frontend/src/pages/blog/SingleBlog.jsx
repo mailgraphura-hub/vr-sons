@@ -12,34 +12,48 @@ export default function SingleBlog() {
   const navigate = useNavigate();
 
   const [blog, setBlog] = useState(null)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     ; (
       async () => {
+
+        setLoading(true);
         const apiResponse = await getService(`/customer/blog/blogId?blogId=${id}`);
 
         if (!apiResponse.ok) {
           console.log(apiResponse.message)
+          setLoading(false);
         }
 
         // console.log(apiResponse.data.data)
         setBlog(apiResponse.data.data)
-
-        console.log(apiResponse.data.data.description)
+        setLoading(false);
       }
     )()
   }, [])
 
   const normalizeContent = (text) => {
-  if (!text) return "";
+    if (!text) return "";
 
-  return text
-    // Match ANY common bullet character
-    .replace(/[\u2022\u25CF\u25E6\u2043\u2219]\s*/g, "\n- ")
-    // Ensure space after colon section
-    .replace(/(involves:)/i, "$1\n")
-    .trim();
-};
+    return text
+      // Match ANY common bullet character
+      .replace(/[\u2022\u25CF\u25E6\u2043\u2219]\s*/g, "\n- ")
+      // Ensure space after colon section
+      .replace(/(involves:)/i, "$1\n")
+      .trim();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-black/20 border-t-black rounded-full animate-spin"></div>
+          <p className="text-gray-600 font-medium">Loading blog...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!blog)
     return (
