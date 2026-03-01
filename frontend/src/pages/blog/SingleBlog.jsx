@@ -2,6 +2,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import blogs from "../../data/blogData";
 import { getService } from "../../service/axios";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function SingleBlog() {
   const { id } = useParams();
@@ -22,9 +24,22 @@ export default function SingleBlog() {
 
         // console.log(apiResponse.data.data)
         setBlog(apiResponse.data.data)
+
+        console.log(apiResponse.data.data.description)
       }
     )()
   }, [])
+
+  const normalizeContent = (text) => {
+  if (!text) return "";
+
+  return text
+    // Match ANY common bullet character
+    .replace(/[\u2022\u25CF\u25E6\u2043\u2219]\s*/g, "\n- ")
+    // Ensure space after colon section
+    .replace(/(involves:)/i, "$1\n")
+    .trim();
+};
 
   if (!blog)
     return (
@@ -76,11 +91,22 @@ export default function SingleBlog() {
           ← Back to Blog
         </Link>
 
-        <article className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-blue-600">
-          <p className="text-gray-700 leading-relaxed text-lg">
-            {blog.description}
-          </p>
-        </article>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            p: ({ node, ...props }) => (
+              <p className="mb-4 leading-relaxed text-gray-700" {...props} />
+            ),
+            ul: ({ node, ...props }) => (
+              <ul className="list-disc pl-6 mb-4 space-y-2" {...props} />
+            ),
+            li: ({ node, ...props }) => (
+              <li className="leading-relaxed" {...props} />
+            ),
+          }}
+        >
+          {normalizeContent(blog.description)}
+        </ReactMarkdown>
 
         {/*  Divider */}
         <div className="my-12 border-t"></div>
