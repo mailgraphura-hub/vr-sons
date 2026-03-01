@@ -97,6 +97,8 @@ export default function ProductDetail() {
   const [totalPages, setTotalPages] = useState(1);
   const [isSuggestionClick, setIsSuggestionClick] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   /* ── API calls (unchanged) ─────────────────────────────────────────────── */
   useEffect(() => {
     if (!id) return;
@@ -106,9 +108,11 @@ export default function ProductDetail() {
       );
       if (!apiResponse.ok) {
         console.log(apiResponse.message);
+        setLoading(false);
         return;
       }
       setSubCateogory(apiResponse.data.data);
+      setLoading(false);
     })();
   }, [id]);
 
@@ -120,6 +124,7 @@ export default function ProductDetail() {
       );
       if (!apiResponse.ok) {
         console.log(apiResponse.message);
+        setLoading(false);
         return;
       }
       const data = apiResponse.data.data;
@@ -127,6 +132,7 @@ export default function ProductDetail() {
       setProductCount(data.totalItems);
       setCurrentPage(data.currentPage);
       setTotalPages(data.totalPage);
+      setLoading(false);
     })();
   }, [id, currentPage, searchQuery]);
 
@@ -138,12 +144,14 @@ export default function ProductDetail() {
       );
       if (!apiResponse.ok) {
         console.log(apiResponse.message);
+        setLoading(false);
         return;
       }
       const data = apiResponse.data.data;
       setProduct(data.products);
       setProductCount(data.products.length);
       setTotalPages(data.pagination.totalPage);
+      setLoading(false);
     }, 400);
     return () => clearTimeout(delayDebounce);
   }, [searchQuery, currentPage]);
@@ -467,7 +475,13 @@ export default function ProductDetail() {
 
         {/* ── CONTENT ── */}
         <main className="pl-main">
-          {product.length > 0 ? (
+          {loading ? (
+            <div className="pl-loading">
+              <div className="pl-dot" />
+              <div className="pl-dot" />
+              <div className="pl-dot" />
+            </div>
+          ) : product.length > 0 ? (
             <div className="pl-grid">
               {product.map((item, i) => (
                 <ProductCard

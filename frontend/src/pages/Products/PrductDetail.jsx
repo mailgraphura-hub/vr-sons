@@ -240,7 +240,8 @@ export default function ProductDetail() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => {
-              if (!user) return navigate("/login", { state: { data: id } });
+              let access = localStorage.getItem("access")
+              if (!access) return navigate("/login", { state: { data: id } });
               setShowInquiry(true);
             }}
             className="mt-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#C36A4D] to-[#e28b6f] text-white font-semibold tracking-wider shadow-lg hover:shadow-xl transition"
